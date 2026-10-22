@@ -105,7 +105,7 @@ export function LeagueDashboard() {
   const [players, setPlayers] = useState(initialPlayers)
   const [matches, setMatches] = useState(initialMatches)
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
-  const [activeTournament, setActiveTournament] = useState('Copa de los amigos')
+  const [activeTournament, setActiveTournament] = useState('Champions League')
   const [showForm, setShowForm] = useState(false)
   const [home, setHome] = useState('racing'); const [away, setAway] = useState('river')
   const [homeGoals, setHomeGoals] = useState(''); const [awayGoals, setAwayGoals] = useState('')
@@ -160,7 +160,7 @@ export function LeagueDashboard() {
 
   return (
     <div className="min-h-screen bg-[#007a55] text-white">
-      <header className="border-b border-[#007a55]/20 bg-[#007a55] text-white">
+      <header className="border-b border-[#159a72] bg-[#005c40] text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-8">
           <div className="flex items-center gap-3"><div className="grid size-10 place-items-center rounded-xl bg-white text-[#007a55]"><Trophy /></div><div><p className="text-lg font-black tracking-tight text-white">Liga Master</p><p className="text-xs font-medium text-emerald-100">PES 6 · Temporada 2026</p></div></div>
           <div className="flex items-center gap-2"><span className="hidden rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white sm:inline-flex"><span className="mr-2 size-1.5 rounded-full bg-emerald-200" />Liga en curso</span><Button variant="outline" size="sm" className="border-white/40 bg-white text-[#007a55] hover:bg-emerald-50" onClick={() => setShowForm(!showForm)}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>
@@ -170,7 +170,7 @@ export function LeagueDashboard() {
         <aside className="h-fit shrink-0 border-b border-[#159a72] bg-[#005c40] p-4 lg:sticky lg:top-0 lg:min-h-[calc(100vh-81px)] lg:w-72 lg:border-b-0 lg:border-r lg:p-5">
           <div className="flex items-center gap-2 px-3 pb-3 pt-2"><Globe2 className="size-4 text-emerald-200" /><span className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-100">Mis torneos</span></div>
           <nav aria-label="Navegación de torneos" className="flex gap-2 overflow-x-auto lg:flex-col">
-            {['Copa de los amigos', 'Champions League', 'Mundial', 'Eurocopa', 'Copa América'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex min-w-max items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors lg:w-full ${activeTournament === tournament ? 'bg-[#007a55] text-white shadow-sm' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-4" />{tournament}</button>)}
+            {['Champions League', 'Mundial', 'Eurocopa', 'Copa América'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex min-w-max items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors lg:w-full ${activeTournament === tournament ? 'bg-[#007a55] text-white shadow-sm' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-4" />{tournament}</button>)}
           </nav>
           <div className="mt-3 hidden border-t border-[#159a72]/50 px-3 pt-3 text-xs leading-relaxed text-emerald-200 lg:block">Seleccioná un torneo para consultar sus partidos y posiciones.</div>
         </aside>
