@@ -102,8 +102,9 @@ function calculateTable(players: Player[], matches: Match[]) {
 }
 
 export function LeagueDashboard() {
-  const [players, setPlayers] = useState(initialPlayers)
-  const [matches, setMatches] = useState(initialMatches)
+  const defaultTournament = tournamentData['Champions League']
+  const [players, setPlayers] = useState(defaultTournament.players)
+  const [matches, setMatches] = useState(defaultTournament.matches)
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
   const [activeTournament, setActiveTournament] = useState('Champions League')
   const [showForm, setShowForm] = useState(false)
@@ -125,11 +126,15 @@ export function LeagueDashboard() {
         status: match.status === 'played' && match.homeGoals === 0 && match.awayGoals === 0 ? 'upcoming' : (match.status ?? (match.homeGoals === 0 && match.awayGoals === 0 ? 'upcoming' : 'played')),
       }))
       const uniqueMatches = normalizedMatches.filter((match: Match, index: number, all: Match[]) => all.findIndex((candidate) => `${candidate.home}|${candidate.away}|${candidate.date}|${candidate.round}|${candidate.status}|${candidate.homeGoals}|${candidate.awayGoals}` === `${match.home}|${match.away}|${match.date}|${match.round}|${match.status}|${match.homeGoals}|${match.awayGoals}`) === index)
-      setPlayers(Array.isArray(parsed.players) ? parsed.players : initialPlayers)
-      setMatches(uniqueMatches)
+      const hasSavedTournament = typeof parsed.activeTournament === 'string' && tournamentData[parsed.activeTournament]
+      const savedTournament = hasSavedTournament ? parsed.activeTournament : 'Champions League'
+      const savedData = tournamentData[savedTournament]
+      setActiveTournament(savedTournament)
+      setPlayers(hasSavedTournament && Array.isArray(parsed.players) ? parsed.players : savedData.players)
+      setMatches(hasSavedTournament ? uniqueMatches : savedData.matches)
     }
   }, [])
-  useEffect(() => { window.localStorage.setItem('pes6-league', JSON.stringify({ players, matches })) }, [players, matches])
+  useEffect(() => { window.localStorage.setItem('pes6-league', JSON.stringify({ activeTournament, players, matches })) }, [activeTournament, players, matches])
 
   const table = useMemo(() => calculateTable(players, matches), [players, matches])
   const leader = table[0]
@@ -175,18 +180,14 @@ export function LeagueDashboard() {
 
   function selectTournament(tournament: string) {
     const selected = tournamentData[tournament]
+    const nextPlayers = selected?.players ?? initialPlayers
+    const nextMatches = (selected?.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveTournament(tournament)
-    if (selected) {
-      setPlayers(selected.players)
-      setMatches(selected.matches.map((match) => ({ ...match, status: match.status ?? 'played' })))
-      setHome(selected.players[0].id)
-      setAway(selected.players[1].id)
-    } else {
-      setPlayers(initialPlayers)
-      setMatches(initialMatches)
-      setHome(initialPlayers[0].id)
-      setAway(initialPlayers[1].id)
-    }
+    setPlayers(nextPlayers)
+    setMatches(nextMatches)
+    setHome(nextPlayers[0].id)
+    setAway(nextPlayers[1].id)
+    window.localStorage.setItem('pes6-league', JSON.stringify({ activeTournament: tournament, players: nextPlayers, matches: nextMatches }))
     setActiveTab('overview')
   }
 
