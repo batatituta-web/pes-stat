@@ -24,6 +24,69 @@ const initialMatches: Match[] = [
   { id: 4, home: 'newells', away: 'racing', homeGoals: 0, awayGoals: 2, date: '12 Jun, 22:00', round: 'Fecha 3' },
 ]
 
+const tournamentData: Record<string, { players: Player[]; matches: Match[] }> = {
+  'Champions League': {
+    players: [
+      { id: 'real-madrid', name: 'Real Madrid', initials: 'RM', color: 'bg-slate-500' },
+      { id: 'barcelona', name: 'Barcelona', initials: 'FCB', color: 'bg-blue-600' },
+      { id: 'bayern', name: 'Bayern Munich', initials: 'BM', color: 'bg-red-600' },
+      { id: 'liverpool', name: 'Liverpool', initials: 'LIV', color: 'bg-red-800' },
+      { id: 'psg', name: 'PSG', initials: 'PSG', color: 'bg-indigo-700' },
+      { id: 'inter', name: 'Inter', initials: 'INT', color: 'bg-blue-800' },
+    ],
+    matches: [
+      { id: 11, home: 'real-madrid', away: 'barcelona', homeGoals: 2, awayGoals: 1, date: 'Hoy, 22:15', round: 'Semifinal' },
+      { id: 12, home: 'bayern', away: 'psg', homeGoals: 3, awayGoals: 2, date: 'Ayer, 23:00', round: 'Semifinal' },
+      { id: 13, home: 'liverpool', away: 'inter', homeGoals: 1, awayGoals: 1, date: '12 Jun, 22:00', round: 'Cuartos' },
+    ],
+  },
+  Mundial: {
+    players: [
+      { id: 'argentina', name: 'Argentina', initials: 'ARG', color: 'bg-sky-500' },
+      { id: 'brasil', name: 'Brasil', initials: 'BRA', color: 'bg-yellow-500' },
+      { id: 'francia', name: 'Francia', initials: 'FRA', color: 'bg-blue-700' },
+      { id: 'alemania', name: 'Alemania', initials: 'ALE', color: 'bg-slate-700' },
+      { id: 'espana', name: 'España', initials: 'ESP', color: 'bg-red-500' },
+      { id: 'inglaterra', name: 'Inglaterra', initials: 'ING', color: 'bg-blue-500' },
+    ],
+    matches: [
+      { id: 21, home: 'argentina', away: 'brasil', homeGoals: 2, awayGoals: 0, date: 'Hoy, 21:00', round: 'Fecha 2' },
+      { id: 22, home: 'francia', away: 'alemania', homeGoals: 1, awayGoals: 1, date: 'Ayer, 22:00', round: 'Fecha 2' },
+      { id: 23, home: 'espana', away: 'inglaterra', homeGoals: 3, awayGoals: 2, date: '12 Jun, 20:00', round: 'Fecha 1' },
+    ],
+  },
+  Eurocopa: {
+    players: [
+      { id: 'espana-euro', name: 'España', initials: 'ESP', color: 'bg-red-500' },
+      { id: 'italia', name: 'Italia', initials: 'ITA', color: 'bg-blue-600' },
+      { id: 'portugal', name: 'Portugal', initials: 'POR', color: 'bg-emerald-600' },
+      { id: 'paises-bajos', name: 'Países Bajos', initials: 'PB', color: 'bg-orange-500' },
+      { id: 'belgica', name: 'Bélgica', initials: 'BEL', color: 'bg-yellow-600' },
+      { id: 'croacia', name: 'Croacia', initials: 'CRO', color: 'bg-red-700' },
+    ],
+    matches: [
+      { id: 31, home: 'espana-euro', away: 'italia', homeGoals: 2, awayGoals: 1, date: 'Hoy, 21:30', round: 'Fecha 3' },
+      { id: 32, home: 'portugal', away: 'paises-bajos', homeGoals: 2, awayGoals: 2, date: 'Ayer, 21:00', round: 'Fecha 3' },
+      { id: 33, home: 'belgica', away: 'croacia', homeGoals: 0, awayGoals: 1, date: '12 Jun, 19:00', round: 'Fecha 2' },
+    ],
+  },
+  'Copa América': {
+    players: [
+      { id: 'argentina-ca', name: 'Argentina', initials: 'ARG', color: 'bg-sky-500' },
+      { id: 'brasil-ca', name: 'Brasil', initials: 'BRA', color: 'bg-yellow-500' },
+      { id: 'uruguay', name: 'Uruguay', initials: 'URU', color: 'bg-sky-700' },
+      { id: 'colombia', name: 'Colombia', initials: 'COL', color: 'bg-yellow-600' },
+      { id: 'chile', name: 'Chile', initials: 'CHI', color: 'bg-red-600' },
+      { id: 'ecuador', name: 'Ecuador', initials: 'ECU', color: 'bg-blue-500' },
+    ],
+    matches: [
+      { id: 41, home: 'argentina-ca', away: 'uruguay', homeGoals: 1, awayGoals: 0, date: 'Hoy, 22:00', round: 'Fecha 4' },
+      { id: 42, home: 'brasil-ca', away: 'colombia', homeGoals: 2, awayGoals: 2, date: 'Ayer, 22:30', round: 'Fecha 4' },
+      { id: 43, home: 'chile', away: 'ecuador', homeGoals: 1, awayGoals: 2, date: '12 Jun, 20:30', round: 'Fecha 3' },
+    ],
+  },
+}
+
 function calculateTable(players: Player[], matches: Match[]) {
   const stats = Object.fromEntries(players.map((player) => [player.id, { played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 }]))
   matches.forEach(({ home, away, homeGoals, awayGoals }) => {
@@ -70,6 +133,23 @@ export function LeagueDashboard() {
     const id = playerName.toLowerCase().replace(/[^a-z0-9]+/g, '-'); setPlayers([...players, { id, name: playerName.trim(), initials: playerName.trim().slice(0, 2).toUpperCase(), color: 'bg-teal-500' }]); setPlayerName('')
   }
 
+  function selectTournament(tournament: string) {
+    const selected = tournamentData[tournament]
+    setActiveTournament(tournament)
+    if (selected) {
+      setPlayers(selected.players)
+      setMatches(selected.matches)
+      setHome(selected.players[0].id)
+      setAway(selected.players[1].id)
+    } else {
+      setPlayers(initialPlayers)
+      setMatches(initialMatches)
+      setHome(initialPlayers[0].id)
+      setAway(initialPlayers[1].id)
+    }
+    setActiveTab('overview')
+  }
+
   return (
     <div className="min-h-screen bg-[#007a55] text-white">
       <header className="border-b border-[#007a55]/20 bg-[#007a55] text-white">
@@ -82,7 +162,7 @@ export function LeagueDashboard() {
         <aside className="h-fit shrink-0 rounded-2xl border border-[#159a72] bg-[#005c40] p-3 lg:sticky lg:top-5 lg:w-64">
           <div className="flex items-center gap-2 px-3 pb-3 pt-2"><Globe2 className="size-4 text-emerald-200" /><span className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-100">Mis torneos</span></div>
           <nav aria-label="Navegación de torneos" className="flex gap-2 overflow-x-auto lg:flex-col">
-            {['Copa de los amigos', 'Champions League', 'Mundial', 'Eurocopa', 'Copa América'].map((tournament) => <button key={tournament} onClick={() => setActiveTournament(tournament)} className={`flex min-w-max items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors lg:w-full ${activeTournament === tournament ? 'bg-[#007a55] text-white shadow-sm' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-4" />{tournament}</button>)}
+            {['Copa de los amigos', 'Champions League', 'Mundial', 'Eurocopa', 'Copa América'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex min-w-max items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors lg:w-full ${activeTournament === tournament ? 'bg-[#007a55] text-white shadow-sm' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-4" />{tournament}</button>)}
           </nav>
           <div className="mt-3 hidden border-t border-[#159a72]/50 px-3 pt-3 text-xs leading-relaxed text-emerald-200 lg:block">Seleccioná un torneo para consultar sus partidos y posiciones.</div>
         </aside>
