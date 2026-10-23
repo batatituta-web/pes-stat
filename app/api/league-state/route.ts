@@ -20,6 +20,8 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  const cookie = request.headers.get('cookie') ?? ''
+  if (!cookie.split(';').some((part) => part.trim() === 'pes6-edit-access=authorized')) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const state = await request.json()
   if (!state || typeof state !== 'object' || Array.isArray(state)) return NextResponse.json({ error: 'Invalid state' }, { status: 400 })
   try {
