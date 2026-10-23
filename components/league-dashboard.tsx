@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { CalendarDays, ChevronDown, CirclePlus, Crown, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -129,6 +129,7 @@ export function LeagueDashboard() {
   const [copaVisualBracket, setCopaVisualBracket] = useState<CopaVisualBracket>({ round16: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), quarterfinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), semifinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
   const [copaChampion, setCopaChampion] = useState('')
   const [persistenceLoaded, setPersistenceLoaded] = useState(false)
+  const saveQueueRef = useRef(Promise.resolve())
 
   useEffect(() => {
     const saved = window.localStorage.getItem('pes6-league')
@@ -153,7 +154,10 @@ export function LeagueDashboard() {
       if (hasSavedTournament && parsed.copaVisualBracket && typeof parsed.copaVisualBracket === 'object') setCopaVisualBracket(parsed.copaVisualBracket)
       if (hasSavedTournament && typeof parsed.copaChampion === 'string') setCopaChampion(parsed.copaChampion)
     }
-    fetch('/api/league-state').then((response) => response.json()).then((data) => {
+    fetch('/api/league-state').then(async (response) => {
+      if (!response.ok) throw new Error(`Persistence read failed: ${response.status}`)
+      return response.json()
+    }).then((data) => {
       const state = data.state
       if (state && typeof state === 'object') {
         if (typeof state.activeTournament === 'string' && tournamentData[state.activeTournament]) setActiveTournament(state.activeTournament)
@@ -171,7 +175,16 @@ export function LeagueDashboard() {
   useEffect(() => {
     const state = { activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
     window.localStorage.setItem('pes6-league', JSON.stringify(state))
-    if (persistenceLoaded) fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(state) }).catch(() => undefined)
+    if (persistenceLoaded) {
+      const payload = JSON.stringify(state)
+      saveQueueRef.current = saveQueueRef.current
+        .catch(() => undefined)
+        .then(async () => {
+          const response = await fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+          if (!response.ok) throw new Error(`Persistence failed: ${response.status}`)
+        })
+        .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
+    }
   }, [activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded])
 
   const table = useMemo(() => calculateTable(players, matches), [players, matches])
