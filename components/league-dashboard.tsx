@@ -128,6 +128,7 @@ export function LeagueDashboard() {
   const [copaBracket, setCopaBracket] = useState<CopaBracket>({ semifinal1: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, semifinal2: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
   const [copaVisualBracket, setCopaVisualBracket] = useState<CopaVisualBracket>({ round16: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), quarterfinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), semifinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
   const [copaChampion, setCopaChampion] = useState('')
+  const [persistenceLoaded, setPersistenceLoaded] = useState(false)
 
   useEffect(() => {
     const saved = window.localStorage.getItem('pes6-league')
@@ -152,8 +153,26 @@ export function LeagueDashboard() {
       if (hasSavedTournament && parsed.copaVisualBracket && typeof parsed.copaVisualBracket === 'object') setCopaVisualBracket(parsed.copaVisualBracket)
       if (hasSavedTournament && typeof parsed.copaChampion === 'string') setCopaChampion(parsed.copaChampion)
     }
+    fetch('/api/league-state').then((response) => response.json()).then((data) => {
+      const state = data.state
+      if (state && typeof state === 'object') {
+        if (typeof state.activeTournament === 'string' && tournamentData[state.activeTournament]) setActiveTournament(state.activeTournament)
+        if (Array.isArray(state.players)) setPlayers(state.players)
+        if (Array.isArray(state.matches)) setMatches(state.matches)
+        if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
+        if (state.teamGroups && typeof state.teamGroups === 'object') setTeamGroups(state.teamGroups)
+        if (state.copaBracket && typeof state.copaBracket === 'object') setCopaBracket(state.copaBracket)
+        if (state.copaVisualBracket && typeof state.copaVisualBracket === 'object') setCopaVisualBracket(state.copaVisualBracket)
+        if (typeof state.copaChampion === 'string') setCopaChampion(state.copaChampion)
+      }
+      setPersistenceLoaded(true)
+    }).catch(() => setPersistenceLoaded(true))
   }, [])
-  useEffect(() => { window.localStorage.setItem('pes6-league', JSON.stringify({ activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion })) }, [activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion])
+  useEffect(() => {
+    const state = { activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
+    window.localStorage.setItem('pes6-league', JSON.stringify(state))
+    if (persistenceLoaded) fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(state) }).catch(() => undefined)
+  }, [activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded])
 
   const table = useMemo(() => calculateTable(players, matches), [players, matches])
   const leader = table[0]
