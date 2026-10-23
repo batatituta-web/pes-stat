@@ -157,6 +157,13 @@
   display: none;
 }
 
+/* The legacy standings card is identified by its overflow menu icon. */
+section:has(.lucide-ellipsis),
+.grid:has(.lucide-ellipsis),
+section:has(span.text-slate-300) {
+  display: none !important;
+}
+
 
 .manual-results-title + p,
 section:has(.manual-results-title) {
