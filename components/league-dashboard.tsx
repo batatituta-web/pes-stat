@@ -154,7 +154,12 @@ export function LeagueDashboard() {
     const newMatch: Match = {
       id: Date.now(), home, away, homeGoals: Number(homeGoals), awayGoals: Number(awayGoals), date: matchDate, round: matchRound, status: 'played',
     }
-    setMatches((currentMatches) => currentMatches.some((match) => match.home === home && match.away === away && match.date === matchDate && match.round === matchRound && match.status === 'played') ? currentMatches : [newMatch, ...currentMatches])
+    setMatches((currentMatches) => {
+      const hasPlayedMatch = currentMatches.some((match) => match.home === home && match.away === away && match.date === matchDate && match.round === matchRound && match.status === 'played')
+      if (hasPlayedMatch) return currentMatches
+      const withoutUpcoming = currentMatches.filter((match) => !(match.home === home && match.away === away && match.date === matchDate && match.round === matchRound && match.status === 'upcoming'))
+      return [newMatch, ...withoutUpcoming]
+    })
     setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(false)
   }
 
