@@ -158,35 +158,6 @@
 }
 
 /* The legacy standings card is identified by its overflow menu icon. */
-.readonly-content[data-edit-enabled="false"] {
-  position: relative;
-}
-
-.readonly-content[data-edit-enabled="false"]::after {
-  content: 'Modo solo lectura';
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 20;
-  border: 1px solid rgba(21, 154, 114, 0.8);
-  border-radius: 999px;
-  background: #003d2b;
-  padding: 0.5rem 0.75rem;
-  color: #a7f3d0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  pointer-events: none;
-}
-
-.readonly-content[data-edit-enabled="false"] form,
-.readonly-content[data-edit-enabled="false"] input,
-.readonly-content[data-edit-enabled="false"] select,
-.readonly-content[data-edit-enabled="false"] textarea,
-.readonly-content[data-edit-enabled="false"] button {
-  pointer-events: none;
-  user-select: none;
-}
-
 .bracket-match {
   position: relative;
 }
