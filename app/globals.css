@@ -157,6 +157,11 @@
   display: none;
 }
 
+[data-active-tab="matches"] .standings-table,
+[data-active-tab="players"] .standings-table {
+  display: none;
+}
+
 .manual-results-title + p,
 section:has(.manual-results-title) {
   display: none;
