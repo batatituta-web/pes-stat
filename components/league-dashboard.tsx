@@ -251,7 +251,10 @@ export function LeagueDashboard() {
 
 function CopaAmericaGroups({ table }: { table: ReturnType<typeof calculateTable> }) {
   const renderGroup = (name: string, teams: typeof table) => <section className="overflow-hidden rounded-2xl border border-[#159a72] bg-[#005c40]"><div className="border-b border-[#159a72]/50 px-5 py-4"><h2 className="font-bold">{name}</h2><p className="text-xs text-emerald-100">Clasificación del grupo</p></div><div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left text-sm"><thead className="bg-[#003d2b] text-xs uppercase tracking-wider text-emerald-200"><tr><th className="px-5 py-3">Pos</th><th className="px-5 py-3">Equipo</th><th className="px-5 py-3 text-center">PTS</th><th className="px-5 py-3 text-center">PJ</th><th className="px-5 py-3 text-center">+/-</th><th className="px-5 py-3 text-center">G</th><th className="px-5 py-3 text-center">E</th><th className="px-5 py-3 text-center">P</th></tr></thead><tbody>{teams.map((team, index) => <tr key={team.id} className="border-t border-[#159a72]/40"><td className="px-5 py-4 font-bold text-emerald-200">{index + 1}</td><td className="px-5 py-4 font-bold">{team.name}</td><td className="px-5 py-4 text-center font-black">{team.points}</td><td className="px-5 py-4 text-center">{team.played}</td><td className={`px-5 py-4 text-center font-bold ${team.gd > 0 ? 'text-emerald-300' : team.gd < 0 ? 'text-red-300' : 'text-white'}`}>{team.gd > 0 ? `+${team.gd}` : team.gd}</td><td className="px-5 py-4 text-center">{team.won}</td><td className="px-5 py-4 text-center">{team.drawn}</td><td className="px-5 py-4 text-center">{team.lost}</td></tr>)}</tbody></table></div></section>
-  return <section className="grid gap-5 lg:grid-cols-2">{renderGroup('Grupo A', table.slice(0, 3))}{renderGroup('Grupo B', table.slice(3, 6))}</section>
+  const groupAIds = new Set(['argentina-ca', 'brasil-ca', 'uruguay'])
+  const groupA = table.filter((team) => groupAIds.has(team.id))
+  const groupB = table.filter((team) => !groupAIds.has(team.id))
+  return <section className="grid gap-5 lg:grid-cols-2">{renderGroup('Grupo A', groupA)}{renderGroup('Grupo B', groupB)}</section>
 }
 
 function StandingsTable({ table }: { table: ReturnType<typeof calculateTable> }) {
