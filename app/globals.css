@@ -178,13 +178,11 @@
   pointer-events: none;
 }
 
-.readonly-content[data-edit-enabled="false"] form,
-.readonly-content[data-edit-enabled="false"] input,
-.readonly-content[data-edit-enabled="false"] select,
-.readonly-content[data-edit-enabled="false"] textarea,
-.readonly-content[data-edit-enabled="false"] button {
-  pointer-events: none;
-  user-select: none;
+.readonly-content[data-edit-enabled="false"] .edit-access-form,
+.readonly-content[data-edit-enabled="false"] .edit-access-form input,
+.readonly-content[data-edit-enabled="false"] .edit-access-form button {
+  pointer-events: auto;
+  user-select: auto;
 }
 
 .bracket-match {
