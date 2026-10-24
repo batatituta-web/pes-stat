@@ -129,7 +129,7 @@ export function LeagueDashboard() {
   const [copaVisualBracket, setCopaVisualBracket] = useState<CopaVisualBracket>({ round16: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), quarterfinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), semifinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
   const [copaChampion, setCopaChampion] = useState('')
   const [persistenceLoaded, setPersistenceLoaded] = useState(false)
-  const [tournamentStates, setTournamentStates] = useState<Record<string, { players: typeof defaultTournament.players; matches: typeof defaultTournament.matches; playerStats: Record<string, PlayerStat[]>; teamGroups: Record<string, 'A' | 'B'> }>>({})
+  const [tournamentStates, setTournamentStates] = useState<Record<string, { players: typeof defaultTournament.players; matches: typeof defaultTournament.matches; playerStats: Record<string, PlayerStat[]>; teamGroups: Record<string, 'A' | 'B'>; copaBracket: CopaBracket; copaVisualBracket: CopaVisualBracket; copaChampion: string }>>({})
   const saveQueueRef = useRef(Promise.resolve())
 
   useEffect(() => {
@@ -175,7 +175,7 @@ export function LeagueDashboard() {
     }).catch(() => setPersistenceLoaded(true))
   }, [])
   useEffect(() => {
-    const currentTournamentState = { players, matches, playerStats, teamGroups }
+    const currentTournamentState = { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
   const allTournamentStates = { ...tournamentStates, [activeTournament]: currentTournamentState }
   const state = { activeTournament, players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
     window.localStorage.setItem('pes6-league', JSON.stringify(state))
@@ -279,9 +279,12 @@ export function LeagueDashboard() {
   }
 
   function selectTournament(tournament: string) {
-    setTournamentStates((current) => ({ ...current, [activeTournament]: { players, matches, playerStats, teamGroups } }))
+    setTournamentStates((current) => ({ ...current, [activeTournament]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
     const selected = tournamentData[tournament]
     const savedState = tournamentStates[tournament]
+    if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
+    if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
+    if (typeof savedState?.copaChampion === 'string') setCopaChampion(savedState.copaChampion)
     const nextPlayers = savedState?.players ?? selected?.players ?? initialPlayers
     const nextMatches = (savedState?.matches ?? selected?.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveTournament(tournament)
