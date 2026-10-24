@@ -92,7 +92,7 @@ const tournamentData: Record<string, { players: Player[]; matches: Match[] }> = 
 }
 
 function countryFlag(name: string) {
-  const flags: Record<string, string> = { Argentina: '🇦🇷', Brasil: '🇧🇷', Uruguay: '🇺🇾', Colombia: '🇨🇴', Chile: '🇨🇱', Ecuador: '🇪🇨', 'Real Madrid': '🇪🇸', Barcelona: '🇪🇸', 'Bayern Munich': '🇩🇪', Liverpool: '🇬🇧', PSG: '🇫🇷', Inter: '🇮🇹', Francia: '🇫🇷', Alemania: '🇩🇪', España: '🇪🇸', Inglaterra: '🇬🇧', Perú: '🇵🇪', Paraguay: '🇵🇾', Bolivia: '🇧🇴', Venezuela: '🇻🇪', México: '🇲🇽', Costa Rica: '🇨🇷', Estados Unidos: '🇺🇸', Canadá: '🇨🇦', Japón: '🇯🇵', Corea del Sur: '🇰🇷', Portugal: '🇵🇹', Países Bajos: '🇳🇱', Bélgica: '🇧🇪', Suiza: '🇨🇭', Austria: '🇦🇹', Serbia: '🇷🇸', Croacia: '🇭🇷', Dinamarca: '🇩🇰', Suecia: '🇸🇪' }
+  const flags: Record<string, string> = { 'Argentina': '🇦🇷', 'Brasil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴', 'Chile': '🇨🇱', 'Ecuador': '🇪🇨', 'Real Madrid': '🇪🇸', 'Barcelona': '🇪🇸', 'Bayern Munich': '🇩🇪', 'Liverpool': '🇬🇧', 'PSG': '🇫🇷', 'Inter': '🇮🇹', 'Francia': '🇫🇷', 'Alemania': '🇩🇪', 'España': '🇪🇸', 'Inglaterra': '🇬🇧', 'Perú': '🇵🇪', 'Paraguay': '🇵🇾', 'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪', 'México': '🇲🇽', 'Costa Rica': '🇨🇷', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Japón': '🇯🇵', 'Corea del Sur': '🇰🇷', 'Portugal': '🇵🇹', 'Países Bajos': '🇳🇱', 'Bélgica': '🇧🇪', 'Suiza': '🇨🇭', 'Austria': '🇦🇹', 'Serbia': '🇷🇸', 'Croacia': '🇭🇷', 'Dinamarca': '🇩🇰', 'Suecia': '🇸🇪' }
   return flags[name.replace(/\s+\(.*\)$/, '')] ?? '🌐'
 }
 
