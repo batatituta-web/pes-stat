@@ -129,6 +129,7 @@ export function LeagueDashboard() {
   const [copaVisualBracket, setCopaVisualBracket] = useState<CopaVisualBracket>({ round16: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), quarterfinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), semifinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
   const [copaChampion, setCopaChampion] = useState('')
   const [persistenceLoaded, setPersistenceLoaded] = useState(false)
+  const [tournamentStates, setTournamentStates] = useState<Record<string, { players: typeof defaultTournament.players; matches: typeof defaultTournament.matches; playerStats: Record<string, PlayerStat[]>; teamGroups: Record<string, 'A' | 'B'> }>>({})
   const saveQueueRef = useRef(Promise.resolve())
 
   useEffect(() => {
@@ -165,6 +166,7 @@ export function LeagueDashboard() {
         if (Array.isArray(state.matches)) setMatches(state.matches)
         if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
         if (state.teamGroups && typeof state.teamGroups === 'object') setTeamGroups(state.teamGroups)
+        if (state.tournamentStates && typeof state.tournamentStates === 'object') setTournamentStates(state.tournamentStates)
         if (state.copaBracket && typeof state.copaBracket === 'object') setCopaBracket(state.copaBracket)
         if (state.copaVisualBracket && typeof state.copaVisualBracket === 'object') setCopaVisualBracket(state.copaVisualBracket)
         if (typeof state.copaChampion === 'string') setCopaChampion(state.copaChampion)
@@ -173,7 +175,9 @@ export function LeagueDashboard() {
     }).catch(() => setPersistenceLoaded(true))
   }, [])
   useEffect(() => {
-    const state = { activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
+    const currentTournamentState = { players, matches, playerStats, teamGroups }
+  const allTournamentStates = { ...tournamentStates, [activeTournament]: currentTournamentState }
+  const state = { activeTournament, players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
     window.localStorage.setItem('pes6-league', JSON.stringify(state))
     if (persistenceLoaded) {
       const payload = JSON.stringify(state)
@@ -185,7 +189,7 @@ export function LeagueDashboard() {
         })
         .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
     }
-  }, [activeTournament, players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded])
+  }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded])
 
   const table = useMemo(() => calculateTable(players, matches), [players, matches])
   const leader = table[0]
@@ -275,17 +279,19 @@ export function LeagueDashboard() {
   }
 
   function selectTournament(tournament: string) {
+    setTournamentStates((current) => ({ ...current, [activeTournament]: { players, matches, playerStats, teamGroups } }))
     const selected = tournamentData[tournament]
-    const nextPlayers = selected?.players ?? initialPlayers
-    const nextMatches = (selected?.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
+    const savedState = tournamentStates[tournament]
+    const nextPlayers = savedState?.players ?? selected?.players ?? initialPlayers
+    const nextMatches = (savedState?.matches ?? selected?.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveTournament(tournament)
     setPlayers(nextPlayers)
     setMatches(nextMatches)
     setHome(nextPlayers[0].id)
     setAway(nextPlayers[1].id)
     setSelectedTeamId(nextPlayers[0].id)
-    const nextGroups = ['Copa América', 'Eurocopa'].includes(tournament) ? Object.fromEntries(nextPlayers.map((player, index) => [player.id, index < Math.ceil(nextPlayers.length / 2) ? 'A' : 'B'])) as Record<string, 'A' | 'B'> : {}
-    setPlayerStats({})
+    const nextGroups = savedState?.teamGroups ?? (['Copa América', 'Eurocopa'].includes(tournament) ? Object.fromEntries(nextPlayers.map((player, index) => [player.id, index < Math.ceil(nextPlayers.length / 2) ? 'A' : 'B'])) as Record<string, 'A' | 'B'> : {})
+    setPlayerStats(savedState?.playerStats ?? {})
     setTeamGroups(nextGroups)
     window.localStorage.setItem('pes6-league', JSON.stringify({ activeTournament: tournament, players: nextPlayers, matches: nextMatches, playerStats: {}, teamGroups: nextGroups }))
     setActiveTab('overview')
