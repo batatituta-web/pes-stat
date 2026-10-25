@@ -197,12 +197,12 @@ export function LeagueDashboard() {
         status: match.status === 'played' && match.homeGoals === 0 && match.awayGoals === 0 ? 'upcoming' : (match.status ?? (match.homeGoals === 0 && match.awayGoals === 0 ? 'upcoming' : 'played')),
       }))
       const uniqueMatches = normalizedMatches.filter((match: Match, index: number, all: Match[]) => all.findIndex((candidate) => `${candidate.home}|${candidate.away}|${candidate.date}|${candidate.round}|${candidate.status}|${candidate.homeGoals}|${candidate.awayGoals}` === `${match.home}|${match.away}|${match.date}|${match.round}|${match.status}|${match.homeGoals}|${match.awayGoals}`) === index)
-      const hasSavedTournament = typeof parsed.activeTournament === 'string' && tournamentData[parsed.activeTournament]
+      const hasSavedTournament = typeof parsed.activeTournament === 'string'
       const savedTournament = hasSavedTournament ? parsed.activeTournament : 'Champions League'
-      const savedData = tournamentData[savedTournament]
+      const savedData = tournamentData[savedTournament] ?? { players: initialPlayers, matches: initialMatches }
       setActiveTournament(savedTournament)
       setPlayers(hasSavedTournament && Array.isArray(parsed.players) ? parsed.players : savedData.players)
-      setMatches(hasSavedTournament ? uniqueMatches : savedData.matches)
+      setMatches(hasSavedTournament && Array.isArray(parsed.matches) ? uniqueMatches : savedData.matches)
       setPlayerStats(hasSavedTournament && parsed.playerStats && typeof parsed.playerStats === 'object' ? parsed.playerStats : {})
       setTeamGroups(hasSavedTournament && parsed.teamGroups && typeof parsed.teamGroups === 'object' ? parsed.teamGroups : {})
       if (hasSavedTournament && parsed.copaBracket && typeof parsed.copaBracket === 'object') setCopaBracket(parsed.copaBracket)
@@ -215,7 +215,7 @@ export function LeagueDashboard() {
     }).then((data) => {
       const state = data.state
       if (state && typeof state === 'object') {
-        if (typeof state.activeTournament === 'string' && tournamentData[state.activeTournament]) setActiveTournament(state.activeTournament)
+        if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
         if (Array.isArray(state.players)) setPlayers(state.players)
         if (Array.isArray(state.matches)) setMatches(state.matches)
         if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
