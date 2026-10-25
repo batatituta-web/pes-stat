@@ -91,7 +91,38 @@ const tournamentData: Record<string, { players: Player[]; matches: Match[] }> = 
   },
 }
 
+function getTeamLogo(name: string): string | null {
+  const premierLeagueTeams: Record<string, string> = {
+    'Manchester United': 'https://resources.premierleague.com/premierleague/badges/t1.png',
+    'Manchester City': 'https://resources.premierleague.com/premierleague/badges/t43.png',
+    'Liverpool': 'https://resources.premierleague.com/premierleague/badges/t6.png',
+    'Arsenal': 'https://resources.premierleague.com/premierleague/badges/t3.png',
+    'Chelsea': 'https://resources.premierleague.com/premierleague/badges/t8.png',
+    'Tottenham': 'https://resources.premierleague.com/premierleague/badges/t14.png',
+    'Aston Villa': 'https://resources.premierleague.com/premierleague/badges/t7.png',
+    'Newcastle': 'https://resources.premierleague.com/premierleague/badges/t4.png',
+    'Brighton': 'https://resources.premierleague.com/premierleague/badges/t131.png',
+    'Brentford': 'https://resources.premierleague.com/premierleague/badges/t130.png',
+    'Fulham': 'https://resources.premierleague.com/premierleague/badges/t54.png',
+    'West Ham': 'https://resources.premierleague.com/premierleague/badges/t21.png',
+    'Everton': 'https://resources.premierleague.com/premierleague/badges/t11.png',
+    'Ipswich': 'https://resources.premierleague.com/premierleague/badges/t40.png',
+    'Leicester': 'https://resources.premierleague.com/premierleague/badges/t13.png',
+    'Bournemouth': 'https://resources.premierleague.com/premierleague/badges/t67.png',
+    'Wolverhampton': 'https://resources.premierleague.com/premierleague/badges/t39.png',
+    'Crystal Palace': 'https://resources.premierleague.com/premierleague/badges/t2.png',
+    'Nottingham Forest': 'https://resources.premierleague.com/premierleague/badges/t17.png',
+    'Southampton': 'https://resources.premierleague.com/premierleague/badges/t20.png',
+  }
+  return premierLeagueTeams[name] || null
+}
+
 function countryFlag(name: string) {
+  const teamLogo = getTeamLogo(name)
+  if (teamLogo) {
+    return <img src={teamLogo} alt="" aria-hidden="true" className="mr-2 inline-block size-6 rounded-md object-cover align-middle" />
+  }
+  
   const flags: Record<string, string> = { 'Argentina': '🇦🇷', 'Brasil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴', 'Chile': '🇨🇱', 'Ecuador': '🇪🇨', 'Real Madrid': '🇪🇸', 'Barcelona': '🇪🇸', 'Bayern Munich': '🇩🇪', 'Liverpool': '🇬🇧', 'PSG': '🇫🇷', 'Inter': '🇮🇹', 'Francia': '🇫🇷', 'Alemania': '🇩🇪', 'España': '🇪🇸', 'Inglaterra': '🇬🇧', 'Perú': '🇵🇪', 'Paraguay': '🇵🇾', 'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪', 'México': '🇲🇽', 'Mexico': '🇲🇽', 'Panamá': '🇵🇦', 'Panama': '🇵🇦', 'Costa Rica': '🇨🇷', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Canada': '🇨🇦', 'Japón': '🇯🇵', 'Japon': '🇯🇵', 'Corea del Sur': '🇰🇷', 'Portugal': '🇵🇹', 'Países Bajos': '🇳🇱', 'Paises Bajos': '🇳🇱', 'Holanda': '🇳🇱', 'Bélgica': '🇧🇪', 'Belgica': '🇧🇪', 'Suiza': '🇨🇭', 'Austria': '🇦🇹', 'Serbia': '🇷🇸', 'Croacia': '🇭🇷', 'Dinamarca': '🇩🇰', 'Suecia': '🇸🇪' }
   const flag = flags[name.replace(/\s+\(.*\)$/, '')] ?? '🌐'
   const code = [...flag].map((character) => String.fromCharCode(character.codePointAt(0)! - 0x1f1e6 + 65)).join('').toLowerCase()
