@@ -333,7 +333,7 @@ export function LeagueDashboard() {
         {['Mundial', 'Champions League'].includes(activeTournament) && <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-[#06291e]/70 p-6 backdrop-blur-[2px]"><div className="rounded-3xl border-2 border-white/80 bg-[#005c40]/95 px-10 py-8 text-center shadow-2xl sm:px-20 sm:py-14"><p className="text-4xl font-black uppercase tracking-[0.16em] text-white drop-shadow-[0_2px_0_#003d2b] sm:text-7xl">Próximamente</p><p className="mt-3 text-sm font-semibold uppercase tracking-[0.22em] text-emerald-100 sm:text-base">Contenido en preparación</p></div></div>}
         </div>
       </main>
-      <footer className="flex w-full items-center justify-between px-4 pb-7 text-xs text-emerald-200 sm:px-8 lg:px-10 xl:px-12"><span>Los datos se guardan solo en este navegador.</span><span className="flex items-center gap-1"><Settings2 className="size-3" /> Liga privada</span></footer>
+      <footer className="w-full px-4 pb-7 pt-4 text-center text-sm text-emerald-100 sm:px-8 lg:px-10 xl:px-12"><div className="mx-auto mb-4 h-px w-full bg-emerald-100/80" /><p>La falopa es perjudicial, basta de parsec</p></footer>
     </div>
   )
 }
