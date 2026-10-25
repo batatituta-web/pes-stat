@@ -133,6 +133,8 @@ function getTeamLogo(name: string): string | null {
     'Napoli': '/teams/napoli.png',
     'Roma': '/teams/roma.png',
     'Lazio': '/teams/lazio.png',
+    'Fiorentina': '/teams/fiorentina.png',
+    'Torino': '/teams/torino.png',
     'Flamengo': '/teams/flamengo.webp',
     'Palmeiras': '/teams/palmeiras.webp',
     'Corinthians': '/teams/corinthians.png',
