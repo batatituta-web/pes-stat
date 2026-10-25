@@ -163,19 +163,40 @@
     linear-gradient(145deg, #063b2b 0%, #07533b 52%, #06422f 100%);
 }
 
-.football-background::before {
+.football-background::before,
+.football-background::after {
   position: absolute;
-  inset: 0;
+  inset: -22%;
   z-index: -1;
-  background: radial-gradient(ellipse at 50% 45%, rgba(21, 126, 87, 0.16), transparent 58%);
   content: "";
-  animation: stadium-light 14s ease-in-out infinite alternate;
   pointer-events: none;
+  will-change: transform;
 }
 
-@keyframes stadium-light {
-  from { transform: translate3d(-3%, -1%, 0) scale(1); opacity: 0.55; }
-  to { transform: translate3d(3%, 2%, 0) scale(1.08); opacity: 1; }
+.football-background::before {
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(48, 191, 132, 0.22), transparent 24%),
+    radial-gradient(ellipse at 82% 74%, rgba(16, 117, 80, 0.34), transparent 28%),
+    radial-gradient(ellipse at 52% 50%, rgba(24, 147, 98, 0.14), transparent 42%);
+  filter: blur(34px);
+  animation: stadium-lights 18s ease-in-out infinite alternate;
+}
+
+.football-background::after {
+  background: radial-gradient(ellipse at 70% 18%, rgba(101, 221, 164, 0.12), transparent 20%);
+  filter: blur(48px);
+  animation: stadium-glow 24s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes stadium-lights {
+  0% { transform: translate3d(-8%, -4%, 0) scale(0.96) rotate(-2deg); }
+  50% { transform: translate3d(3%, 4%, 0) scale(1.04) rotate(1deg); }
+  100% { transform: translate3d(9%, -2%, 0) scale(1.1) rotate(3deg); }
+}
+
+@keyframes stadium-glow {
+  0% { transform: translate3d(8%, -5%, 0) scale(0.92); opacity: 0.45; }
+  100% { transform: translate3d(-8%, 7%, 0) scale(1.12); opacity: 0.95; }
 }
 
 @media (prefers-reduced-motion: reduce) {
