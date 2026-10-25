@@ -416,7 +416,7 @@ function CopaAmericaBracket({ players, bracket, onChange }: { players: Player[];
 }
 
 function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onChampionChange, competition = 'Copa América' }: { players: Player[]; bracket: CopaVisualBracket; onChange: React.Dispatch<React.SetStateAction<CopaVisualBracket>>; champion: string; onChampionChange: (value: string) => void; competition?: string }) {
-  const update = (round: keyof CopaVisualBracket, index: number | null, field: keyof BracketMatch, value: string) => onChange((current) => { const source = current[round]; if (Array.isArray(source)) return { ...current, [round]: source.map((match, matchIndex) => matchIndex === index ? { ...match, [field]: value } : match) }; return { ...current, [round]: { ...source, [field]: value } } })
+  const update = (round: keyof CopaVisualBracket, index: number | null, field: keyof BracketMatch, value: string) => onChange((current) => { const source = current[round]; if (Array.isArray(source)) { const matches = [...source]; while (matches.length < (round === 'quarterfinals' ? 4 : 2)) matches.push({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }); return { ...current, [round]: matches.map((match, matchIndex) => matchIndex === index ? { ...match, [field]: value } : match) } } return { ...current, [round]: { ...source, [field]: value } } })
   
   const matchCard = (round: keyof CopaVisualBracket, index: number | null, label: string) => {
     const source = bracket[round]
