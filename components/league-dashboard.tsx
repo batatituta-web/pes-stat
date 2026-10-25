@@ -118,6 +118,7 @@ export function LeagueDashboard() {
   const [matches, setMatches] = useState(defaultTournament.matches)
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
   const [activeTournament, setActiveTournament] = useState('Champions League')
+  const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true })
   const [showForm, setShowForm] = useState(false)
   const [home, setHome] = useState('racing'); const [away, setAway] = useState('river')
   const [homeGoals, setHomeGoals] = useState(''); const [awayGoals, setAwayGoals] = useState('')
@@ -287,7 +288,8 @@ export function LeagueDashboard() {
 
   function selectTournament(tournament: string) {
     setTournamentStates((current) => ({ ...current, [activeTournament]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-    const selected = tournamentData[tournament]
+    const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament
+    const selected = tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
     const savedState = tournamentStates[tournament]
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
@@ -318,10 +320,13 @@ export function LeagueDashboard() {
         </div>
       </header>
       <main data-active-tab={activeTab} className="flex min-h-[calc(100vh-81px)] w-full flex-col gap-0 px-0 py-0 lg:flex-row [&_table]:w-full [&_table]:bg-[#004a34] [&_thead]:bg-[#003d2b] [&_tbody_tr]:border-[#159a72]/50 [&_tbody_tr]:bg-[#004a34]">
-        <aside className="h-fit shrink-0 border-b border-[#007a55] bg-transparent p-4 lg:w-60 lg:border-b-0 lg:border-r-0 lg:p-2">
+        <aside className="h-fit shrink-0 border-b border-[#007a55] bg-transparent p-4 lg:w-72 lg:border-b-0 lg:border-r-0 lg:p-3">
           <div className="flex items-center gap-2 px-3 pb-3 pt-2"><Globe2 className="size-4 text-emerald-200" /><span className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-100">Mis torneos</span></div>
           <nav aria-label="Navegación de torneos" className="flex gap-2 overflow-x-auto lg:flex-col">
-            {['Champions League', 'Mundial', 'Eurocopa', 'Copa América'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex min-w-max items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors lg:w-full ${activeTournament === tournament ? 'bg-[#007a55] text-white shadow-sm' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-4" />{tournament}</button>)}
+            <button type="button" onClick={() => setOpenTournamentGroups((current) => ({ ...current, international: !current.international }))} className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide text-emerald-100 transition-colors hover:bg-[#004a34] hover:text-white"><span className="flex items-center gap-3"><Trophy className="size-4" />Internacional</span><ChevronDown className={`size-4 transition-transform ${openTournamentGroups.international ? 'rotate-180' : ''}`} /></button>
+            {openTournamentGroups.international && <div className="ml-4 border-l border-[#159a72]/60 pl-2">{['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex min-w-max items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors lg:w-full ${activeTournament === tournament ? 'bg-[#007a55] font-bold text-white' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-3.5" />{tournament}</button>)}</div>}
+            <button type="button" onClick={() => setOpenTournamentGroups((current) => ({ ...current, selections: !current.selections }))} className="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide text-emerald-100 transition-colors hover:bg-[#004a34] hover:text-white"><span className="flex items-center gap-3"><Globe2 className="size-4" />Selecciones</span><ChevronDown className={`size-4 transition-transform ${openTournamentGroups.selections ? 'rotate-180' : ''}`} /></button>
+            {openTournamentGroups.selections && <div className="ml-4 border-l border-[#159a72]/60 pl-2">{['Copa América', 'Eurocopa', 'Mundial'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex min-w-max items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors lg:w-full ${activeTournament === tournament ? 'bg-[#007a55] font-bold text-white' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-3.5" />{tournament}</button>)}</div>}
           </nav>
           <div className="mt-3 hidden border-t border-[#159a72]/50 px-3 pt-3 text-xs leading-relaxed text-emerald-200 lg:block">Seleccioná un torneo para consultar sus partidos y posiciones.</div>
         </aside>
