@@ -101,9 +101,9 @@ function getTeamLogo(name: string): string | null {
     'Tottenham': 'https://resources.premierleague.com/premierleague/badges/t14.png',
     'Aston Villa': 'https://resources.premierleague.com/premierleague/badges/t7.png',
     'Newcastle': 'https://resources.premierleague.com/premierleague/badges/t4.png',
-    'Brighton': 'https://resources.premierleague.com/premierleague/badges/t131.png',
-    'Brighton & Hove Albion': 'https://resources.premierleague.com/premierleague/badges/t131.png',
-    'Brighton and Hove Albion': 'https://resources.premierleague.com/premierleague/badges/t131.png',
+    'Brighton': 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/Brighton_%26_Hove_Albion_logo.svg/1200px-Brighton_%26_Hove_Albion_logo.svg.png',
+    'Brighton & Hove Albion': 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/Brighton_%26_Hove_Albion_logo.svg/1200px-Brighton_%26_Hove_Albion_logo.svg.png',
+    'Brighton and Hove Albion': 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/Brighton_%26_Hove_Albion_logo.svg/1200px-Brighton_%26_Hove_Albion_logo.svg.png',
     'Brentford': 'https://resources.premierleague.com/premierleague/badges/t130.png',
     'Fulham': 'https://resources.premierleague.com/premierleague/badges/t54.png',
     'West Ham': 'https://resources.premierleague.com/premierleague/badges/t21.png',
@@ -122,7 +122,7 @@ function getTeamLogo(name: string): string | null {
 function countryFlag(name: string) {
   const teamLogo = getTeamLogo(name)
   if (teamLogo) {
-    return <img src={teamLogo} alt="" aria-hidden="true" className="mr-2 inline-block size-6 rounded-md object-cover align-middle" />
+    return <img src={teamLogo} alt="" aria-hidden="true" onError={(event) => { event.currentTarget.style.display = 'none' }} className="mr-2 inline-block size-6 rounded-md object-contain align-middle" />
   }
   
   const flags: Record<string, string> = { 'Argentina': '🇦🇷', 'Brasil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴', 'Chile': '🇨🇱', 'Ecuador': '🇪🇨', 'Real Madrid': '🇪🇸', 'Barcelona': '🇪🇸', 'Bayern Munich': '🇩🇪', 'Liverpool': '🇬🇧', 'PSG': '🇫🇷', 'Inter': '🇮🇹', 'Francia': '🇫🇷', 'Alemania': '🇩🇪', 'España': '🇪🇸', 'Inglaterra': '🇬🇧', 'Perú': '🇵🇪', 'Paraguay': '🇵🇾', 'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪', 'México': '🇲🇽', 'Mexico': '🇲🇽', 'Panamá': '🇵🇦', 'Panama': '🇵🇦', 'Costa Rica': '🇨🇷', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Canada': '🇨🇦', 'Japón': '🇯🇵', 'Japon': '🇯🇵', 'Corea del Sur': '🇰🇷', 'Portugal': '🇵🇹', 'Países Bajos': '🇳🇱', 'Paises Bajos': '🇳🇱', 'Holanda': '🇳🇱', 'Bélgica': '🇧🇪', 'Belgica': '🇧🇪', 'Suiza': '🇨🇭', 'Austria': '🇦🇹', 'Serbia': '🇷🇸', 'Croacia': '🇭🇷', 'Dinamarca': '🇩🇰', 'Suecia': '🇸🇪' }
