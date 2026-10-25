@@ -144,6 +144,7 @@ function getTeamLogo(name: string): string | null {
     'Grêmio': '/teams/gremio.png',
     'Gremio': '/teams/gremio.png',
     'Internacional': '/teams/internacional.png',
+    'Fluminense': '/teams/fluminense.png',
   }
   const normalizedName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/fc | cf$| sc$| ec$| s\.c\.$/g, '').trim()
   const matchingTeam = Object.entries(premierLeagueTeams).find(([teamName]) => {
