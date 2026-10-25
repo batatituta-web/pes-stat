@@ -124,6 +124,7 @@ function getTeamLogo(name: string): string | null {
     'Villarreal': '/teams/villarreal.png',
     'Athletic Club': '/teams/athletic-club.png',
     'Real Betis': '/teams/real-betis.png',
+    'Real Sociedad': '/teams/real-sociedad.png',
     'Inter': '/teams/inter.png',
     'Inter Milan': '/teams/inter.png',
     'Milan': '/teams/milan.png',
