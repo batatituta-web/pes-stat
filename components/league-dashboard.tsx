@@ -329,7 +329,7 @@ export function LeagueDashboard() {
       <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <div className="flex items-center"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></div>
-          <div className="flex items-center gap-2"><span className="hidden rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white sm:inline-flex"><span className="mr-2 size-1.5 rounded-full bg-emerald-200" />Liga en curso</span><Button variant="outline" size="sm" className="border-white/40 bg-white text-[#007a55] hover:bg-emerald-50" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>
+          <div className="flex items-center gap-2 pr-4 sm:pr-6"><Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>
         </div>
       </header>
       {showFoxy && <div className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-black" role="status" aria-label="Foxy"><img key={activeTournament} src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/foxy-OxhycBedDoHP4KY8nmeJDQhi40ouT9.gif" alt="Foxy" className="h-full w-full object-contain" /></div>}
