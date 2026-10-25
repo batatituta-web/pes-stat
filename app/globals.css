@@ -157,10 +157,11 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 72% -15%, rgba(46, 173, 119, 0.24), transparent 42%),
-    radial-gradient(ellipse at 8% 112%, rgba(10, 91, 63, 0.7), transparent 48%),
-    linear-gradient(145deg, #063b2b 0%, #07533b 52%, #06422f 100%);
+  background-color: #032b1f;
+  background-image: linear-gradient(rgba(1, 30, 21, 0.3), rgba(1, 30, 21, 0.3)), url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-10-25_050614637-pa8e75mbqhFASGfDF5NZi39ZPAId9r.png");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .football-background::before,
@@ -183,8 +184,7 @@
 }
 
 .football-background::after {
-  background: radial-gradient(ellipse at 70% 18%, rgba(101, 221, 164, 0.12), transparent 20%);
-  filter: blur(48px);
+  background: linear-gradient(180deg, rgba(0, 25, 17, 0.08), rgba(0, 25, 17, 0.28));
   animation: stadium-glow 24s ease-in-out infinite alternate-reverse;
 }
 
