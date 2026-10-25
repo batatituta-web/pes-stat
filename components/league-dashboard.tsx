@@ -102,6 +102,8 @@ function getTeamLogo(name: string): string | null {
     'Aston Villa': 'https://resources.premierleague.com/premierleague/badges/t7.png',
     'Newcastle': 'https://resources.premierleague.com/premierleague/badges/t4.png',
     'Brighton': 'https://resources.premierleague.com/premierleague/badges/t131.png',
+    'Brighton & Hove Albion': 'https://resources.premierleague.com/premierleague/badges/t131.png',
+    'Brighton and Hove Albion': 'https://resources.premierleague.com/premierleague/badges/t131.png',
     'Brentford': 'https://resources.premierleague.com/premierleague/badges/t130.png',
     'Fulham': 'https://resources.premierleague.com/premierleague/badges/t54.png',
     'West Ham': 'https://resources.premierleague.com/premierleague/badges/t21.png',
