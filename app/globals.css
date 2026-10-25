@@ -160,7 +160,7 @@
   background-color: #032b1f;
   background-image: linear-gradient(rgba(1, 30, 21, 0.3), rgba(1, 30, 21, 0.3)), url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-10-25_050614637-pa8e75mbqhFASGfDF5NZi39ZPAId9r.png");
   background-position: center;
-  background-size: cover;
+  background-size: 100% 100%;
   background-attachment: fixed;
 }
 
