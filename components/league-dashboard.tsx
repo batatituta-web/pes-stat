@@ -451,7 +451,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
   }
   
   const column = (title: string, round: 'quarterfinals' | 'semifinals' | 'final', labels: string[]) => (
-    <div className={`flex min-w-[200px] flex-1 flex-col ${round === 'semifinals' ? 'justify-center gap-4' : 'justify-center'}`}>
+    <div className={`flex min-w-[200px] flex-1 flex-col ${round === 'quarterfinals' ? 'justify-center gap-3' : round === 'semifinals' ? 'justify-center gap-4' : 'justify-center'}`}>
       <h3 className="text-center text-base font-black uppercase text-white">{title}</h3>
       {labels.map((label, index) => <div key={label}>{matchCard(round, round === 'final' ? null : index, label)}</div>)}
     </div>
