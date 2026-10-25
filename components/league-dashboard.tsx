@@ -120,7 +120,19 @@ export function LeagueDashboard() {
   const [activeTournament, setActiveTournament] = useState('Champions League')
   const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
+  const [showFoxy, setShowFoxy] = useState(false)
   const [showForm, setShowForm] = useState(false)
+
+  useEffect(() => {
+    if (!isUnavailableTournament) {
+      setShowFoxy(false)
+      return
+    }
+
+    setShowFoxy(true)
+    const timeout = window.setTimeout(() => setShowFoxy(false), 4000)
+    return () => window.clearTimeout(timeout)
+  }, [activeTournament, isUnavailableTournament])
   const [home, setHome] = useState('racing'); const [away, setAway] = useState('river')
   const [homeGoals, setHomeGoals] = useState(''); const [awayGoals, setAwayGoals] = useState('')
   const [matchType, setMatchType] = useState<'played' | 'upcoming'>('played')
@@ -320,6 +332,7 @@ export function LeagueDashboard() {
           <div className="flex items-center gap-2"><span className="hidden rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white sm:inline-flex"><span className="mr-2 size-1.5 rounded-full bg-emerald-200" />Liga en curso</span><Button variant="outline" size="sm" className="border-white/40 bg-white text-[#007a55] hover:bg-emerald-50" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>
         </div>
       </header>
+      {showFoxy && <div className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-black" role="status" aria-label="Foxy"><img key={activeTournament} src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/foxy-OxhycBedDoHP4KY8nmeJDQhi40ouT9.gif" alt="Foxy" className="h-full w-full object-contain" /></div>}
       <main data-active-tab={activeTab} className="flex min-h-[calc(100vh-81px)] w-full flex-col gap-0 px-0 py-0 lg:flex-row [&_table]:w-full [&_table]:bg-[#004a34] [&_thead]:bg-[#003d2b] [&_tbody_tr]:border-[#159a72]/50 [&_tbody_tr]:bg-[#004a34]">
         <aside className="h-fit shrink-0 border-b border-[#007a55] bg-transparent p-4 lg:w-72 lg:border-b-0 lg:border-r-0 lg:p-3">
           <div className="flex items-center gap-2 px-3 pb-3 pt-2"><Globe2 className="size-4 text-emerald-200" /><span className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-100">Mis torneos</span></div>
