@@ -91,7 +91,40 @@ const tournamentData: Record<string, { players: Player[]; matches: Match[] }> = 
   },
 }
 
+function getTeamLogo(name: string): string | null {
+  const premierLeagueTeams: Record<string, string> = {
+    'Manchester United': 'https://resources.premierleague.com/premierleague/badges/t1.png',
+    'Manchester City': 'https://resources.premierleague.com/premierleague/badges/t43.png',
+    'Liverpool': 'https://resources.premierleague.com/premierleague/badges/t6.png',
+    'Arsenal': 'https://resources.premierleague.com/premierleague/badges/t3.png',
+    'Chelsea': 'https://resources.premierleague.com/premierleague/badges/t8.png',
+    'Tottenham': 'https://resources.premierleague.com/premierleague/badges/t14.png',
+    'Aston Villa': 'https://resources.premierleague.com/premierleague/badges/t7.png',
+    'Newcastle': 'https://resources.premierleague.com/premierleague/badges/t4.png',
+    'Brighton': '/teams/brighton.png',
+    'Brighton & Hove Albion': '/teams/brighton.png',
+    'Brighton and Hove Albion': '/teams/brighton.png',
+    'Brentford': 'https://resources.premierleague.com/premierleague/badges/t130.png',
+    'Fulham': 'https://resources.premierleague.com/premierleague/badges/t54.png',
+    'West Ham': 'https://resources.premierleague.com/premierleague/badges/t21.png',
+    'Everton': 'https://resources.premierleague.com/premierleague/badges/t11.png',
+    'Ipswich': 'https://resources.premierleague.com/premierleague/badges/t40.png',
+    'Leicester': 'https://resources.premierleague.com/premierleague/badges/t13.png',
+    'Bournemouth': 'https://resources.premierleague.com/premierleague/badges/t67.png',
+    'Wolverhampton': 'https://resources.premierleague.com/premierleague/badges/t39.png',
+    'Crystal Palace': 'https://resources.premierleague.com/premierleague/badges/t2.png',
+    'Nottingham Forest': 'https://resources.premierleague.com/premierleague/badges/t17.png',
+    'Southampton': 'https://resources.premierleague.com/premierleague/badges/t20.png',
+  }
+  return premierLeagueTeams[name] || null
+}
+
 function countryFlag(name: string) {
+  const teamLogo = getTeamLogo(name)
+  if (teamLogo) {
+    return <img src={teamLogo} alt="" aria-hidden="true" onError={(event) => { event.currentTarget.style.display = 'none' }} className="mr-2 inline-block size-7 rounded-full object-cover align-middle" />
+  }
+  
   const flags: Record<string, string> = { 'Argentina': '🇦🇷', 'Brasil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴', 'Chile': '🇨🇱', 'Ecuador': '🇪🇨', 'Real Madrid': '🇪🇸', 'Barcelona': '🇪🇸', 'Bayern Munich': '🇩🇪', 'Liverpool': '🇬🇧', 'PSG': '🇫🇷', 'Inter': '🇮🇹', 'Francia': '🇫🇷', 'Alemania': '🇩🇪', 'España': '🇪🇸', 'Inglaterra': '🇬🇧', 'Perú': '🇵🇪', 'Paraguay': '🇵🇾', 'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪', 'México': '🇲🇽', 'Mexico': '🇲🇽', 'Panamá': '🇵🇦', 'Panama': '🇵🇦', 'Costa Rica': '🇨🇷', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Canada': '🇨🇦', 'Japón': '🇯🇵', 'Japon': '🇯🇵', 'Corea del Sur': '🇰🇷', 'Portugal': '🇵🇹', 'Países Bajos': '🇳🇱', 'Paises Bajos': '🇳🇱', 'Holanda': '🇳🇱', 'Bélgica': '🇧🇪', 'Belgica': '🇧🇪', 'Suiza': '🇨🇭', 'Austria': '🇦🇹', 'Serbia': '🇷🇸', 'Croacia': '🇭🇷', 'Dinamarca': '🇩🇰', 'Suecia': '🇸🇪' }
   const flag = flags[name.replace(/\s+\(.*\)$/, '')] ?? '🌐'
   const code = [...flag].map((character) => String.fromCharCode(character.codePointAt(0)! - 0x1f1e6 + 65)).join('').toLowerCase()
@@ -118,7 +151,7 @@ export function LeagueDashboard() {
   const [matches, setMatches] = useState(defaultTournament.matches)
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
   const [activeTournament, setActiveTournament] = useState('Champions League')
-  const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true })
+  const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
   const [showForm, setShowForm] = useState(false)
@@ -341,6 +374,12 @@ export function LeagueDashboard() {
             <div className={`ml-3 overflow-hidden border-l border-[#159a72]/60 pl-2 transition-[max-height,opacity] duration-300 ease-in-out ${openTournamentGroups.international ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`} aria-hidden={!openTournamentGroups.international}>{['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm leading-tight transition-colors ${activeTournament === tournament ? 'bg-[#007a55] font-bold text-white' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-3.5 shrink-0" />{tournament}</button>)}</div>
             <button type="button" aria-expanded={openTournamentGroups.selections} onClick={() => setOpenTournamentGroups((current) => ({ ...current, selections: !current.selections }))} className="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide text-emerald-100 transition-colors hover:bg-[#004a34] hover:text-white"><span className="flex items-center gap-3"><Globe2 className="size-4" />Selecciones</span><ChevronDown className={`size-4 transition-transform duration-300 ${openTournamentGroups.selections ? 'rotate-180' : ''}`} /></button>
             <div className={`ml-3 overflow-hidden border-l border-[#159a72]/60 pl-2 transition-[max-height,opacity] duration-300 ease-in-out ${openTournamentGroups.selections ? 'max-h-72 opacity-100' : 'max-h-0 opacity-0'}`} aria-hidden={!openTournamentGroups.selections}>{['Copa América', 'Eurocopa', 'Mundial'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm leading-tight transition-colors ${activeTournament === tournament ? 'bg-[#007a55] font-bold text-white' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-3.5 shrink-0" />{tournament}</button>)}</div>
+            {[
+              { key: 'england', label: 'Inglaterra', tournaments: ['Premier League', 'FA Cup'] },
+              { key: 'spain', label: 'España', tournaments: ['La Liga', 'Copa del Rey'] },
+              { key: 'italy', label: 'Italia', tournaments: ['Serie A', 'Coppa Italia'] },
+              { key: 'brazil', label: 'Brasil', tournaments: ['Brasileirao', 'Copa do Brasil'] },
+            ].map((group) => <div key={group.key} className="mt-1"><button type="button" aria-expanded={openTournamentGroups[group.key as keyof typeof openTournamentGroups]} onClick={() => setOpenTournamentGroups((current) => ({ ...current, [group.key]: !current[group.key as keyof typeof current] }))} className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide text-emerald-100 transition-colors hover:bg-[#004a34] hover:text-white"><span className="flex items-center gap-3"><Globe2 className="size-4" />{group.label}</span><ChevronDown className={`size-4 transition-transform duration-300 ${openTournamentGroups[group.key as keyof typeof openTournamentGroups] ? 'rotate-180' : ''}`} /></button><div className={`ml-3 overflow-hidden border-l border-[#159a72]/60 pl-2 transition-[max-height,opacity] duration-300 ease-in-out ${openTournamentGroups[group.key as keyof typeof openTournamentGroups] ? 'max-h-32 opacity-100' : 'max-h-0 opacity-0'}`} aria-hidden={!openTournamentGroups[group.key as keyof typeof openTournamentGroups]}>{group.tournaments.map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm leading-tight transition-colors ${activeTournament === tournament ? 'bg-[#007a55] font-bold text-white' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-3.5 shrink-0" />{tournament}</button>)}</div></div>)}
           </nav>
           
         </aside>
