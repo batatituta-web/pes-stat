@@ -320,7 +320,7 @@ export function LeagueDashboard() {
         </div>
       </header>
       <main data-active-tab={activeTab} className="flex min-h-[calc(100vh-81px)] w-full flex-col gap-0 px-0 py-0 lg:flex-row [&_table]:w-full [&_table]:bg-[#004a34] [&_thead]:bg-[#003d2b] [&_tbody_tr]:border-[#159a72]/50 [&_tbody_tr]:bg-[#004a34]">
-        <aside className="h-fit shrink-0 border-b border-[#007a55] bg-transparent p-4 lg:w-60 lg:border-b-0 lg:border-r-0 lg:p-2">
+        <aside className="h-fit shrink-0 border-b border-[#007a55] bg-transparent p-4 lg:w-72 lg:border-b-0 lg:border-r-0 lg:p-3">
           <div className="flex items-center gap-2 px-3 pb-3 pt-2"><Globe2 className="size-4 text-emerald-200" /><span className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-100">Mis torneos</span></div>
           <nav aria-label="Navegación de torneos" className="flex gap-2 overflow-x-auto lg:flex-col">
             <button type="button" onClick={() => setOpenTournamentGroups((current) => ({ ...current, international: !current.international }))} className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide text-emerald-100 transition-colors hover:bg-[#004a34] hover:text-white"><span className="flex items-center gap-3"><Trophy className="size-4" />Internacional</span><ChevronDown className={`size-4 transition-transform ${openTournamentGroups.international ? 'rotate-180' : ''}`} /></button>
