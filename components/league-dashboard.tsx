@@ -325,8 +325,8 @@ export function LeagueDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#007a55] text-white">
-      <header className="sticky top-0 z-50 border-b border-[#007a55] bg-[#007a55] text-white">
+    <div className="football-background min-h-screen text-white">
+      <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <div className="flex items-center"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></div>
           <div className="flex items-center gap-2"><span className="hidden rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white sm:inline-flex"><span className="mr-2 size-1.5 rounded-full bg-emerald-200" />Liga en curso</span><Button variant="outline" size="sm" className="border-white/40 bg-white text-[#007a55] hover:bg-emerald-50" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>

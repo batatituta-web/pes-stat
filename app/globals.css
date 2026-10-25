@@ -153,6 +153,56 @@
   }
 }
 
+.football-background {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #032b1f;
+  background-image: linear-gradient(rgba(1, 30, 21, 0.3), rgba(1, 30, 21, 0.3)), url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-10-25_051003753-VJxlzzvskBsf7oGdkFCZ5KrpBY4GwK.png");
+  background-position: center;
+  background-size: 100% 100%;
+  background-attachment: fixed;
+}
+
+.football-background::before,
+.football-background::after {
+  position: absolute;
+  inset: -22%;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  will-change: transform;
+}
+
+.football-background::before {
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(48, 191, 132, 0.22), transparent 24%),
+    radial-gradient(ellipse at 82% 74%, rgba(16, 117, 80, 0.34), transparent 28%),
+    radial-gradient(ellipse at 52% 50%, rgba(24, 147, 98, 0.14), transparent 42%);
+  filter: blur(34px);
+  animation: stadium-lights 18s ease-in-out infinite alternate;
+}
+
+.football-background::after {
+  background: linear-gradient(180deg, rgba(0, 25, 17, 0.08), rgba(0, 25, 17, 0.28));
+  animation: stadium-glow 24s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes stadium-lights {
+  0% { transform: translate3d(-8%, -4%, 0) scale(0.96) rotate(-2deg); }
+  50% { transform: translate3d(3%, 4%, 0) scale(1.04) rotate(1deg); }
+  100% { transform: translate3d(9%, -2%, 0) scale(1.1) rotate(3deg); }
+}
+
+@keyframes stadium-glow {
+  0% { transform: translate3d(8%, -5%, 0) scale(0.92); opacity: 0.45; }
+  100% { transform: translate3d(-8%, 7%, 0) scale(1.12); opacity: 0.95; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .football-background::before { animation: none; }
+}
+
 .manual-results-title {
   display: none;
 }
