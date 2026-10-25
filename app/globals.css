@@ -154,13 +154,32 @@
 }
 
 .football-background {
-  background-color: #07583f;
-  background-image:
-    linear-gradient(135deg, rgba(4, 48, 35, 0.36) 25%, transparent 25%, transparent 50%, rgba(4, 48, 35, 0.36) 50%, rgba(4, 48, 35, 0.36) 75%, transparent 75%),
-    radial-gradient(circle at 78% 8%, rgba(53, 190, 133, 0.16), transparent 30rem),
-    linear-gradient(120deg, #064a36 0%, #08704e 48%, #07583f 100%);
-  background-size: 7rem 7rem, auto, auto;
-  background-attachment: fixed;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 72% -15%, rgba(46, 173, 119, 0.24), transparent 42%),
+    radial-gradient(ellipse at 8% 112%, rgba(10, 91, 63, 0.7), transparent 48%),
+    linear-gradient(145deg, #063b2b 0%, #07533b 52%, #06422f 100%);
+}
+
+.football-background::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 50% 45%, rgba(21, 126, 87, 0.16), transparent 58%);
+  content: "";
+  animation: stadium-light 14s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes stadium-light {
+  from { transform: translate3d(-3%, -1%, 0) scale(1); opacity: 0.55; }
+  to { transform: translate3d(3%, 2%, 0) scale(1.08); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .football-background::before { animation: none; }
 }
 
 .manual-results-title {
