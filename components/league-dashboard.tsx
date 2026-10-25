@@ -297,9 +297,11 @@ export function LeagueDashboard() {
     setActiveTournament(tournament)
     setPlayers(nextPlayers)
     setMatches(nextMatches)
-    setHome(nextPlayers[0].id)
-    setAway(nextPlayers[1].id)
-    setSelectedTeamId(nextPlayers[0].id)
+    const firstPlayerId = nextPlayers[0]?.id ?? ''
+    const secondPlayerId = nextPlayers[1]?.id ?? firstPlayerId
+    setHome(firstPlayerId)
+    setAway(secondPlayerId)
+    setSelectedTeamId(firstPlayerId)
     const nextGroups = savedState?.teamGroups ?? (['Copa América', 'Eurocopa'].includes(tournament) ? Object.fromEntries(nextPlayers.map((player, index) => [player.id, index < Math.ceil(nextPlayers.length / 2) ? 'A' : 'B'])) as Record<string, 'A' | 'B'> : {})
     setPlayerStats(savedState?.playerStats ?? {})
     setTeamGroups(nextGroups)
