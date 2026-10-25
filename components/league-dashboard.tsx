@@ -95,10 +95,10 @@ function getTeamLogo(name: string): string | null {
   const premierLeagueTeams: Record<string, string> = {
     'Manchester United': 'https://resources.premierleague.com/premierleague/badges/t1.png',
     'Manchester City': 'https://resources.premierleague.com/premierleague/badges/t43.png',
-    'Liverpool': 'https://resources.premierleague.com/premierleague/badges/t6.png',
+    'Liverpool': 'https://resources.premierleague.com/premierleague/badges/t14.png',
     'Arsenal': 'https://resources.premierleague.com/premierleague/badges/t3.png',
     'Chelsea': 'https://resources.premierleague.com/premierleague/badges/t8.png',
-    'Tottenham': 'https://resources.premierleague.com/premierleague/badges/t14.png',
+    'Tottenham': 'https://resources.premierleague.com/premierleague/badges/t6.png',
     'Aston Villa': 'https://resources.premierleague.com/premierleague/badges/t7.png',
     'Newcastle': 'https://resources.premierleague.com/premierleague/badges/t4.png',
     'Brighton': '/teams/brighton.png',
