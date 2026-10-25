@@ -311,7 +311,7 @@ export function LeagueDashboard() {
     <div className="min-h-screen bg-[#007a55] text-white">
       <header className="border-b border-[#159a72] bg-[#005c40] text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-8">
-          <div className="flex items-center gap-3"><div className="grid size-10 place-items-center rounded-xl bg-white text-[#007a55]"><Trophy /></div><div><p className="text-lg font-black tracking-tight text-white">Liga Master</p><p className="text-xs font-medium text-emerald-100">PES 6 · Temporada 2026</p></div></div>
+          <div className="flex items-center gap-3"><div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-white shadow-sm"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gemini_Generated_Image_evos5xevos5xevos-ZYxbTixdoHhP3VkWACud0nyrghemc7.jpg" alt="Pro Evolution Soccer" className="h-full w-full object-cover" /></div><div><p className="logo-outline text-lg font-black tracking-tight text-white">Liga Master</p><p className="logo-outline text-xs font-medium text-white">PES 6 · Temporada 2026</p></div></div>
           <div className="flex items-center gap-2"><span className="hidden rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white sm:inline-flex"><span className="mr-2 size-1.5 rounded-full bg-emerald-200" />Liga en curso</span><Button variant="outline" size="sm" className="border-white/40 bg-white text-[#007a55] hover:bg-emerald-50" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>
         </div>
       </header>

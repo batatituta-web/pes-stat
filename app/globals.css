@@ -189,7 +189,11 @@ section:has(.manual-results-title) {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
+  .logo-outline {
+  text-shadow: -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
+}
+
+body {
     @apply bg-background text-foreground;
   }
 }
