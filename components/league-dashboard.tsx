@@ -311,7 +311,7 @@ export function LeagueDashboard() {
     <div className="min-h-screen bg-[#007a55] text-white">
       <header className="border-b border-[#159a72] bg-[#005c40] text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-8">
-          <div className="flex items-center"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gB1W89IulNcYjYNBo7I8Dk2B46W14F.png" alt="ProMiedos" className="h-12 w-auto max-w-[280px] object-contain sm:h-14" /></div>
+          <div className="flex items-center"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gemini_Generated_Image_evos5xevos5xevos-removebg-preview-fQhahbDI3skxl1kPnGxqAHHBkpREOs.png" alt="Promuertos" className="h-12 w-auto max-w-[280px] object-contain sm:h-14" /></div>
           <div className="flex items-center gap-2"><span className="hidden rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white sm:inline-flex"><span className="mr-2 size-1.5 rounded-full bg-emerald-200" />Liga en curso</span><Button variant="outline" size="sm" className="border-white/40 bg-white text-[#007a55] hover:bg-emerald-50" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>
         </div>
       </header>
