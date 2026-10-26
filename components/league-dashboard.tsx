@@ -224,8 +224,9 @@ export function LeagueDashboard() {
   useEffect(() => {
     const saved = window.localStorage.getItem('pes6-league')
     if (saved) {
-      const parsed = JSON.parse(saved)
-      const loadedMatches = Array.isArray(parsed.matches) ? parsed.matches : initialMatches
+      try {
+        const parsed = JSON.parse(saved)
+        const loadedMatches = Array.isArray(parsed.matches) ? parsed.matches : initialMatches
       const normalizedMatches = loadedMatches.map((match: Match) => ({
         ...match,
         // Migrate old upcoming entries that were saved before status existed.
@@ -243,6 +244,9 @@ export function LeagueDashboard() {
       if (hasSavedTournament && parsed.copaBracket && typeof parsed.copaBracket === 'object') setCopaBracket(parsed.copaBracket)
       if (hasSavedTournament && parsed.copaVisualBracket && typeof parsed.copaVisualBracket === 'object') setCopaVisualBracket(parsed.copaVisualBracket)
       if (hasSavedTournament && typeof parsed.copaChampion === 'string') setCopaChampion(parsed.copaChampion)
+      } catch (error) {
+        console.error('[v0] No se pudo leer el estado local:', error)
+      }
     }
     fetch('/api/league-state').then(async (response) => {
       if (!response.ok) throw new Error(`Persistence read failed: ${response.status}`)
@@ -287,7 +291,7 @@ export function LeagueDashboard() {
 
   function addMatch(event: React.FormEvent) {
     event.preventDefault()
-    if (home === away || !matchDate || !matchRound || homeGoals === '' || awayGoals === '') return
+    if (!persistenceLoaded || home === away || !matchDate || !matchRound || homeGoals === '' || awayGoals === '') return
 
     const newMatch: Match = {
       id: Date.now(), home, away, homeGoals: Number(homeGoals), awayGoals: Number(awayGoals), date: matchDate, round: matchRound, status: 'played',
@@ -303,7 +307,7 @@ export function LeagueDashboard() {
 
   function addUpcomingMatch(event: React.FormEvent) {
     event.preventDefault()
-    if (home === away || !matchDate || !matchRound) return
+    if (!persistenceLoaded || home === away || !matchDate || !matchRound) return
     const newMatch: Match = { id: Date.now(), home, away, homeGoals: 0, awayGoals: 0, date: matchDate, round: matchRound, status: 'upcoming' }
     setMatches((currentMatches) => currentMatches.some((match) => match.home === home && match.away === away && match.date === matchDate && match.round === matchRound && match.status === 'upcoming') ? currentMatches : [newMatch, ...currentMatches])
     setMatchDate(''); setMatchRound(''); setShowForm(false)
