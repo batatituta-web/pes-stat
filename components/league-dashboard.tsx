@@ -272,12 +272,13 @@ export function LeagueDashboard() {
   useEffect(() => {
     if (!persistenceLoaded) return
     let cancelled = false
-    const eventSource = new EventSource('/api/league-state?stream=1')
-    eventSource.onmessage = (event) => {
+    const syncRemoteState = async () => {
       if (cancelled || isSavingRef.current) return
       try {
-        const state = JSON.parse(event.data).state
-        if (!state || typeof state !== 'object' || isSavingRef.current) return
+        const response = await fetch('/api/league-state', { cache: 'no-store' })
+        if (!response.ok) return
+        const state = (await response.json()).state
+        if (!state || typeof state !== 'object' || cancelled || isSavingRef.current) return
         if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
         if (Array.isArray(state.players)) setPlayers(state.players)
         if (Array.isArray(state.matches)) setMatches(state.matches)
@@ -288,12 +289,13 @@ export function LeagueDashboard() {
         if (state.copaVisualBracket && typeof state.copaVisualBracket === 'object') setCopaVisualBracket(state.copaVisualBracket)
         if (typeof state.copaChampion === 'string') setCopaChampion(state.copaChampion)
       } catch {
-        // Ignore malformed events and keep the current dashboard state.
+        // A temporary network failure should not interrupt the dashboard.
       }
     }
+    const intervalId = window.setInterval(syncRemoteState, 3000)
     return () => {
       cancelled = true
-      eventSource.close()
+      window.clearInterval(intervalId)
     }
   }, [persistenceLoaded])
 
