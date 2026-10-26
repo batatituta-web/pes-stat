@@ -466,7 +466,7 @@ export function LeagueDashboard() {
         </div>
         </div>
       </main>
-      <footer className="w-full px-4 pb-7 pt-4 text-center text-sm text-emerald-100 sm:px-8 lg:px-10 xl:px-12"><div className="mx-auto mb-4 h-px w-full bg-emerald-100/80" /><p>La falopa es perjudicial, basta de parsec (no le hagan caso)</p></footer>
+      <footer className="w-full px-4 pb-7 pt-4 text-center text-sm text-emerald-100 sm:px-8 lg:px-10 xl:px-12"><div className="mx-auto mb-4 h-px w-full bg-emerald-100/80" /><p>La falopa es perjudicial, basta de parsec</p></footer>
     </div>
   )
 }
