@@ -220,7 +220,8 @@ export function LeagueDashboard() {
   const [persistenceLoaded, setPersistenceLoaded] = useState(false)
   const [tournamentStates, setTournamentStates] = useState<Record<string, { players: typeof defaultTournament.players; matches: typeof defaultTournament.matches; playerStats: Record<string, PlayerStat[]>; teamGroups: Record<string, 'A' | 'B'>; copaBracket: CopaBracket; copaVisualBracket: CopaVisualBracket; copaChampion: string }>>({})
   const saveQueueRef = useRef(Promise.resolve())
-
+  const isSavingRef = useRef(false)
+  
   useEffect(() => {
     const saved = window.localStorage.getItem('pes6-league')
     if (saved) {
@@ -267,6 +268,38 @@ export function LeagueDashboard() {
       setPersistenceLoaded(true)
     }).catch(() => setPersistenceLoaded(true))
   }, [])
+
+  useEffect(() => {
+    if (!persistenceLoaded) return
+    let cancelled = false
+    const syncRemoteState = async () => {
+      if (cancelled || isSavingRef.current) return
+      try {
+        const response = await fetch('/api/league-state', { cache: 'no-store' })
+        if (!response.ok) return
+        const data = await response.json()
+        const state = data.state
+        if (!state || typeof state !== 'object' || cancelled || isSavingRef.current) return
+        if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
+        if (Array.isArray(state.players)) setPlayers(state.players)
+        if (Array.isArray(state.matches)) setMatches(state.matches)
+        if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
+        if (state.teamGroups && typeof state.teamGroups === 'object') setTeamGroups(state.teamGroups)
+        if (state.tournamentStates && typeof state.tournamentStates === 'object') setTournamentStates(state.tournamentStates)
+        if (state.copaBracket && typeof state.copaBracket === 'object') setCopaBracket(state.copaBracket)
+        if (state.copaVisualBracket && typeof state.copaVisualBracket === 'object') setCopaVisualBracket(state.copaVisualBracket)
+        if (typeof state.copaChampion === 'string') setCopaChampion(state.copaChampion)
+      } catch {
+        // A temporary network failure should not interrupt the dashboard.
+      }
+    }
+    const intervalId = window.setInterval(syncRemoteState, 3000)
+    return () => {
+      cancelled = true
+      window.clearInterval(intervalId)
+    }
+  }, [persistenceLoaded])
+
   useEffect(() => {
     const currentTournamentState = { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
   const allTournamentStates = { ...tournamentStates, [activeTournament]: currentTournamentState }
@@ -277,8 +310,13 @@ export function LeagueDashboard() {
       saveQueueRef.current = saveQueueRef.current
         .catch(() => undefined)
         .then(async () => {
-          const response = await fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
-          if (!response.ok) throw new Error(`Persistence failed: ${response.status}`)
+          isSavingRef.current = true
+          try {
+            const response = await fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+            if (!response.ok) throw new Error(`Persistence failed: ${response.status}`)
+          } finally {
+            isSavingRef.current = false
+          }
         })
         .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
     }
