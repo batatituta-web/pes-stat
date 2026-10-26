@@ -161,7 +161,11 @@ function countryFlag(name: string) {
   }
   
   const flags: Record<string, string> = { 'Argentina': '🇦🇷', 'Brasil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴', 'Chile': '🇨🇱', 'Ecuador': '🇪🇨', 'Real Madrid': '🇪🇸', 'Barcelona': '🇪🇸', 'Bayern Munich': '🇩🇪', 'Liverpool': '🇬🇧', 'PSG': '🇫🇷', 'Inter': '🇮🇹', 'Francia': '🇫🇷', 'Alemania': '🇩🇪', 'España': '🇪🇸', 'Inglaterra': '\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E006C}\u{E0061}\u{E006E}\u{E0064}\u{E007F}', 'Perú': '🇵🇪', 'Paraguay': '🇵🇾', 'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪', 'México': '🇲🇽', 'Mexico': '🇲🇽', 'Panamá': '🇵🇦', 'Panama': '🇵🇦', 'Costa Rica': '🇨🇷', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Canada': '🇨🇦', 'Japón': '🇯🇵', 'Japon': '🇯🇵', 'Corea del Sur': '🇰🇷', 'Portugal': '🇵🇹', 'Países Bajos': '🇳🇱', 'Paises Bajos': '🇳🇱', 'Holanda': '🇳🇱', 'Bélgica': '🇧🇪', 'Belgica': '🇧🇪', 'Suiza': '🇨🇭', 'Austria': '🇦🇹', 'Serbia': '🇷🇸', 'Croacia': '🇭🇷', 'Dinamarca': '🇩🇰', 'Suecia': '🇸🇪' }
-  const flag = flags[name.replace(/\s+\(.*\)$/, '')] ?? '🌐'
+  const normalizedName = name.replace(/\s+\(.*\)$/, '')
+  if (normalizedName === 'Inglaterra') {
+    return <img src="https://flagpedia.net/data/flags/w580/gb-eng.png" alt="Bandera de Inglaterra" aria-hidden="true" className="mr-2 inline-block size-6 rounded-full object-cover align-middle" />
+  }
+  const flag = flags[normalizedName] ?? '🌐'
   const code = [...flag].map((character) => String.fromCharCode(character.codePointAt(0)! - 0x1f1e6 + 65)).join('').toLowerCase()
   return <img src={code.length === 2 ? `https://flagcdn.com/w40/${code}.png` : '/placeholder.svg'} alt="" aria-hidden="true" className="mr-2 inline-block size-6 rounded-full object-cover align-middle" />
 }
