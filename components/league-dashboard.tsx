@@ -263,8 +263,11 @@ export function LeagueDashboard() {
       const state = data.state
       if (state && typeof state === 'object') {
         if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
-        if (Array.isArray(state.players)) setPlayers(state.players)
-        if (Array.isArray(state.matches)) setMatches(state.matches)
+        const remotePlayers = Array.isArray(state.players) ? state.players : initialPlayers
+        const remotePlayerIds = new Set(remotePlayers.map((player: Player) => player.id))
+        const remoteMatches = Array.isArray(state.matches) ? state.matches.filter((match: Match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : initialMatches
+        if (Array.isArray(state.players)) setPlayers(remotePlayers)
+        if (Array.isArray(state.matches)) setMatches(remoteMatches)
         if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
         if (state.teamGroups && typeof state.teamGroups === 'object') setTeamGroups(state.teamGroups)
         if (state.tournamentStates && typeof state.tournamentStates === 'object') setTournamentStates(state.tournamentStates)
@@ -287,8 +290,11 @@ export function LeagueDashboard() {
         const state = (await response.json()).state
         if (!state || typeof state !== 'object' || cancelled || isSavingRef.current) return
         if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
-        if (Array.isArray(state.players)) setPlayers(state.players)
-        if (Array.isArray(state.matches)) setMatches(state.matches)
+        const remotePlayers = Array.isArray(state.players) ? state.players : players
+        const remotePlayerIds = new Set(remotePlayers.map((player: Player) => player.id))
+        const remoteMatches = Array.isArray(state.matches) ? state.matches.filter((match: Match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : matches
+        if (Array.isArray(state.players)) setPlayers(remotePlayers)
+        if (Array.isArray(state.matches)) setMatches(remoteMatches)
         if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
         if (state.teamGroups && typeof state.teamGroups === 'object') setTeamGroups(state.teamGroups)
         if (state.tournamentStates && typeof state.tournamentStates === 'object') setTournamentStates(state.tournamentStates)
