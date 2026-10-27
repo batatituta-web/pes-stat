@@ -241,9 +241,12 @@ export function LeagueDashboard() {
       const hasSavedTournament = typeof parsed.activeTournament === 'string'
       const savedTournament = hasSavedTournament ? parsed.activeTournament : 'Champions League'
       const savedData = tournamentData[savedTournament] ?? { players: initialPlayers, matches: initialMatches }
+      const loadedPlayers = hasSavedTournament && Array.isArray(parsed.players) ? parsed.players : savedData.players
+      const validPlayerIds = new Set(loadedPlayers.map((player: Player) => player.id))
+      const cleanedMatches = uniqueMatches.filter((match: Match) => match.status !== 'upcoming' || (validPlayerIds.has(match.home) && validPlayerIds.has(match.away)))
       setActiveTournament(savedTournament)
-      setPlayers(hasSavedTournament && Array.isArray(parsed.players) ? parsed.players : savedData.players)
-      setMatches(hasSavedTournament && Array.isArray(parsed.matches) ? uniqueMatches : savedData.matches)
+      setPlayers(loadedPlayers)
+      setMatches(hasSavedTournament && Array.isArray(parsed.matches) ? cleanedMatches : savedData.matches)
       setPlayerStats(hasSavedTournament && parsed.playerStats && typeof parsed.playerStats === 'object' ? parsed.playerStats : {})
       setTeamGroups(hasSavedTournament && parsed.teamGroups && typeof parsed.teamGroups === 'object' ? parsed.teamGroups : {})
       if (hasSavedTournament && parsed.copaBracket && typeof parsed.copaBracket === 'object') setCopaBracket(parsed.copaBracket)
