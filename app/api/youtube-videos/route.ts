@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 const CHANNEL_URL = 'https://www.youtube.com/@elparchequemegustaok/videos'
 const FEED_URL = 'https://www.youtube.com/feeds/videos.xml?channel_id='
+const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3'
 
 function decodeXml(value: string) {
   return value.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>')
@@ -20,6 +21,30 @@ function collectPageVideos(value: unknown, output: { title: string; url: string 
 
 export async function GET() {
   try {
+    const apiKey = process.env.YOUTUBE_API_KEY
+    if (apiKey) {
+      const channelResponse = await fetch(`${YOUTUBE_API_URL}/channels?part=contentDetails&forHandle=@elparchequemegustaok&key=${apiKey}`, { next: { revalidate: 300 } })
+      const channelData = await channelResponse.json()
+      const uploadsPlaylistId = channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads
+      if (uploadsPlaylistId) {
+        const videos: { title: string; url: string; published?: string }[] = []
+        let pageToken = ''
+        for (let page = 0; page < 5; page += 1) {
+          const token = pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''
+          const playlistResponse = await fetch(`${YOUTUBE_API_URL}/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsPlaylistId}&key=${apiKey}${token}`, { next: { revalidate: 300 } })
+          const playlistData = await playlistResponse.json()
+          videos.push(...(playlistData.items ?? []).map((item: { snippet?: { title?: string; publishedAt?: string; resourceId?: { videoId?: string } } }) => ({
+            title: item.snippet?.title ?? '',
+            url: `https://www.youtube.com/watch?v=${item.snippet?.resourceId?.videoId ?? ''}`,
+            published: item.snippet?.publishedAt,
+          })).filter((video: { title: string; url: string }) => video.title && !video.url.endsWith('=')))
+          pageToken = playlistData.nextPageToken ?? ''
+          if (!pageToken) break
+        }
+        if (videos.length > 0) return NextResponse.json({ videos })
+      }
+    }
+
     const channelHtml = await fetch(CHANNEL_URL, { next: { revalidate: 300 }, headers: { 'User-Agent': 'Mozilla/5.0' } }).then((response) => response.text())
     const channelId = channelHtml.match(/(?:channelId|externalId)"?\s*[:=]\s*"(UC[a-zA-Z0-9_-]+)"/)?.[1]
     if (!channelId) return NextResponse.json({ videos: [] })
