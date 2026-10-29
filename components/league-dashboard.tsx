@@ -199,6 +199,10 @@ export function LeagueDashboard() {
   const [animatedTeamIds, setAnimatedTeamIds] = useState<string[]>([])
   const matchesRef = useRef(matches)
   matchesRef.current = matches
+  const triggerResultAnimation = (teamIds: string[]) => {
+    setAnimatedTeamIds([])
+    window.requestAnimationFrame(() => setAnimatedTeamIds(Array.from(new Set(teamIds))))
+  }
 
   useEffect(() => {
     if (animatedTeamIds.length === 0) return
@@ -334,7 +338,7 @@ export function LeagueDashboard() {
             return previousMatch && nextMatch.status === 'played' && (previousMatch.status !== 'played' || previousMatch.homeGoals !== nextMatch.homeGoals || previousMatch.awayGoals !== nextMatch.awayGoals)
           })
           .flatMap((match) => [match.home, match.away])
-        setAnimatedTeamIds(Array.from(new Set(changedResultTeams)))
+        triggerResultAnimation(changedResultTeams)
       }
       if (Array.isArray(selectedState.players)) setPlayers(remotePlayers)
       if (Array.isArray(selectedState.matches)) setMatches(remoteMatches)
@@ -395,7 +399,7 @@ export function LeagueDashboard() {
     const newMatch: Match = {
       id: Date.now(), home, away, homeGoals: Number(homeGoals), awayGoals: Number(awayGoals), date: matchDate, round: matchRound, videoUrl: matchVideoUrl.trim() || undefined, status: 'played',
     }
-  setAnimatedTeamIds([home, away])
+  triggerResultAnimation([home, away])
   setMatches((currentMatches) => {
   const hasPlayedMatch = currentMatches.some((match) => match.home === home && match.away === away && match.date === matchDate && match.round === matchRound && match.status === 'played')
       if (hasPlayedMatch) return currentMatches
