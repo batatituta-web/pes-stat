@@ -25,7 +25,7 @@
   animation: table-row-movement 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.copa-group-table .table-row-movement > td {
+.table-row-movement > td {
   animation: table-row-movement 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: transform, opacity, filter;
 }
