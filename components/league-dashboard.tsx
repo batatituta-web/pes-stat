@@ -4,7 +4,7 @@ import useSWR from 'swr'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown, ChevronLeft, ChevronRight, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Play, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { playUpdateSound, stableStringify, unlockNotificationSound } from '@/lib/sync-utils'
+import { stableStringify } from '@/lib/sync-utils'
 
 type Player = { id: string; name: string; initials: string; color: string }
 type PlayerStat = { id: string; name: string; goals: number; assists: number; penalties: number; yellowCards: number; redCards: number; injuries: number }
@@ -312,10 +312,9 @@ export function LeagueDashboard() {
       const remotePlayers = Array.isArray(state.players) ? state.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(state.matches) ? state.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
-      if (shouldNotify) {
-        playUpdateSound()
-        setAnimatedTeamIds(remoteMatches[0] ? [remoteMatches[0].home, remoteMatches[0].away] : [])
-      }
+  if (shouldNotify) {
+  setAnimatedTeamIds(remoteMatches[0] ? [remoteMatches[0].home, remoteMatches[0].away] : [])
+  }
       if (Array.isArray(state.players)) setPlayers(remotePlayers)
       if (Array.isArray(state.matches)) setMatches(remoteMatches)
       if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
@@ -325,18 +324,14 @@ export function LeagueDashboard() {
       if (state.copaVisualBracket && typeof state.copaVisualBracket === 'object') setCopaVisualBracket(state.copaVisualBracket)
       if (typeof state.copaChampion === 'string') setCopaChampion(state.copaChampion)
     }
-    const eventSource = new EventSource('/api/league-state?stream=1')
-    eventSource.onmessage = (event) => {
-      try { applyRemoteState(JSON.parse(event.data)) } catch { /* Ignore malformed realtime events. */ }
-    }
-    window.addEventListener('pointerdown', unlockNotificationSound)
-    window.addEventListener('keydown', unlockNotificationSound)
-    return () => {
-      cancelled = true
-      eventSource.close()
-      window.removeEventListener('pointerdown', unlockNotificationSound)
-      window.removeEventListener('keydown', unlockNotificationSound)
-    }
+  const eventSource = new EventSource('/api/league-state?stream=1')
+  eventSource.onmessage = (event) => {
+  try { applyRemoteState(JSON.parse(event.data)) } catch { /* Ignore malformed realtime events. */ }
+  }
+  return () => {
+  cancelled = true
+  eventSource.close()
+  }
   }, [persistenceLoaded])
 
   useEffect(() => {
