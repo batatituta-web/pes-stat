@@ -237,6 +237,7 @@ export function LeagueDashboard() {
   activeTournamentRef.current = activeTournament
   const saveQueueRef = useRef(Promise.resolve())
   const lastSyncedRef = useRef('')
+  const lastRemoteVersionRef = useRef('')
   const ownSentRef = useRef<string[]>([])
   
   useEffect(() => {
@@ -274,6 +275,7 @@ export function LeagueDashboard() {
       return response.json()
     }).then((data) => {
       const state = data.state
+      if (data.version) lastRemoteVersionRef.current = data.version
       if (state && typeof state === 'object') {
         const selectedState = state.tournamentStates?.[activeTournamentRef.current] ?? state
         const sharedState = { ...state, activeTournament: undefined }
@@ -302,6 +304,8 @@ export function LeagueDashboard() {
       const shouldNotify = !isFirstMessage
       isFirstMessage = false
       if (cancelled || !payload.state || typeof payload.state !== 'object') return
+      if (payload.version && lastRemoteVersionRef.current && payload.version <= lastRemoteVersionRef.current) return
+      if (payload.version) lastRemoteVersionRef.current = payload.version
       const incoming = stableStringify({ ...(payload.state as Record<string, unknown>), activeTournament: undefined })
       const ownIndex = ownSentRef.current.indexOf(incoming)
       if (ownIndex !== -1) {
