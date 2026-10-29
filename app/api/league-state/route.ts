@@ -23,6 +23,14 @@ async function readState() {
   return { state: result.rows[0]?.payload ?? null, version: result.rows[0]?.updated_at ?? null }
 }
 
+function stableJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`
+  if (value && typeof value === 'object') {
+    return `{${Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => `${JSON.stringify(key)}:${stableJson(item)}`).join(',')}}`
+  }
+  return JSON.stringify(value)
+}
+
 function openStateStream(request: Request) {
   const encoder = new TextEncoder()
   const listener = new Client({ connectionString: listenerUrl })
@@ -119,9 +127,13 @@ export async function PUT(request: Request) {
   if (!state || typeof state !== 'object' || Array.isArray(state)) return NextResponse.json({ error: 'Invalid state' }, { status: 400 })
   try {
     await ensureTable()
+    const current = await pool.query('SELECT payload FROM league_state WHERE id = $1', [STATE_ID])
+    if (current.rows[0] && stableJson(current.rows[0].payload) === stableJson(state)) {
+      return NextResponse.json({ ok: true, changed: false })
+    }
     await pool.query('INSERT INTO league_state (id, payload) VALUES ($1, $2::jsonb) ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload, updated_at = now()', [STATE_ID, JSON.stringify(state)])
     await pool.query('SELECT pg_notify($1, $2)', [CHANNEL, STATE_ID])
-    return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true, changed: true })
   } catch (error) {
     console.error('[v0] Error guardando estado en Neon:', error)
     return NextResponse.json({ error: 'No se pudo guardar el estado' }, { status: 500 })
