@@ -520,7 +520,11 @@ function CopaAmericaGroups({ table, teamGroups, animatedTeamIds }: { table: Retu
 
 function MatchdayCard({ matches, players }: { matches: Match[]; players: Player[] }) {
   const playedMatches = matches.filter((match) => match.status === 'played')
-  const rounds = Array.from(new Set(playedMatches.map((match) => match.round)))
+  const rounds = Array.from(new Set(playedMatches.map((match) => match.round))).sort((a, b) => {
+    const dateA = Number(a.match(/\d+/)?.[0] ?? 0)
+    const dateB = Number(b.match(/\d+/)?.[0] ?? 0)
+    return dateA - dateB || a.localeCompare(b)
+  })
   const [roundIndex, setRoundIndex] = useState(0)
   const [expandedMatchId, setExpandedMatchId] = useState<number | null>(null)
   const currentRound = rounds[roundIndex] ?? 'Sin fechas'
