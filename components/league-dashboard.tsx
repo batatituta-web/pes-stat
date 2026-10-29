@@ -273,7 +273,6 @@ export function LeagueDashboard() {
     }).then((data) => {
       const state = data.state
       if (state && typeof state === 'object') {
-        if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
         lastSyncedRef.current = stableStringify(state)
         const remotePlayers = Array.isArray(state.players) ? state.players : initialPlayers
         const remotePlayerIds = new Set(remotePlayers.map((player: Player) => player.id))
@@ -308,7 +307,6 @@ export function LeagueDashboard() {
       if (incoming === lastSyncedRef.current) return
       lastSyncedRef.current = incoming
       const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, unknown>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
-      if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
       const remotePlayers = Array.isArray(state.players) ? state.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(state.matches) ? state.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
@@ -342,7 +340,7 @@ export function LeagueDashboard() {
   useEffect(() => {
     const currentTournamentState = { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
   const allTournamentStates = { ...tournamentStates, [activeTournament]: currentTournamentState }
-  const state = { activeTournament, players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
+  const state = { players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
     window.localStorage.setItem('pes6-league', JSON.stringify(state))
     if (persistenceLoaded) {
       const payload = JSON.stringify(state)
