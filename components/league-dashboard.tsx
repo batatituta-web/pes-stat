@@ -1,5 +1,6 @@
 'use client'
 
+import useSWR from 'swr'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown, ChevronLeft, ChevronRight, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Play, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -519,6 +520,22 @@ function CopaAmericaGroups({ table, teamGroups, animatedTeamIds }: { table: Retu
 }
 
 function MatchdayCard({ matches, players, bracket }: { matches: Match[]; players: Player[]; bracket: CopaVisualBracket }) {
+  const { data: youtubeData } = useSWR<{ videos: { title: string; url: string }[] }>('/api/youtube-videos', (url: string) => fetch(url).then((response) => response.json()), { refreshInterval: 300000 })
+  const youtubeVideos = youtubeData?.videos ?? []
+  const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+  const getAutomaticVideo = (match: Match | BracketMatch, roundLabel: string) => {
+    const home = normalize(getName(match.home))
+    const away = normalize(getName(match.away))
+    if (!home || !away || home === 'a decidirse' || away === 'a decidirse') return undefined
+    const roundNumber = roundLabel.match(/\d+/)?.[0]
+    return youtubeVideos.find((video) => {
+      const title = normalize(video.title)
+      const teamsMatch = title.includes(home) && title.includes(away)
+      const roundAliases = roundLabel === 'Semifinales' ? ['semifinal', 'semifinales'] : roundLabel === 'Cuartos' ? ['cuarto', 'cuartos'] : roundLabel === 'Octavos' ? ['octavo', 'octavos'] : [normalize(roundLabel)]
+      const roundMatch = !roundNumber || title.includes(`fecha ${roundNumber}`) || roundAliases.some((alias) => title.includes(alias))
+      return teamsMatch && roundMatch
+    })?.url
+  }
   const playedMatches = matches.filter((match) => match.status === 'played')
   const dateRounds = Array.from(new Set(playedMatches.map((match) => match.round))).sort((a, b) => {
     const dateA = Number(a.match(/\d+/)?.[0] ?? 0)
@@ -559,7 +576,8 @@ function MatchdayCard({ matches, players, bracket }: { matches: Match[]; players
       {roundMatches.map((match, matchIndex) => {
         const matchId = 'id' in match ? match.id : `${currentRound.label}-${matchIndex}`
         const isExpanded = expandedMatchId === matchId
-        const embedUrl = 'videoUrl' in match ? getVideoEmbed(match.videoUrl) : null
+        const savedVideoUrl = 'videoUrl' in match ? match.videoUrl : undefined
+        const embedUrl = getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label))
         return <article key={matchId} className="overflow-hidden rounded-xl border border-[#159a72]/70 bg-[#06291e]">
           <div className="flex items-center justify-between gap-3 p-4">
             <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-2 font-bold"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
