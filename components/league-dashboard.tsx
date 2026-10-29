@@ -197,12 +197,6 @@ export function LeagueDashboard() {
   const [showFoxy, setShowFoxy] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [animatedTeamIds, setAnimatedTeamIds] = useState<string[]>([])
-  const matchesRef = useRef(matches)
-  matchesRef.current = matches
-  const triggerResultAnimation = (teamIds: string[]) => {
-    setAnimatedTeamIds([])
-    window.requestAnimationFrame(() => setAnimatedTeamIds(Array.from(new Set(teamIds))))
-  }
 
   useEffect(() => {
     if (animatedTeamIds.length === 0) return
@@ -332,13 +326,7 @@ export function LeagueDashboard() {
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
       if (shouldNotify) {
-        const changedResultTeams = remoteMatches
-          .filter((nextMatch) => {
-            const previousMatch = matchesRef.current.find((match) => match.id === nextMatch.id)
-            return previousMatch && nextMatch.status === 'played' && (previousMatch.status !== 'played' || previousMatch.homeGoals !== nextMatch.homeGoals || previousMatch.awayGoals !== nextMatch.awayGoals)
-          })
-          .flatMap((match) => [match.home, match.away])
-        triggerResultAnimation(changedResultTeams)
+        setAnimatedTeamIds(remoteMatches[0] ? [remoteMatches[0].home, remoteMatches[0].away] : [])
       }
       if (Array.isArray(selectedState.players)) setPlayers(remotePlayers)
       if (Array.isArray(selectedState.matches)) setMatches(remoteMatches)
@@ -399,7 +387,7 @@ export function LeagueDashboard() {
     const newMatch: Match = {
       id: Date.now(), home, away, homeGoals: Number(homeGoals), awayGoals: Number(awayGoals), date: matchDate, round: matchRound, videoUrl: matchVideoUrl.trim() || undefined, status: 'played',
     }
-  triggerResultAnimation([home, away])
+  setAnimatedTeamIds([home, away])
   setMatches((currentMatches) => {
   const hasPlayedMatch = currentMatches.some((match) => match.home === home && match.away === away && match.date === matchDate && match.round === matchRound && match.status === 'played')
       if (hasPlayedMatch) return currentMatches
