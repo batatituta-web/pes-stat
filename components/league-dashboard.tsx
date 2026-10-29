@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Bell, ChevronDown, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
+import { ChevronDown, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { playUpdateSound, stableStringify, unlockNotificationSound } from '@/lib/sync-utils'
 
@@ -195,21 +195,6 @@ export function LeagueDashboard() {
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
   const [showForm, setShowForm] = useState(false)
-  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | 'unsupported'>('default')
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !('Notification' in window)) {
-      setNotificationPermission('unsupported')
-      return
-    }
-    setNotificationPermission(window.Notification.permission)
-  }, [])
-
-  const requestNotifications = async () => {
-    if (!('Notification' in window)) return
-    const permission = await window.Notification.requestPermission()
-    setNotificationPermission(permission)
-  }
 
   useEffect(() => {
     if (!isUnavailableTournament) {
@@ -482,11 +467,6 @@ export function LeagueDashboard() {
         </div>
       </header>
       {showFoxy && <div className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-black" role="status" aria-label="Foxy"><img key={activeTournament} src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/foxy-OxhycBedDoHP4KY8nmeJDQhi40ouT9.gif" alt="Foxy" className="h-full w-full object-contain" /></div>}
-      {notificationPermission === 'default' && <section role="dialog" aria-labelledby="notification-title" className="mx-3 mt-3 flex flex-col gap-3 rounded-2xl border border-emerald-300/40 bg-[#005c40] p-4 text-white shadow-lg sm:mx-5 sm:flex-row sm:items-center sm:justify-between lg:mx-6">
-        <div className="flex items-start gap-3"><Bell className="mt-0.5 size-5 shrink-0 text-emerald-200" aria-hidden="true" /><div><h2 id="notification-title" className="font-bold">¿Querés recibir avisos?</h2><p className="text-sm leading-6 text-emerald-100">Activá las notificaciones para enterarte cuando otro usuario cargue un resultado.</p></div></div>
-        <button type="button" onClick={requestNotifications} className="rounded-lg bg-emerald-200 px-4 py-2 text-sm font-bold text-[#003d2b] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Activar notificaciones</button>
-      </section>}
-      {notificationPermission === 'denied' && <p role="status" className="mx-3 mt-3 rounded-xl border border-amber-300/40 bg-[#005c40] px-4 py-3 text-sm text-amber-100 sm:mx-5 lg:mx-6">Las notificaciones están bloqueadas. Podés habilitarlas desde la configuración de permisos de tu navegador.</p>}
       <main data-active-tab={activeTab} className="flex min-h-[calc(100vh-81px)] w-full flex-col gap-0 px-0 py-0 lg:flex-row [&_table]:w-full [&_table]:border [&_table]:border-[#55d6a4]/80 [&_table]:bg-[#004a34] [&_th]:border [&_th]:border-[#55d6a4]/55 [&_td]:border [&_td]:border-[#55d6a4]/40 [&_thead]:bg-[#003d2b] [&_tbody_tr]:border-[#159a72]/50 [&_tbody_tr]:bg-[#004a34]">
         <aside className="h-fit shrink-0 border-b border-[#007a55] bg-transparent p-4 lg:w-72 lg:border-b-0 lg:border-r-0 lg:p-3">
           <div className="flex items-center gap-2 px-3 pb-3 pt-2"><Globe2 className="size-4 text-emerald-200" /><span className="text-sm font-bold uppercase tracking-[0.16em] text-emerald-100">Torneos</span></div>
