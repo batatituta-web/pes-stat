@@ -8,11 +8,43 @@ async function ensureTable() {
   await pool.query(`CREATE TABLE IF NOT EXISTS league_state (id text PRIMARY KEY, payload jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`)
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (new URL(request.url).searchParams.get('stream') === '1') {
+    const client = await pool.connect()
+    const encoder = new TextEncoder()
+    let closed = false
+    const stream = new ReadableStream({
+      async start(controller) {
+        const sendState = async () => {
+          const result = await client.query('SELECT payload, updated_at FROM league_state WHERE id = $1', [STATE_ID])
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ state: result.rows[0]?.payload ?? null, version: result.rows[0]?.updated_at ?? null })}\n\n`))
+        }
+        try {
+          await ensureTable()
+          await client.query('LISTEN league_state_changed')
+          await sendState()
+          client.on('notification', () => { void sendState().catch(() => undefined) })
+          request.signal.addEventListener('abort', () => {
+            closed = true
+            client.release()
+            controller.close()
+          }, { once: true })
+        } catch (error) {
+          client.release()
+          controller.error(error)
+        }
+      },
+      cancel() {
+        if (!closed) client.release()
+      },
+    })
+    return new Response(stream, { headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive' } })
+  }
+
   try {
     await ensureTable()
-    const result = await pool.query('SELECT payload FROM league_state WHERE id = $1', [STATE_ID])
-    return NextResponse.json({ state: result.rows[0]?.payload ?? null })
+    const result = await pool.query('SELECT payload, updated_at FROM league_state WHERE id = $1', [STATE_ID])
+    return NextResponse.json({ state: result.rows[0]?.payload ?? null, version: result.rows[0]?.updated_at ?? null })
   } catch (error) {
     console.error('[v0] Error leyendo estado de Neon:', error)
     return NextResponse.json({ error: 'No se pudo leer el estado' }, { status: 500 })
@@ -25,6 +57,7 @@ export async function PUT(request: Request) {
   try {
     await ensureTable()
     await pool.query('INSERT INTO league_state (id, payload) VALUES ($1, $2::jsonb) ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload, updated_at = now()', [STATE_ID, JSON.stringify(state)])
+    await pool.query("SELECT pg_notify('league_state_changed', $1)", [STATE_ID])
     return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('[v0] Error guardando estado en Neon:', error)
