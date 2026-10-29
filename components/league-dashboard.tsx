@@ -282,33 +282,32 @@ export function LeagueDashboard() {
   useEffect(() => {
     if (!persistenceLoaded) return
     let cancelled = false
-    const syncRemoteState = async () => {
-      if (cancelled || isSavingRef.current) return
-      try {
-        const response = await fetch('/api/league-state', { cache: 'no-store' })
-        if (!response.ok) return
-        const state = (await response.json()).state
-        if (!state || typeof state !== 'object' || cancelled || isSavingRef.current) return
-        if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
-        const remotePlayers = Array.isArray(state.players) ? state.players : players
-        const remotePlayerIds = new Set(remotePlayers.map((player: Player) => player.id))
-        const remoteMatches = Array.isArray(state.matches) ? state.matches.filter((match: Match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : matches
-        if (Array.isArray(state.players)) setPlayers(remotePlayers)
-        if (Array.isArray(state.matches)) setMatches(remoteMatches)
-        if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
-        if (state.teamGroups && typeof state.teamGroups === 'object') setTeamGroups(state.teamGroups)
-        if (state.tournamentStates && typeof state.tournamentStates === 'object') setTournamentStates(state.tournamentStates)
-        if (state.copaBracket && typeof state.copaBracket === 'object') setCopaBracket(state.copaBracket)
-        if (state.copaVisualBracket && typeof state.copaVisualBracket === 'object') setCopaVisualBracket(state.copaVisualBracket)
-        if (typeof state.copaChampion === 'string') setCopaChampion(state.copaChampion)
-      } catch {
-        // A temporary network failure should not interrupt the dashboard.
-      }
+    let latestVersion = ''
+    const applyRemoteState = (payload: { state?: unknown; version?: string }) => {
+      if (cancelled || isSavingRef.current || !payload.state || typeof payload.state !== 'object') return
+      if (payload.version && latestVersion && payload.version <= latestVersion) return
+      if (payload.version) latestVersion = payload.version
+      const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, unknown>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
+      if (typeof state.activeTournament === 'string') setActiveTournament(state.activeTournament)
+      const remotePlayers = Array.isArray(state.players) ? state.players : []
+      const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
+      const remoteMatches = Array.isArray(state.matches) ? state.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
+      if (Array.isArray(state.players)) setPlayers(remotePlayers)
+      if (Array.isArray(state.matches)) setMatches(remoteMatches)
+      if (state.playerStats && typeof state.playerStats === 'object') setPlayerStats(state.playerStats)
+      if (state.teamGroups && typeof state.teamGroups === 'object') setTeamGroups(state.teamGroups)
+      if (state.tournamentStates && typeof state.tournamentStates === 'object') setTournamentStates(state.tournamentStates)
+      if (state.copaBracket && typeof state.copaBracket === 'object') setCopaBracket(state.copaBracket)
+      if (state.copaVisualBracket && typeof state.copaVisualBracket === 'object') setCopaVisualBracket(state.copaVisualBracket)
+      if (typeof state.copaChampion === 'string') setCopaChampion(state.copaChampion)
     }
-    const intervalId = window.setInterval(syncRemoteState, 3000)
+    const eventSource = new EventSource('/api/league-state?stream=1')
+    eventSource.onmessage = (event) => {
+      try { applyRemoteState(JSON.parse(event.data)) } catch { /* Ignore malformed realtime events. */ }
+    }
     return () => {
       cancelled = true
-      window.clearInterval(intervalId)
+      eventSource.close()
     }
   }, [persistenceLoaded])
 
