@@ -420,7 +420,8 @@ export function LeagueDashboard() {
   const handleCopaChampionChange = (champion: string) => { markLocalChange(); setCopaChampion(champion) }
 
   function addMatch(event: React.FormEvent) {
-    event.preventDefault()
+  event.preventDefault()
+  if (!editorAuthorized) return
     if (!persistenceLoaded || home === away || !matchDate || !matchRound || homeGoals === '' || awayGoals === '') return
 
     markLocalChange()
@@ -438,7 +439,8 @@ export function LeagueDashboard() {
   }
 
   function addUpcomingMatch(event: React.FormEvent) {
-    event.preventDefault()
+  event.preventDefault()
+  if (!editorAuthorized) return
     if (!persistenceLoaded || home === away || !matchDate || !matchRound) return
     markLocalChange()
     const newMatch: Match = { id: Date.now(), home, away, homeGoals: 0, awayGoals: 0, date: matchDate, round: matchRound, status: 'upcoming' }
@@ -451,7 +453,8 @@ export function LeagueDashboard() {
     setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true)
   }
   function addPlayer(event: React.FormEvent) {
-    event.preventDefault()
+  event.preventDefault()
+  if (!editorAuthorized) return
     const name = playerName.trim()
     const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
     if (!name || !id || players.some((player) => player.id === id)) return
@@ -462,7 +465,8 @@ export function LeagueDashboard() {
   }
 
   function addTeam(event: React.FormEvent) {
-    event.preventDefault()
+  event.preventDefault()
+  if (!editorAuthorized) return
     const name = newTeamName.trim()
     const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
     if (!name || !id || players.some((player) => player.id === id)) return
@@ -475,7 +479,8 @@ export function LeagueDashboard() {
   }
 
   function removeTeam(teamId: string) {
-    markLocalChange()
+  if (!editorAuthorized) return
+  markLocalChange()
     setPlayers((current) => current.filter((player) => player.id !== teamId))
     setPlayerStats((current) => { const next = { ...current }; delete next[teamId]; return next })
     setTeamGroups((current) => { const next = { ...current }; delete next[teamId]; return next })
@@ -484,12 +489,14 @@ export function LeagueDashboard() {
   }
 
   function removeMatch(matchId: number) {
-    markLocalChange()
+  if (!editorAuthorized) return
+  markLocalChange()
     setMatches((currentMatches) => currentMatches.filter((match) => match.id !== matchId))
   }
 
   function addPlayerStat(event: React.FormEvent) {
-    event.preventDefault()
+  event.preventDefault()
+  if (!editorAuthorized) return
     const name = newPlayer.name.trim()
     if (!name) return
     markLocalChange()
@@ -499,12 +506,14 @@ export function LeagueDashboard() {
   }
 
   function updatePlayerStat(teamId: string, statId: string, field: keyof Omit<PlayerStat, 'id' | 'name'>, value: string) {
-    markLocalChange()
+  if (!editorAuthorized) return
+  markLocalChange()
     setPlayerStats((current) => ({ ...current, [teamId]: (current[teamId] ?? []).map((stat) => stat.id === statId ? { ...stat, [field]: Math.max(0, Number(value) || 0) } : stat) }))
   }
 
   function removePlayerStat(teamId: string, statId: string) {
-    markLocalChange()
+  if (!editorAuthorized) return
+  markLocalChange()
     setPlayerStats((current) => ({ ...current, [teamId]: (current[teamId] ?? []).filter((stat) => stat.id !== statId) }))
   }
 
@@ -547,7 +556,7 @@ export function LeagueDashboard() {
               {editorAccessError && <span className="sr-only" role="alert">{editorAccessError}</span>}
             </form>}
             {editorAuthorized && <span className="hidden text-xs font-semibold text-emerald-200 sm:inline">Edición habilitada</span>}
-            <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>
+            <Button variant="outline" size="sm" disabled={!editorAuthorized} className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-50" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>
           </div>
         </div>
       </header>
@@ -574,7 +583,7 @@ export function LeagueDashboard() {
         {!isUnavailableTournament && <>
         {showForm && <form onSubmit={matchType === 'upcoming' ? addUpcomingMatch : addMatch} className="mb-6 rounded-2xl border border-[#159a72] bg-[#005c40] p-5 text-white"><div className="mb-4 flex items-center justify-between"><div><h2 className="font-bold">{matchType === 'upcoming' ? 'Agregar próximo partido' : 'Cargar resultado'}</h2><p className="text-xs text-emerald-100">La tabla se actualiza automáticamente.</p></div><button type="button" onClick={() => setShowForm(false)} className="text-emerald-200" aria-label="Cerrar formulario">×</button></div><div className="mb-4 grid gap-3 sm:grid-cols-2"><label className="text-xs font-bold text-emerald-100">Fecha y hora<input type="text" value={matchDate} onChange={(e) => setMatchDate(e.target.value)} placeholder="Ej: 20 Jun, 22:00" className="mt-1 block w-full rounded-lg border border-[#159a72] bg-[#004a34] p-2.5 text-sm text-white placeholder:text-emerald-200" /></label><label className="text-xs font-bold text-emerald-100">Jornada<input type="text" value={matchRound} onChange={(e) => setMatchRound(e.target.value)} placeholder="Ej: Fecha 5" className="mt-1 block w-full rounded-lg border border-[#159a72] bg-[#004a34] p-2.5 text-sm text-white placeholder:text-emerald-200" /></label><label className="text-xs font-bold text-emerald-100 sm:col-span-2">Enlace del video (opcional)<input type="url" value={matchVideoUrl} onChange={(e) => setMatchVideoUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." className="mt-1 block w-full rounded-lg border border-[#159a72] bg-[#004a34] p-2.5 text-sm text-white placeholder:text-emerald-200" /></label></div><div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr_auto] sm:items-end"><label className="text-xs font-bold text-emerald-100">Local<select value={home} onChange={(e) => setHome(e.target.value)} className="mt-1 block w-full rounded-lg border border-[#159a72] bg-[#004a34] p-2.5 text-sm text-white">{players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label><input aria-label="Goles local"  inputMode="numeric" value={homeGoals} onChange={(e) => setHomeGoals(e.target.value)} className="w-full rounded-lg border border-[#159a72] bg-[#004a34] p-2.5 text-center text-lg font-bold text-white placeholder:text-emerald-200 disabled:cursor-not-allowed disabled:opacity-40 sm:w-16" placeholder="0" /><label className="text-xs font-bold text-emerald-100">Visitante<select value={away} onChange={(e) => setAway(e.target.value)} className="mt-1 block w-full rounded-lg border border-[#159a72] bg-[#004a34] p-2.5 text-sm text-white">{players.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label><div className="flex items-center gap-2"><input aria-label="Goles visitante"  inputMode="numeric"  value={awayGoals} onChange={(e) => setAwayGoals(e.target.value)} className="w-16 rounded-lg border border-[#159a72] bg-[#004a34] p-2.5 text-center text-lg font-bold text-white placeholder:text-emerald-200" placeholder="0" /><Button type="submit">Guardar</Button></div></div></form>}
         {activeTab === 'overview' && <>{['Copa América', 'Eurocopa', 'FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'].includes(activeTournament) && <CopaAmericaBracketVisual players={players} bracket={copaVisualBracket} onChange={handleCopaVisualBracketChange} champion={copaChampion} onChampionChange={handleCopaChampionChange} competition={activeTournament} />}<div className="grid gap-5 lg:grid-cols-2"><div>{['Copa América', 'Eurocopa'].includes(activeTournament) ? <CopaAmericaGroups table={table} teamGroups={teamGroups} animatedTeamIds={animatedTeamIds} /> : ['FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil'].includes(activeTournament) ? null : <StandingsTable table={table} animatedTeamIds={animatedTeamIds} />}</div><MatchdayCard matches={matches} players={players} bracket={copaVisualBracket} competition={activeTournament} /></div><PlayerLeaderboards players={players} playerStats={playerStats} expanded={expandedLeaderboard} onToggle={(key) => setExpandedLeaderboard((current) => ({ ...current, [key]: !current[key] }))} /></>}{false && activeTab === 'players' ? <section className="grid gap-5 md:grid-cols-[1fr_340px]"><div className="rounded-2xl border border-[#159a72] bg-[#005c40] p-5"><h2 className="mb-4 text-lg font-bold">Equipos <span className="text-sm font-normal text-emerald-200">{players.length} equipos</span></h2><div className="grid gap-3 sm:grid-cols-2">{players.map((player) => <div key={player.id} className="flex items-center justify-between rounded-xl border border-[#159a72]/50 p-3"><div className="flex items-center gap-3"><span className={`grid size-10 place-items-center rounded-full text-xs font-black text-white ${player.color}`}>{player.initials}</span><span className="font-semibold">{player.name}</span></div><button onClick={() => setPlayers(players.filter((p) => p.id !== player.id))} className="text-slate-300 hover:text-red-500"><Trash2 className="size-4" /></button></div>)}</div></div><form onSubmit={addPlayer} className="rounded-2xl border border-[#159a72] bg-[#005c40] p-5"><h2 className="mb-1 font-bold">Sumar equipo</h2><p className="mb-4 text-sm text-emerald-100">Agregá todos los equipos que quieras.</p><input value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="Nombre del equipo" className="mb-3 w-full rounded-lg border border-slate-200 p-2.5 text-sm" /><Button type="submit" className="w-full">Sumar equipo</Button></form></section> : <><UpcomingMatches players={players} matches={matches} getPlayer={getPlayer} onAddUpcoming={openUpcomingForm} /><div className="grid gap-6 lg:grid-cols-[1.35fr_1fr]"><section className="rounded-2xl border border-[#159a72] bg-[#005c40]"><div className="flex items-center justify-between border-b border-[#159a72]/50 px-5 py-4"><div><h2 className="font-bold">Tabla de posiciones</h2><p className="text-xs text-emerald-100">Ordenada por puntos y diferencia de gol</p></div><button className="text-emerald-200"><MoreHorizontal /></button></div><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-emerald-200"><tr><th className="px-5 py-3">Pos</th><th className="px-2 py-3">Equipo</th><th className="px-2 py-3 text-center">PJ</th><th className="px-2 py-3 text-center">DG</th><th className="px-5 py-3 text-center">Pts</th></tr></thead><tbody>{table.map((team, index) => <tr key={team.id} className="border-t border-[#159a72]/50"><td className="px-5 py-3 font-bold text-emerald-200">{String(index + 1).padStart(2, '0')}</td><td className="px-2 py-3"><div className="flex items-center gap-2.5"><span className={`grid size-8 place-items-center rounded-lg text-[10px] font-black text-white ${team.color}`}>{team.initials}</span><span className="whitespace-nowrap font-semibold">{team.name}</span></div></td><td className="px-2 py-3 text-center text-emerald-100">{team.played}</td><td className={`px-2 py-3 text-center font-semibold ${team.gd > 0 ? 'text-emerald-600' : team.gd < 0 ? 'text-red-500' : 'text-emerald-200'}`}>{team.gd > 0 ? '+' : ''}{team.gd}</td><td className="px-5 py-3 text-center text-base font-black">{team.points}</td></tr>)}</tbody></table></div></section><section className="rounded-2xl border border-[#159a72] bg-[#005c40]"><div className="flex items-center justify-between border-b border-[#159a72]/50 px-5 py-4"><div><h2 className="manual-results-title font-bold">Últimos resultados</h2><p className="text-xs text-emerald-100">Cargados manualmente</p></div><button onClick={() => setActiveTab('matches')} className="text-xs font-bold text-[#007a55]">Ver todos</button></div><div className="flex flex-col">{matches.slice(0, 4).map((match) => <div key={match.id} className="flex items-center justify-between border-b border-[#159a72]/50 px-5 py-4 last:border-0"><div><p className="text-xs text-emerald-200">{match.round} · {match.date}</p><div className="mt-2 flex items-center gap-2 text-sm font-semibold"><span>{getPlayer(match.home).name}</span><b className="rounded bg-[#004a34] px-2 py-1">{match.homeGoals} - {match.awayGoals}</b><span>{getPlayer(match.away).name}</span></div></div><Trash2 className="size-4 text-slate-300" /></div>)}</div></section></div></>}
-        {activeTab === 'players' && <TeamStatsPanel teams={players} selectedTeamId={selectedTeamId} onSelectTeam={setSelectedTeamId} stats={playerStats[selectedTeamId] ?? []} newPlayer={newPlayer} setNewPlayer={setNewPlayer} onAdd={addPlayerStat} onUpdate={updatePlayerStat} onRemove={removePlayerStat} tournament={activeTournament} teamGroups={teamGroups} newTeamName={newTeamName} setNewTeamName={setNewTeamName} newTeamGroup={newTeamGroup} setNewTeamGroup={setNewTeamGroup} onAddTeam={addTeam} onRemoveTeam={removeTeam} />}{activeTab === 'matches' && <section className="mt-6 rounded-2xl border border-[#159a72] bg-[#005c40]"><div className="border-b border-[#159a72]/50 px-5 py-4"><h2 className="font-bold">Todos los partidos</h2><p className="text-xs text-emerald-100">Historial completo de la competencia</p></div>{matches.filter((match) => match.status === 'played').map((match) => <div key={match.id} className="flex items-center justify-between border-b border-[#159a72]/50 px-5 py-4 last:border-0"><div className="flex items-center gap-3">{countryFlag(getPlayer(match.home).name)}<span className="text-sm font-semibold">{getPlayer(match.home).name}</span><strong className="rounded-lg bg-[#004a34] px-3 py-1.5">{match.homeGoals} - {match.awayGoals}</strong><span className="text-sm font-semibold">{getPlayer(match.away).name}</span>{countryFlag(getPlayer(match.away).name)}</div><div className="flex items-center gap-3"><div className="hidden text-right text-xs text-emerald-200 sm:block"><span className="block">{match.date}</span><span className="block font-semibold">{match.round}</span></div><button type="button" onClick={() => removeMatch(match.id)} aria-label={`Eliminar resultado de ${getPlayer(match.home).name} y ${getPlayer(match.away).name}`} className="rounded-lg p-2 text-emerald-200 transition-colors hover:bg-red-500/15 hover:text-red-300"><Trash2 className="size-4" /></button></div></div>)}</section>}
+        {activeTab === 'players' && <div className={!editorAuthorized ? 'pointer-events-none opacity-70' : undefined} aria-disabled={!editorAuthorized}><TeamStatsPanel teams={players} selectedTeamId={selectedTeamId} onSelectTeam={setSelectedTeamId} stats={playerStats[selectedTeamId] ?? []} newPlayer={newPlayer} setNewPlayer={setNewPlayer} onAdd={addPlayerStat} onUpdate={updatePlayerStat} onRemove={removePlayerStat} tournament={activeTournament} teamGroups={teamGroups} newTeamName={newTeamName} setNewTeamName={setNewTeamName} newTeamGroup={newTeamGroup} setNewTeamGroup={setNewTeamGroup} onAddTeam={addTeam} onRemoveTeam={removeTeam} /></div>}{activeTab === 'matches' && <section className="mt-6 rounded-2xl border border-[#159a72] bg-[#005c40]"><div className="border-b border-[#159a72]/50 px-5 py-4"><h2 className="font-bold">Todos los partidos</h2><p className="text-xs text-emerald-100">Historial completo de la competencia</p></div>{matches.filter((match) => match.status === 'played').map((match) => <div key={match.id} className="flex items-center justify-between border-b border-[#159a72]/50 px-5 py-4 last:border-0"><div className="flex items-center gap-3">{countryFlag(getPlayer(match.home).name)}<span className="text-sm font-semibold">{getPlayer(match.home).name}</span><strong className="rounded-lg bg-[#004a34] px-3 py-1.5">{match.homeGoals} - {match.awayGoals}</strong><span className="text-sm font-semibold">{getPlayer(match.away).name}</span>{countryFlag(getPlayer(match.away).name)}</div><div className="flex items-center gap-3"><div className="hidden text-right text-xs text-emerald-200 sm:block"><span className="block">{match.date}</span><span className="block font-semibold">{match.round}</span></div><button type="button" onClick={() => removeMatch(match.id)} disabled={!editorAuthorized} aria-label={`Eliminar resultado de ${getPlayer(match.home).name} y ${getPlayer(match.away).name}`} className="rounded-lg p-2 text-emerald-200 transition-colors hover:bg-red-500/15 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40"><Trash2 className="size-4" /></button></div></div>)}</section>}
         </>}
         </div>
         </div>
