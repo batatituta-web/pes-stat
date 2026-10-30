@@ -1,7 +1,7 @@
 'use client'
 
 import useSWR from 'swr'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { ChevronDown, ChevronLeft, ChevronRight, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Play, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { stableStringify } from '@/lib/sync-utils'
@@ -205,6 +205,10 @@ export function LeagueDashboard() {
   }, [animatedTeamIds])
 
   useEffect(() => {
+    setAnimatedTeamIds([])
+  }, [activeTournament])
+
+  useEffect(() => {
     if (!isUnavailableTournament) {
       setShowFoxy(false)
       return
@@ -232,9 +236,15 @@ export function LeagueDashboard() {
   const [copaVisualBracket, setCopaVisualBracket] = useState<CopaVisualBracket>({ round16: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), quarterfinals: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), semifinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
   const [copaChampion, setCopaChampion] = useState('')
   const [persistenceLoaded, setPersistenceLoaded] = useState(false)
+  const [editorAuthorized, setEditorAuthorized] = useState(false)
+  const [editorAccessChecked, setEditorAccessChecked] = useState(false)
+  const [editorPassword, setEditorPassword] = useState('')
+  const [editorAccessError, setEditorAccessError] = useState('')
   const [tournamentStates, setTournamentStates] = useState<Record<string, { players: typeof defaultTournament.players; matches: typeof defaultTournament.matches; playerStats: Record<string, PlayerStat[]>; teamGroups: Record<string, 'A' | 'B'>; copaBracket: CopaBracket; copaVisualBracket: CopaVisualBracket; copaChampion: string }>>({})
   const activeTournamentRef = useRef(activeTournament)
   activeTournamentRef.current = activeTournament
+  const matchesRef = useRef(matches)
+  matchesRef.current = matches
   const saveQueueRef = useRef(Promise.resolve())
   const lastSyncedRef = useRef('')
   const lastRemoteVersionRef = useRef('')
@@ -302,6 +312,30 @@ export function LeagueDashboard() {
   }, [])
 
   useEffect(() => {
+    fetch('/api/editor-access')
+      .then((response) => response.json())
+      .then((data) => setEditorAuthorized(Boolean(data.authorized)))
+      .catch(() => setEditorAuthorized(false))
+      .finally(() => setEditorAccessChecked(true))
+  }, [])
+
+  async function unlockEditor(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setEditorAccessError('')
+    const response = await fetch('/api/editor-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: editorPassword }),
+    })
+    if (!response.ok) {
+      setEditorAccessError('Contraseña incorrecta')
+      return
+    }
+    setEditorAuthorized(true)
+    setEditorPassword('')
+  }
+
+  useEffect(() => {
     if (!persistenceLoaded) return
     let cancelled = false
     let isFirstMessage = true
@@ -326,7 +360,13 @@ export function LeagueDashboard() {
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
       if (shouldNotify) {
-        setAnimatedTeamIds(remoteMatches[0] ? [remoteMatches[0].home, remoteMatches[0].away] : [])
+        const changedResultTeams = remoteMatches
+          .filter((nextMatch) => {
+            const previousMatch = matchesRef.current.find((match) => match.id === nextMatch.id)
+            return previousMatch && nextMatch.status === 'played' && (previousMatch.status !== 'played' || previousMatch.homeGoals !== nextMatch.homeGoals || previousMatch.awayGoals !== nextMatch.awayGoals)
+          })
+          .flatMap((match) => [match.home, match.away])
+        if (changedResultTeams.length > 0) setAnimatedTeamIds(Array.from(new Set(changedResultTeams)))
       }
       if (Array.isArray(selectedState.players)) setPlayers(remotePlayers)
       if (Array.isArray(selectedState.matches)) setMatches(remoteMatches)
@@ -496,6 +536,18 @@ export function LeagueDashboard() {
 
   return (
     <div className="football-background min-h-screen text-white">
+      {editorAccessChecked && !editorAuthorized && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <form onSubmit={unlockEditor} className="w-full max-w-sm rounded-2xl border border-emerald-400/30 bg-[#06291e] p-6 shadow-2xl">
+            <h2 className="text-lg font-bold text-white">Acceso de edición</h2>
+            <p className="mt-2 text-sm text-emerald-100/75">Ingresa la contraseña para cargar resultados y modificar torneos.</p>
+            <label className="mt-5 block text-sm font-semibold text-emerald-100" htmlFor="editor-password">Contraseña</label>
+            <input id="editor-password" type="password" value={editorPassword} onChange={(event) => setEditorPassword(event.target.value)} className="mt-2 w-full rounded-lg border border-emerald-400/30 bg-black/20 px-3 py-2 text-white outline-none focus:border-emerald-300" autoComplete="current-password" />
+            {editorAccessError && <p className="mt-2 text-sm text-red-300" role="alert">{editorAccessError}</p>}
+            <button type="submit" className="mt-5 w-full rounded-lg bg-emerald-500 px-4 py-2 font-bold text-emerald-950 transition hover:bg-emerald-400">Desbloquear edición</button>
+          </form>
+        </div>
+      )}
       <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <div className="flex items-center"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></div>
