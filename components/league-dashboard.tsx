@@ -188,10 +188,10 @@ function calculateTable(players: Player[], matches: Match[]) {
 
 export function LeagueDashboard() {
   const defaultTournament = tournamentData['Eurocopa']
-  const [players, setPlayers] = useState(defaultTournament.players)
-  const [matches, setMatches] = useState(defaultTournament.matches)
+  const [players, setPlayers] = useState<typeof defaultTournament.players>([])
+  const [matches, setMatches] = useState<typeof defaultTournament.matches>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
-  const [activeTournament, setActiveTournament] = useState('Eurocopa')
+  const [activeTournament, setActiveTournament] = useState('General')
   const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
@@ -258,7 +258,7 @@ export function LeagueDashboard() {
       if (data.version) lastRemoteVersionRef.current = data.version
       if (state && typeof state === 'object') {
         const remoteTournament = activeTournamentRef.current
-        const selectedState = remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
+        const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
         const sharedState = { ...state }
         const remoteState = stableStringify(sharedState)
         lastSyncedRef.current = remoteState
@@ -298,7 +298,7 @@ export function LeagueDashboard() {
       lastRemoteStateRef.current = incoming
       const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
       const remoteTournament = activeTournamentRef.current
-      const selectedState = remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
+      const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
       const remotePlayers = Array.isArray(selectedState.players) ? selectedState.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
@@ -489,7 +489,10 @@ export function LeagueDashboard() {
       {showFoxy && <div className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-black" role="status" aria-label="Foxy"><img key={activeTournament} src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/foxy-OxhycBedDoHP4KY8nmeJDQhi40ouT9.gif" alt="Foxy" className="h-full w-full object-contain" /></div>}
       <main data-active-tab={activeTab} className="flex min-h-[calc(100vh-81px)] w-full flex-col gap-0 px-0 py-0 lg:flex-row [&_table]:w-full [&_table]:border [&_table]:border-[#55d6a4]/80 [&_table]:bg-[#004a34] [&_th]:border [&_th]:border-[#55d6a4]/55 [&_td]:border [&_td]:border-[#55d6a4]/40 [&_thead]:bg-[#003d2b] [&_tbody_tr]:border-[#159a72]/50 [&_tbody_tr]:bg-[#004a34]">
         <aside className="h-fit shrink-0 border-b border-[#007a55] bg-transparent p-4 lg:w-72 lg:border-b-0 lg:border-r-0 lg:p-3">
-          <div className="flex items-center gap-2 px-3 pb-3 pt-2"><Globe2 className="size-4 text-emerald-200" /><span className="text-sm font-bold uppercase tracking-[0.16em] text-emerald-100">Torneos</span></div>
+          <nav aria-label="Navegación principal y de torneos" className="flex gap-2 overflow-x-auto lg:flex-col">
+            <button type="button" onClick={() => selectTournament('General')} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide transition-colors hover:bg-[#004a34] hover:text-white ${activeTournament === 'General' ? 'bg-[#007a55] text-white' : 'text-emerald-100'}`}><LayoutDashboard className="size-4" />General</button>
+          </nav>
+          <div className="flex items-center gap-2 px-3 pb-3 pt-3"><Globe2 className="size-4 text-emerald-200" /><span className="text-sm font-bold uppercase tracking-[0.16em] text-emerald-100">Torneos</span></div>
           <nav aria-label="Navegación de torneos" className="flex gap-2 overflow-x-auto lg:flex-col">
             <button type="button" aria-expanded={openTournamentGroups.international} onClick={() => setOpenTournamentGroups((current) => ({ ...current, international: !current.international }))} className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide text-emerald-100 transition-colors hover:bg-[#004a34] hover:text-white"><span className="flex items-center gap-3"><Trophy className="size-4" />Internacional</span><ChevronDown className={`size-4 transition-transform duration-300 ${openTournamentGroups.international ? 'rotate-180' : ''}`} /></button>
             <div className={`ml-3 overflow-hidden border-l border-[#159a72]/60 pl-2 transition-[max-height,opacity] duration-300 ease-in-out ${openTournamentGroups.international ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`} aria-hidden={!openTournamentGroups.international}>{['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana'].map((tournament) => <button type="button" key={tournament} onClick={() => selectTournament(tournament)} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm leading-tight transition-all duration-150 active:scale-[0.98] active:brightness-125 ${activeTournament === tournament ? 'bg-[#007a55] font-bold text-white' : 'text-emerald-100 hover:bg-[#004a34] hover:text-white'}`}><Trophy className="size-3.5 shrink-0" />{tournament}</button>)}</div>
