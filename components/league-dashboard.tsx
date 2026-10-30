@@ -344,7 +344,10 @@ export function LeagueDashboard() {
             const response = await fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
             if (!response.ok) throw new Error(`Persistence failed: ${response.status}`)
           })
-          .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
+          .catch((error) => {
+            if (error instanceof TypeError) return
+            console.error('[v0] No se pudo guardar el estado:', error)
+          })
       }
     }
   }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded, canEdit])
