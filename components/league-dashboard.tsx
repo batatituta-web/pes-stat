@@ -187,11 +187,11 @@ function calculateTable(players: Player[], matches: Match[]) {
 }
 
 export function LeagueDashboard() {
-  const defaultTournament = tournamentData['Champions League']
+  const defaultTournament = tournamentData['Eurocopa']
   const [players, setPlayers] = useState(defaultTournament.players)
   const [matches, setMatches] = useState(defaultTournament.matches)
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
-  const [activeTournament, setActiveTournament] = useState('Champions League')
+  const [activeTournament, setActiveTournament] = useState('Eurocopa')
   const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
@@ -250,35 +250,6 @@ export function LeagueDashboard() {
   const ownSentRef = useRef<string[]>([])
   
   useEffect(() => {
-    const saved = window.localStorage.getItem('pes6-league')
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved)
-        const loadedMatches = Array.isArray(parsed.matches) ? parsed.matches : initialMatches
-      const normalizedMatches = loadedMatches.map((match: Match) => ({
-        ...match,
-        // Migrate old upcoming entries that were saved before status existed.
-        status: match.status === 'played' && match.homeGoals === 0 && match.awayGoals === 0 ? 'upcoming' : (match.status ?? (match.homeGoals === 0 && match.awayGoals === 0 ? 'upcoming' : 'played')),
-      }))
-      const uniqueMatches = normalizedMatches.filter((match: Match, index: number, all: Match[]) => all.findIndex((candidate) => `${candidate.home}|${candidate.away}|${candidate.date}|${candidate.round}|${candidate.status}|${candidate.homeGoals}|${candidate.awayGoals}` === `${match.home}|${match.away}|${match.date}|${match.round}|${match.status}|${match.homeGoals}|${match.awayGoals}`) === index)
-      const hasSavedTournament = typeof parsed.activeTournament === 'string'
-      const savedTournament = hasSavedTournament ? parsed.activeTournament : 'Champions League'
-      const savedData = tournamentData[savedTournament] ?? { players: initialPlayers, matches: initialMatches }
-      const loadedPlayers = hasSavedTournament && Array.isArray(parsed.players) ? parsed.players : savedData.players
-      const validPlayerIds = new Set(loadedPlayers.map((player: Player) => player.id))
-      const cleanedMatches = uniqueMatches.filter((match: Match) => match.status !== 'upcoming' || (validPlayerIds.has(match.home) && validPlayerIds.has(match.away)))
-      setActiveTournament(savedTournament)
-      setPlayers(loadedPlayers)
-      setMatches(hasSavedTournament && Array.isArray(parsed.matches) ? cleanedMatches : savedData.matches)
-      setPlayerStats(hasSavedTournament && parsed.playerStats && typeof parsed.playerStats === 'object' ? parsed.playerStats : {})
-      setTeamGroups(hasSavedTournament && parsed.teamGroups && typeof parsed.teamGroups === 'object' ? parsed.teamGroups : {})
-      if (hasSavedTournament && parsed.copaBracket && typeof parsed.copaBracket === 'object') setCopaBracket(parsed.copaBracket)
-      if (hasSavedTournament && parsed.copaVisualBracket && typeof parsed.copaVisualBracket === 'object') setCopaVisualBracket(parsed.copaVisualBracket)
-      if (hasSavedTournament && typeof parsed.copaChampion === 'string') setCopaChampion(parsed.copaChampion)
-      } catch (error) {
-        console.error('[v0] No se pudo leer el estado local:', error)
-      }
-    }
     fetch('/api/league-state').then(async (response) => {
       if (!response.ok) throw new Error(`Persistence read failed: ${response.status}`)
       return response.json()
@@ -286,8 +257,10 @@ export function LeagueDashboard() {
       const state = data.state
       if (data.version) lastRemoteVersionRef.current = data.version
       if (state && typeof state === 'object') {
-        const selectedState = state.tournamentStates?.[activeTournamentRef.current] ?? state
-        const sharedState = { ...state, activeTournament: undefined }
+        const remoteTournament = state.activeTournament === 'Champions League' ? 'Eurocopa' : (typeof state.activeTournament === 'string' ? state.activeTournament : activeTournamentRef.current)
+        if (remoteTournament !== activeTournamentRef.current) setActiveTournament(remoteTournament)
+        const selectedState = remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
+        const sharedState = { ...state }
         const remoteState = stableStringify(sharedState)
         lastSyncedRef.current = remoteState
         lastRemoteStateRef.current = remoteState
@@ -315,7 +288,7 @@ export function LeagueDashboard() {
       if (localChangeRef.current) return
       if (payload.version && lastRemoteVersionRef.current && payload.version <= lastRemoteVersionRef.current) return
       if (payload.version) lastRemoteVersionRef.current = payload.version
-      const incoming = stableStringify({ ...(payload.state as Record<string, unknown>), activeTournament: undefined })
+      const incoming = stableStringify(payload.state)
       const ownIndex = ownSentRef.current.indexOf(incoming)
       if (ownIndex !== -1) {
         ownSentRef.current.splice(ownIndex, 1)
@@ -325,7 +298,9 @@ export function LeagueDashboard() {
       lastSyncedRef.current = incoming
       lastRemoteStateRef.current = incoming
       const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
-      const selectedState = state.tournamentStates?.[activeTournamentRef.current] ?? state
+      const remoteTournament = state.activeTournament === 'Champions League' ? 'Eurocopa' : (typeof state.activeTournament === 'string' ? state.activeTournament : activeTournamentRef.current)
+      if (remoteTournament !== activeTournamentRef.current) setActiveTournament(remoteTournament)
+      const selectedState = remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
       const remotePlayers = Array.isArray(selectedState.players) ? selectedState.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
@@ -360,9 +335,8 @@ export function LeagueDashboard() {
   useEffect(() => {
     const currentTournamentState = { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
   const allTournamentStates = { ...tournamentStates, [activeTournament]: currentTournamentState }
-  const sharedState = { players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
-  const localState = { activeTournament, ...sharedState }
-    window.localStorage.setItem('pes6-league', JSON.stringify(localState))
+  const sharedState = { activeTournament, players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
+
     if (persistenceLoaded && localChangeRef.current) {
       localChangeRef.current = false
       const payload = JSON.stringify(sharedState)
@@ -481,9 +455,9 @@ export function LeagueDashboard() {
   function selectTournament(tournament: string) {
     markLocalChange()
     setTournamentStates((current) => ({ ...current, [activeTournament]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-    const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament
-    const selected = tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
-    const savedState = tournamentStates[tournament]
+  const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament
+  const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' ? { players: [], matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
+    const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStates[tournament]
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
     if (typeof savedState?.copaChampion === 'string') setCopaChampion(savedState.copaChampion)
@@ -500,8 +474,7 @@ export function LeagueDashboard() {
     const nextGroups = savedState?.teamGroups ?? (['Copa América', 'Eurocopa'].includes(tournament) ? Object.fromEntries(nextPlayers.map((player, index) => [player.id, index < Math.ceil(nextPlayers.length / 2) ? 'A' : 'B'])) as Record<string, 'A' | 'B'> : {})
     setPlayerStats(savedState?.playerStats ?? {})
     setTeamGroups(nextGroups)
-    window.localStorage.setItem('pes6-league', JSON.stringify({ activeTournament: tournament, players: nextPlayers, matches: nextMatches, playerStats: {}, teamGroups: nextGroups }))
-    setActiveTab('overview')
+      setActiveTab('overview')
   }
 
   return (
