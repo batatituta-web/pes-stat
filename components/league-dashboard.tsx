@@ -312,7 +312,7 @@ export function LeagueDashboard() {
   }, [])
 
   useEffect(() => {
-    fetch('/api/editor-access')
+    fetch('/api/editor-access', { credentials: 'include' })
       .then((response) => response.json())
       .then((data) => setEditorAuthorized(Boolean(data.authorized)))
       .catch(() => setEditorAuthorized(false))
@@ -324,6 +324,7 @@ export function LeagueDashboard() {
     setEditorAccessError('')
     const response = await fetch('/api/editor-access', {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: editorPassword }),
     })
@@ -408,7 +409,7 @@ export function LeagueDashboard() {
         saveQueueRef.current = saveQueueRef.current
           .catch(() => undefined)
           .then(async () => {
-            const response = await fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+            const response = await fetch('/api/league-state', { method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: payload })
             if (!response.ok) throw new Error(`Persistence failed: ${response.status}`)
           })
           .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
