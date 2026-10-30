@@ -74,8 +74,6 @@
 .tournament-content-enter > *:nth-child(4) { animation-delay: 280ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  .table-row-movement,
-  .table-value-change,
   .tournament-content-enter > * {
     animation: none;
   }
