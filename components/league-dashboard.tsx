@@ -310,10 +310,7 @@ export function LeagueDashboard() {
   useEffect(() => {
     if (!persistenceLoaded) return
     let cancelled = false
-    let isFirstMessage = true
     const applyRemoteState = (payload: { state?: unknown; version?: string }) => {
-      const shouldNotify = !isFirstMessage
-      isFirstMessage = false
       if (cancelled || !payload.state || typeof payload.state !== 'object') return
       if (payload.version && lastRemoteVersionRef.current && payload.version <= lastRemoteVersionRef.current) return
       if (payload.version) lastRemoteVersionRef.current = payload.version
@@ -331,7 +328,7 @@ export function LeagueDashboard() {
       const remotePlayers = Array.isArray(selectedState.players) ? selectedState.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
-      if (shouldNotify) {
+      {
         const changedResultTeams = remoteMatches
           .filter((nextMatch) => {
             const previousMatch = matchesRef.current.find((match) => match.id === nextMatch.id)
