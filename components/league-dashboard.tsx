@@ -536,22 +536,19 @@ export function LeagueDashboard() {
 
   return (
     <div className="football-background min-h-screen text-white">
-      {editorAccessChecked && !editorAuthorized && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <form onSubmit={unlockEditor} className="w-full max-w-sm rounded-2xl border border-emerald-400/30 bg-[#06291e] p-6 shadow-2xl">
-            <h2 className="text-lg font-bold text-white">Acceso de edición</h2>
-            <p className="mt-2 text-sm text-emerald-100/75">Ingresa la contraseña para cargar resultados y modificar torneos.</p>
-            <label className="mt-5 block text-sm font-semibold text-emerald-100" htmlFor="editor-password">Contraseña</label>
-            <input id="editor-password" type="password" value={editorPassword} onChange={(event) => setEditorPassword(event.target.value)} className="mt-2 w-full rounded-lg border border-emerald-400/30 bg-black/20 px-3 py-2 text-white outline-none focus:border-emerald-300" autoComplete="current-password" />
-            {editorAccessError && <p className="mt-2 text-sm text-red-300" role="alert">{editorAccessError}</p>}
-            <button type="submit" className="mt-5 w-full rounded-lg bg-emerald-500 px-4 py-2 font-bold text-emerald-950 transition hover:bg-emerald-400">Desbloquear edición</button>
-          </form>
-        </div>
-      )}
       <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <div className="flex items-center"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></div>
-          <div className="flex items-center gap-2 pr-4 sm:pr-6"><Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button></div>
+          <div className="flex items-center gap-2 pr-4 sm:pr-6">
+            {editorAccessChecked && !editorAuthorized && <form onSubmit={unlockEditor} className="flex items-center gap-1.5 rounded-lg border border-emerald-300/30 bg-black/20 p-1.5" aria-label="Acceso de edición">
+              <label htmlFor="editor-password" className="sr-only">Contraseña de edición</label>
+              <input id="editor-password" type="password" value={editorPassword} onChange={(event) => setEditorPassword(event.target.value)} placeholder="Contraseña" className="w-28 rounded-md border border-white/20 bg-white/10 px-2 py-1.5 text-xs text-white placeholder:text-emerald-100/60 outline-none focus:border-emerald-300 sm:w-36" autoComplete="current-password" />
+              <button type="submit" className="rounded-md bg-emerald-500 px-2.5 py-1.5 text-xs font-bold text-emerald-950 transition hover:bg-emerald-400">Acceder</button>
+              {editorAccessError && <span className="sr-only" role="alert">{editorAccessError}</span>}
+            </form>}
+            {editorAuthorized && <span className="hidden text-xs font-semibold text-emerald-200 sm:inline">Edición habilitada</span>}
+            <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>
+          </div>
         </div>
       </header>
       {showFoxy && <div className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-black" role="status" aria-label="Foxy"><img key={activeTournament} src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/foxy-OxhycBedDoHP4KY8nmeJDQhi40ouT9.gif" alt="Foxy" className="h-full w-full object-contain" /></div>}
