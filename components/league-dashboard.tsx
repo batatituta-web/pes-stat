@@ -324,9 +324,17 @@ export function LeagueDashboard() {
   eventSource.onmessage = (event) => {
   try { applyRemoteState(JSON.parse(event.data)) } catch { /* Ignore malformed realtime events. */ }
   }
+  const pollRemoteState = () => {
+    fetch('/api/league-state', { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload) => { if (payload) applyRemoteState(payload) })
+      .catch(() => undefined)
+  }
+  const pollTimer = window.setInterval(pollRemoteState, 2000)
   return () => {
   cancelled = true
   eventSource.close()
+  window.clearInterval(pollTimer)
   }
   }, [persistenceLoaded])
 
