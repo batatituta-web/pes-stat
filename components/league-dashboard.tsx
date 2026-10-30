@@ -205,6 +205,10 @@ export function LeagueDashboard() {
   }, [animatedTeamIds])
 
   useEffect(() => {
+    setAnimatedTeamIds([])
+  }, [activeTournament])
+
+  useEffect(() => {
     if (!isUnavailableTournament) {
       setShowFoxy(false)
       return
@@ -235,6 +239,8 @@ export function LeagueDashboard() {
   const [tournamentStates, setTournamentStates] = useState<Record<string, { players: typeof defaultTournament.players; matches: typeof defaultTournament.matches; playerStats: Record<string, PlayerStat[]>; teamGroups: Record<string, 'A' | 'B'>; copaBracket: CopaBracket; copaVisualBracket: CopaVisualBracket; copaChampion: string }>>({})
   const activeTournamentRef = useRef(activeTournament)
   activeTournamentRef.current = activeTournament
+  const matchesRef = useRef(matches)
+  matchesRef.current = matches
   const saveQueueRef = useRef(Promise.resolve())
   const lastSyncedRef = useRef('')
   const lastRemoteVersionRef = useRef('')
@@ -326,7 +332,13 @@ export function LeagueDashboard() {
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
       if (shouldNotify) {
-        setAnimatedTeamIds(remoteMatches[0] ? [remoteMatches[0].home, remoteMatches[0].away] : [])
+        const changedResultTeams = remoteMatches
+          .filter((nextMatch) => {
+            const previousMatch = matchesRef.current.find((match) => match.id === nextMatch.id)
+            return previousMatch && nextMatch.status === 'played' && (previousMatch.status !== 'played' || previousMatch.homeGoals !== nextMatch.homeGoals || previousMatch.awayGoals !== nextMatch.awayGoals)
+          })
+          .flatMap((match) => [match.home, match.away])
+        if (changedResultTeams.length > 0) setAnimatedTeamIds(Array.from(new Set(changedResultTeams)))
       }
       if (Array.isArray(selectedState.players)) setPlayers(remotePlayers)
       if (Array.isArray(selectedState.matches)) setMatches(remoteMatches)
