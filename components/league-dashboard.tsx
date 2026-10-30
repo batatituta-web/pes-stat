@@ -237,6 +237,7 @@ export function LeagueDashboard() {
   const [copaChampion, setCopaChampion] = useState('')
   const [persistenceLoaded, setPersistenceLoaded] = useState(false)
   const [editorAuthorized, setEditorAuthorized] = useState(false)
+  const [editorAccessToken, setEditorAccessToken] = useState('')
   const [editorAccessChecked, setEditorAccessChecked] = useState(false)
   const [editorPassword, setEditorPassword] = useState('')
   const [editorAccessError, setEditorAccessError] = useState('')
@@ -332,7 +333,9 @@ export function LeagueDashboard() {
       setEditorAccessError('Contraseña incorrecta')
       return
     }
+    const data = await response.json()
     setEditorAuthorized(true)
+    setEditorAccessToken(typeof data.token === 'string' ? data.token : '')
     setEditorPassword('')
   }
 
@@ -409,13 +412,13 @@ export function LeagueDashboard() {
         saveQueueRef.current = saveQueueRef.current
           .catch(() => undefined)
           .then(async () => {
-            const response = await fetch('/api/league-state', { method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: payload })
+            const response = await fetch('/api/league-state', { method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(editorAccessToken ? { Authorization: `Bearer ${editorAccessToken}` } : {}) }, body: payload })
             if (!response.ok) throw new Error(`Persistence failed: ${response.status}`)
           })
           .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
       }
     }
-  }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded, editorAuthorized])
+  }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded, editorAuthorized, editorAccessToken])
 
   const table = useMemo(() => calculateTable(players, matches), [players, matches])
   const playedMatches = matches.filter((match) => match.status === 'played')

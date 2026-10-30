@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
   if (!token) return NextResponse.json({ authorized: false }, { status: 401 })
 
-  const response = NextResponse.json({ authorized: true })
+  const response = NextResponse.json({ authorized: true, token })
   response.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',

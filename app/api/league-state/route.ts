@@ -134,7 +134,9 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   const cookieStore = await cookies()
-  if (!hasEditorAccess(cookieStore.get('league_editor_access')?.value)) return NextResponse.json({ error: 'Editor access required' }, { status: 401 })
+  const authorization = request.headers.get('authorization')
+  const bearerToken = authorization?.startsWith('Bearer ') ? authorization.slice(7) : undefined
+  if (!hasEditorAccess(cookieStore.get('league_editor_access')?.value) && !hasEditorAccess(bearerToken)) return NextResponse.json({ error: 'Editor access required' }, { status: 401 })
   const state = await request.json()
   if (!state || typeof state !== 'object' || Array.isArray(state)) return NextResponse.json({ error: 'Invalid state' }, { status: 400 })
   try {
