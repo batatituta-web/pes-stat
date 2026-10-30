@@ -393,6 +393,10 @@ export function LeagueDashboard() {
   const sharedState = { players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
   const localState = { activeTournament, ...sharedState }
     window.localStorage.setItem('pes6-league', JSON.stringify(localState))
+    if (!editorAuthorized) {
+      localChangeRef.current = false
+      return
+    }
     if (persistenceLoaded && localChangeRef.current) {
       localChangeRef.current = false
       const payload = JSON.stringify(sharedState)
@@ -410,7 +414,7 @@ export function LeagueDashboard() {
           .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
       }
     }
-  }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded])
+  }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded, editorAuthorized])
 
   const table = useMemo(() => calculateTable(players, matches), [players, matches])
   const playedMatches = matches.filter((match) => match.status === 'played')
