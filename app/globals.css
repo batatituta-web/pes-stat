@@ -25,11 +25,6 @@
   animation: table-row-movement 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.table-row-movement > td {
-  animation: table-row-movement 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  will-change: transform, opacity, filter;
-}
-
 @keyframes table-value-change {
   0% {
     color: inherit;
