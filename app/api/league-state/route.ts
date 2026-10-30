@@ -116,7 +116,7 @@ export async function GET(request: Request) {
 
   try {
     await ensureTable()
-    return NextResponse.json(await readState())
+    return NextResponse.json(await readState(), { headers: { 'Cache-Control': 'no-store, max-age=0' } })
   } catch (error) {
     console.error('[v0] Error leyendo estado de Neon:', error)
     return NextResponse.json({ error: 'No se pudo leer el estado' }, { status: 500 })
