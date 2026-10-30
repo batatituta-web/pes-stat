@@ -196,6 +196,14 @@ export function LeagueDashboard() {
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const [canEdit, setCanEdit] = useState(false)
+  useEffect(() => {
+    fetch('/api/access', { cache: 'no-store' })
+      .then((response) => response.json())
+      .then((payload) => setCanEdit(payload.canEdit === true))
+      .catch(() => setCanEdit(false))
+  }, [])
+
   useEffect(() => {
     if (!isUnavailableTournament) {
       setShowFoxy(false)
@@ -318,6 +326,7 @@ export function LeagueDashboard() {
   }, [persistenceLoaded])
 
   useEffect(() => {
+    if (!canEdit) return
     const currentTournamentState = { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
   const allTournamentStates = { ...tournamentStates, [activeTournament]: currentTournamentState }
   const sharedState = { players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
@@ -339,17 +348,18 @@ export function LeagueDashboard() {
           .catch((error) => console.error('[v0] No se pudo guardar el estado:', error))
       }
     }
-  }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded])
+  }, [activeTournament, players, matches, playerStats, teamGroups, tournamentStates, copaBracket, copaVisualBracket, copaChampion, persistenceLoaded, canEdit])
 
   const table = useMemo(() => calculateTable(players, matches), [players, matches])
   const playedMatches = matches.filter((match) => match.status === 'played')
   const totalGoals = playedMatches.reduce((sum, match) => sum + match.homeGoals + match.awayGoals, 0)
   const getPlayer = (id: string) => players.find((player) => player.id === id) ?? { name: 'Desconocido', initials: '?', color: 'bg-muted' }
-  const handleCopaVisualBracketChange = (nextBracket: CopaVisualBracket) => { markLocalChange(); setCopaVisualBracket(nextBracket) }
-  const handleCopaChampionChange = (champion: string) => { markLocalChange(); setCopaChampion(champion) }
+  const handleCopaVisualBracketChange = (nextBracket: CopaVisualBracket) => { if (!canEdit) return; markLocalChange(); setCopaVisualBracket(nextBracket) }
+  const handleCopaChampionChange = (champion: string) => { if (!canEdit) return; markLocalChange(); setCopaChampion(champion) }
 
   function addMatch(event: React.FormEvent) {
   event.preventDefault()
+    if (!canEdit) return
     if (!persistenceLoaded || home === away || !matchDate || !matchRound || homeGoals === '' || awayGoals === '') return
 
     markLocalChange()
@@ -367,6 +377,7 @@ export function LeagueDashboard() {
 
   function addUpcomingMatch(event: React.FormEvent) {
   event.preventDefault()
+    if (!canEdit) return
     if (!persistenceLoaded || home === away || !matchDate || !matchRound) return
     markLocalChange()
     const newMatch: Match = { id: Date.now(), home, away, homeGoals: 0, awayGoals: 0, date: matchDate, round: matchRound, status: 'upcoming' }
@@ -375,11 +386,13 @@ export function LeagueDashboard() {
   }
 
   function openUpcomingForm() {
+    if (!canEdit) return
     setMatchType('upcoming')
     setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true)
   }
   function addPlayer(event: React.FormEvent) {
   event.preventDefault()
+    if (!canEdit) return
     const name = playerName.trim()
     const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
     if (!name || !id || players.some((player) => player.id === id)) return
@@ -391,6 +404,7 @@ export function LeagueDashboard() {
 
   function addTeam(event: React.FormEvent) {
   event.preventDefault()
+    if (!canEdit) return
     const name = newTeamName.trim()
     const id = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
     if (!name || !id || players.some((player) => player.id === id)) return
@@ -412,12 +426,14 @@ export function LeagueDashboard() {
   }
 
   function removeMatch(matchId: number) {
+    if (!canEdit) return
   markLocalChange()
     setMatches((currentMatches) => currentMatches.filter((match) => match.id !== matchId))
   }
 
   function addPlayerStat(event: React.FormEvent) {
   event.preventDefault()
+    if (!canEdit) return
     const name = newPlayer.name.trim()
     if (!name) return
     markLocalChange()
@@ -468,7 +484,7 @@ export function LeagueDashboard() {
           <button onClick={() => selectTournament('General')} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></button>
           <div className="flex items-center gap-2 pr-4 sm:pr-6">
 
-            <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>
+            {canEdit && <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>}
           </div>
         </div>
       </header>

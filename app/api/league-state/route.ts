@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Client, Pool } from 'pg'
+import { isPreviewAdmin } from '@/lib/access'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -123,6 +124,7 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  if (!isPreviewAdmin(request)) return NextResponse.json({ error: 'Solo la preview puede editar este estado' }, { status: 403 })
   const state = await request.json()
   if (!state || typeof state !== 'object' || Array.isArray(state)) return NextResponse.json({ error: 'Invalid state' }, { status: 400 })
   try {
