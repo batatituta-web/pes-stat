@@ -1,5 +1,3 @@
-import { createHmac, timingSafeEqual } from 'node:crypto'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { Client, Pool } from 'pg'
 
@@ -12,14 +10,6 @@ const STATE_ID = 'shared-anonymous-league'
 const CHANNEL = 'league_state_changed'
 const STREAM_LIFETIME_MS = 270_000
 const HEARTBEAT_MS = 15_000
-
-function hasEditorAccess(token: string | undefined) {
-  const password = process.env.EDIT_PASSWORD
-  if (!password || !token) return false
-  const expected = Buffer.from(createHmac('sha256', password).update('league-editor-access').digest('hex'))
-  const actual = Buffer.from(token)
-  return actual.length === expected.length && timingSafeEqual(actual, expected)
-}
 
 // LISTEN/NOTIFY does not work through the pooled (pgbouncer) connection, so the listener needs the direct one.
 const listenerUrl = process.env.DATABASE_URL_UNPOOLED ?? process.env.POSTGRES_URL_NON_POOLING ?? process.env.DATABASE_URL
@@ -133,10 +123,6 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const cookieStore = await cookies()
-  const authorization = request.headers.get('authorization')
-  const bearerToken = authorization?.startsWith('Bearer ') ? authorization.slice(7) : undefined
-  if (!hasEditorAccess(cookieStore.get('league_editor_access')?.value) && !hasEditorAccess(bearerToken)) return NextResponse.json({ error: 'Editor access required' }, { status: 401 })
   const state = await request.json()
   if (!state || typeof state !== 'object' || Array.isArray(state)) return NextResponse.json({ error: 'Invalid state' }, { status: 400 })
   try {
