@@ -280,7 +280,7 @@ export function LeagueDashboard() {
     let cancelled = false
     const applyRemoteState = (payload: { state?: unknown; version?: string }) => {
       if (cancelled || !payload.state || typeof payload.state !== 'object') return
-      if (localChangeRef.current) return
+      if (canEdit && localChangeRef.current) return
       if (payload.version) lastRemoteVersionRef.current = payload.version
       const incoming = stableStringify(payload.state)
       const ownIndex = ownSentRef.current.indexOf(incoming)
@@ -322,7 +322,7 @@ export function LeagueDashboard() {
   eventSource.close()
   window.clearInterval(pollTimer)
   }
-  }, [persistenceLoaded])
+  }, [persistenceLoaded, canEdit])
 
   useEffect(() => {
     if (!canEdit) return
