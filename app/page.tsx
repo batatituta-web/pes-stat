@@ -1,6 +1,4 @@
-import { LeagueDashboard } from '@/components/league-dashboard'
-
 export default function Page() {
-  return <LeagueDashboard />
+  return <main className="min-h-screen bg-background" />
 }
 

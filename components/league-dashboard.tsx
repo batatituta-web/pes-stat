@@ -257,8 +257,7 @@ export function LeagueDashboard() {
       const state = data.state
       if (data.version) lastRemoteVersionRef.current = data.version
       if (state && typeof state === 'object') {
-        const remoteTournament = state.activeTournament === 'Champions League' ? 'Eurocopa' : (typeof state.activeTournament === 'string' ? state.activeTournament : activeTournamentRef.current)
-        if (remoteTournament !== activeTournamentRef.current) setActiveTournament(remoteTournament)
+        const remoteTournament = activeTournamentRef.current
         const selectedState = remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
         const sharedState = { ...state }
         const remoteState = stableStringify(sharedState)
@@ -298,8 +297,7 @@ export function LeagueDashboard() {
       lastSyncedRef.current = incoming
       lastRemoteStateRef.current = incoming
       const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
-      const remoteTournament = state.activeTournament === 'Champions League' ? 'Eurocopa' : (typeof state.activeTournament === 'string' ? state.activeTournament : activeTournamentRef.current)
-      if (remoteTournament !== activeTournamentRef.current) setActiveTournament(remoteTournament)
+      const remoteTournament = activeTournamentRef.current
       const selectedState = remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[remoteTournament] ?? state)
       const remotePlayers = Array.isArray(selectedState.players) ? selectedState.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
@@ -335,7 +333,7 @@ export function LeagueDashboard() {
   useEffect(() => {
     const currentTournamentState = { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
   const allTournamentStates = { ...tournamentStates, [activeTournament]: currentTournamentState }
-  const sharedState = { activeTournament, players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
+  const sharedState = { players, matches, playerStats, teamGroups, tournamentStates: allTournamentStates, copaBracket, copaVisualBracket, copaChampion }
 
     if (persistenceLoaded && localChangeRef.current) {
       localChangeRef.current = false
