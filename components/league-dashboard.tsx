@@ -281,7 +281,6 @@ export function LeagueDashboard() {
     const applyRemoteState = (payload: { state?: unknown; version?: string }) => {
       if (cancelled || !payload.state || typeof payload.state !== 'object') return
       if (localChangeRef.current) return
-      if (payload.version && lastRemoteVersionRef.current && payload.version <= lastRemoteVersionRef.current) return
       if (payload.version) lastRemoteVersionRef.current = payload.version
       const incoming = stableStringify(payload.state)
       const ownIndex = ownSentRef.current.indexOf(incoming)
