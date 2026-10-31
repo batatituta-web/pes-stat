@@ -27,9 +27,14 @@ type Match = {
 }
 
 const navigationGroups = [
-  { label: 'Destacado', items: ['Liga Profesional', 'Prim. B Nacional', 'Libertadores', 'Sudamericana', 'Copa Argentina', 'Champions', 'Elim. Conmebol', 'Ranking Títulos', 'Ranking Copas Int'] },
-  { label: '🇦🇷 Argentina', items: ['Liga Profesional', 'Copa de la Liga', '-Historiales', '-Tabla Historica', 'Copa Argentina', 'Copas Nacionales', 'Ranking Títulos', 'Prim. B Nacional', 'B Metro', 'Federal A', 'Primera C', 'Prom. Amateur', 'Reserva', 'Femenino'] },
-  { label: '🏆 Copas Int.', items: ['Ranking Copas Int', 'Mundial Clubes', 'Libertadores', 'Sudamericana', '+Copas Conmebol', 'Champions', 'Europa League'] },
+  {
+    label: '🌐 Ligas',
+    items: ['🏴 Premier League', '🇪🇸 La Liga', '🇮🇹 Serie A', '🇩🇪 Bundesliga', '🇫🇷 Ligue 1', '🇳🇱 Eredivisie', '🇧🇷 Brasileirao', '🇺🇾 Uruguay', '🇵🇾 Paraguay', '🇨🇴 Colombia', '🇨🇱 Chile', '🇲🇽 Liga MX', '🇺🇸 MLS'],
+  },
+  {
+    label: '⚑ Selecciones',
+    items: ['Qatar 22', 'Mundial FEM', 'Mundial Sub 20', '-Elim. Conmebol', 'Copa America', 'Eurocopa', 'J. Olimpicos', 'Naciones UEFA', 'Historial Selección'],
+  },
 ]
 
 const teams = ['Celta de Vigo', 'Barcelona', 'Villarreal', 'Osasuna', 'Rayo Vallecano', 'Valladolid', 'Real Sociedad', 'Getafe', 'Atlético Madrid', 'Las Palmas', 'Betis', 'Girona', 'Leganés', 'Real Madrid', 'Sevilla', 'Athletic Bilbao', 'Mallorca', 'Alavés', 'Espanyol', 'Valencia']
