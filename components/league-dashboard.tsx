@@ -114,6 +114,7 @@ export function LeagueDashboard() {
   const [activeSection, setActiveSection] = useState('Liga Profesional')
   const [activeTab, setActiveTab] = useState('Fixture y Tablas')
   const [query, setQuery] = useState('')
+  const leagueTabs = ['Resumen', 'Fixture y Tablas', 'Tabla de posiciones', 'Equipos y Planteles', 'Noticias', 'Estadísticas', 'Campeones Liga', 'Campeones Copas', 'Copa del Rey']
 
   return (
     <main className="classic-site-shell">
@@ -131,10 +132,11 @@ export function LeagueDashboard() {
 
       <div className="classic-content">
         <header className="country-header"><span>🇪🇸</span> ESPAÑA <span>🇪🇸</span></header>
+        <nav className="score-nav" aria-label="Navegación principal"><button type="button" className="selected">Resultados</button><button type="button">Noticias</button><button type="button">Mis marcadores</button><button type="button">Configuración</button></nav>
         <nav className="section-tabs" aria-label="Secciones de España">
-          {['Fixture y Tablas', 'Equipos y Planteles', 'Campeones Liga', 'Campeones Copas', 'Copa del Rey'].map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}
+          {leagueTabs.map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}
         </nav>
-        <div className="search-strip"><span>{activeSection}</span><label><Search /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar placeholder..." /></label></div>
+        <div className="search-strip"><span>{activeSection} / {activeTab}</span><label><Search /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar placeholder..." /></label></div>
         <div className="content-grid"><StandingsTable /><div className="right-column"><div className="round-selector">{Array.from({ length: 38 }, (_, index) => <button type="button" key={index}>{index + 1}</button>)}</div><FixturesPanel /></div></div>
       </div>
     </main>
