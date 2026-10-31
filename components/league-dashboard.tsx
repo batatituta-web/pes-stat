@@ -534,7 +534,7 @@ function CopaAmericaGroups({ table, teamGroups }: { table: ReturnType<typeof cal
 }
 
 function MatchdayCard({ matches, players, bracket, competition }: { matches: Match[]; players: Player[]; bracket: CopaVisualBracket; competition: string }) {
-  const { data: youtubeData } = useSWR<{ videos: { title: string; url: string }[] }>('/api/youtube-videos', (url: string) => fetch(url).then((response) => response.json()), { refreshInterval: 300000 })
+  const { data: youtubeData } = useSWR<{ videos: { title: string; description?: string; url: string }[] }>('/api/youtube-videos', (url: string) => fetch(url).then((response) => response.json()), { refreshInterval: 300000 })
   const youtubeVideos = youtubeData?.videos ?? []
   const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
   const getAutomaticVideo = (match: Match | BracketMatch, roundLabel: string) => {
@@ -543,12 +543,12 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
     if (!home || !away || home === 'a decidirse' || away === 'a decidirse') return undefined
     const roundNumber = roundLabel.match(/\d+/)?.[0]
     return youtubeVideos.find((video) => {
-      const title = normalize(video.title)
-      const teamsMatch = title.includes(home) && title.includes(away)
+      const searchableText = normalize(`${video.title} ${video.description ?? ''}`)
+      const teamsMatch = searchableText.includes(home) && searchableText.includes(away)
       const roundAliases = roundLabel === 'Semifinales' ? ['semifinal', 'semifinales'] : roundLabel === 'Cuartos' ? ['cuarto', 'cuartos'] : roundLabel === 'Octavos' ? ['octavo', 'octavos'] : [normalize(roundLabel)]
       const competitionAliases = competition === 'Copa América' ? ['copa america', 'copaamerica'] : [normalize(competition)]
-      const competitionMatch = competitionAliases.some((alias) => title.includes(alias))
-      const roundMatch = !roundNumber || title.includes(`fecha ${roundNumber}`) || roundAliases.some((alias) => title.includes(alias))
+      const competitionMatch = competitionAliases.some((alias) => searchableText.includes(alias))
+      const roundMatch = !roundNumber || searchableText.includes(`fecha ${roundNumber}`) || roundAliases.some((alias) => searchableText.includes(alias))
       return teamsMatch && competitionMatch && roundMatch
     })?.url
   }
