@@ -553,18 +553,23 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
     })?.url
   }
   const playedMatches = matches.filter((match) => match.status === 'played')
-  const dateRounds = Array.from(new Set(playedMatches.map((match) => match.round))).sort((a, b) => {
+  const leagueTournaments = ['Premier League', 'La Liga', 'Serie A', 'Brasileirao']
+  const hasElimination = !leagueTournaments.includes(competition)
+  const filteredPlayedMatches = leagueTournaments.includes(competition)
+    ? playedMatches.filter((match) => !['Semis', 'Final', 'Semifinal', 'Semifinales', 'Semifinal 1', 'Semifinal 2'].includes(match.round))
+    : playedMatches
+  const dateRounds = Array.from(new Set(filteredPlayedMatches.map((match) => match.round))).sort((a, b) => {
     const dateA = Number(a.match(/\d+/)?.[0] ?? 0)
     const dateB = Number(b.match(/\d+/)?.[0] ?? 0)
     return dateA - dateB || a.localeCompare(b)
   })
-  const knockoutRounds = [
+  const knockoutRounds = hasElimination ? [
     { label: 'Octavos', matches: bracket.round16 },
     { label: 'Cuartos', matches: bracket.quarterfinals },
     { label: 'Semifinales', matches: bracket.semifinals },
     { label: 'Final', matches: [bracket.final] },
-  ].filter((round) => round.matches.some((match) => match.home || match.away))
-  const rounds = [...dateRounds.map((label) => ({ label, matches: playedMatches.filter((match) => match.round === label) })), ...knockoutRounds]
+  ].filter((round) => round.matches.some((match) => match.home || match.away)) : []
+  const rounds = [...dateRounds.map((label) => ({ label, matches: filteredPlayedMatches.filter((match) => match.round === label) })), ...knockoutRounds]
   const [roundIndex, setRoundIndex] = useState(0)
   const [expandedMatchId, setExpandedMatchId] = useState<string | number | null>(null)
   const currentRound = rounds[roundIndex] ?? { label: 'Sin fechas', matches: [] }
