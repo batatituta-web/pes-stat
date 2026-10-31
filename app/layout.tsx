@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Liga Master · PES 6',
-  description: 'Tabla de posiciones y resultados de tu liga privada de PES 6.',
+  title: 'España · Fixture y tablas',
+  description: 'Plantilla editable de una página de fixtures y tablas de fútbol.',
   generator: 'v0.app',
   icons: {
     icon: [
