@@ -35,6 +35,15 @@ button { cursor: pointer; }
 .classic-content { flex: 1; min-width: 0; padding-top: 0; }
 .country-header { height: 27px; border: 1px solid #596571; border-left: 3px solid #d99a32; background: #202832; color: #f1d08a; text-align: center; font-size: 20px; line-height: 25px; letter-spacing: .08em; }
 .country-header span { font-size: 15px; }
+.league-identity { display: grid; grid-template-columns: minmax(160px, 1.6fr) repeat(3, minmax(90px, 1fr)); gap: 1px; margin-top: 8px; border: 1px solid #3a4651; background: #3a4651; }
+.league-code, .identity-stat { min-height: 42px; background: #171c22; padding: 6px 9px; }
+.league-code { display: flex; align-items: center; gap: 7px; color: #f1d08a; font-size: 11px; letter-spacing: .08em; }
+.league-code strong { margin-left: auto; border: 1px solid #8b672c; padding: 2px 4px; color: #d99a32; font-size: 9px; letter-spacing: .04em; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #d99a32; box-shadow: 0 0 8px #d99a32; }
+.identity-stat { display: flex; flex-direction: column; justify-content: center; gap: 1px; border-left: 1px solid #3a4651; }
+.identity-stat small { color: #aeb7bf; font-size: 9px; letter-spacing: .08em; }
+.identity-stat b { color: #e7e9e8; font-size: 13px; }
+.identity-stat em { color: #aeb7bf; font-size: 10px; font-style: normal; font-weight: 400; }
 .score-nav { display: flex; align-items: center; gap: 0; height: 36px; margin-top: 8px; border-bottom: 1px solid #3a4651; background: #0c1014; }
 .score-nav button { height: 100%; border: 0; border-right: 1px solid #303b47; padding: 0 13px; background: transparent; color: #aeb7bf; font-size: 12px; text-transform: uppercase; }
 .score-nav button:hover, .score-nav button.selected { background: #303b47; color: #f1d08a; }
@@ -75,5 +84,5 @@ button { cursor: pointer; }
 .upcoming-row { display: grid; grid-template-columns: 42px 1fr 22px 1fr; padding: 5px 3px; border: 1px solid #596571; background: #202832; color: #e7e9e8; font-size: 11px; text-align: center; }
 .upcoming-row span:first-child { color: #f4ffff; font-weight: 700; }
 
-@media (max-width: 800px) { .classic-site-shell { gap: 8px; }.classic-sidebar { flex-basis: 118px; }.brand-mark { font-size: 16px; }.content-grid { grid-template-columns: 1fr; }.right-column { display: grid; grid-template-columns: 1fr; }.section-tabs { min-height: auto; padding-bottom: 24px; }.search-strip { margin-top: 12px; } }
-@media (max-width: 560px) { .classic-site-shell { display: block; }.classic-sidebar { min-height: auto; }.nav-group { display: none; }.brand-mark { height: 42px; }.login-box { min-height: 62px; }.home-link { margin-top: 0; }.content-grid { padding: 0 5px; }.score-nav { overflow-x: auto; }.score-nav button { flex: 0 0 auto; padding: 0 9px; }.section-tabs { padding: 16px 5px 8px; }.section-tabs button { flex: 1 1 28%; font-size: 12px; }.search-strip { margin-left: 5px; margin-right: 5px; } .standings-table { font-size: 10px; }.standings-table th, .standings-table td { padding: 3px 1px; }.standings-table th:nth-child(n+7), .standings-table td:nth-child(n+7) { display: none; } }
+@media (max-width: 800px) { .classic-site-shell { gap: 8px; }.classic-sidebar { flex-basis: 118px; }.brand-mark { font-size: 16px; }.content-grid { grid-template-columns: 1fr; }.right-column { display: grid; grid-template-columns: 1fr; }.section-tabs { min-height: auto; padding-bottom: 24px; }.search-strip { margin-top: 12px; }.league-identity { grid-template-columns: 1.3fr repeat(3, 1fr); }.league-code { font-size: 10px; } }
+@media (max-width: 560px) { .classic-site-shell { display: block; }.classic-sidebar { min-height: auto; }.nav-group { display: none; }.brand-mark { height: 42px; }.login-box { min-height: 62px; }.home-link { margin-top: 0; }.content-grid { padding: 0 5px; }.score-nav { overflow-x: auto; }.score-nav button { flex: 0 0 auto; padding: 0 9px; }.league-identity { grid-template-columns: repeat(2, 1fr); }.league-code { grid-column: 1 / -1; }.section-tabs { padding: 16px 5px 8px; }.section-tabs button { flex: 1 1 28%; font-size: 12px; }.search-strip { margin-left: 5px; margin-right: 5px; } .standings-table { font-size: 10px; }.standings-table th, .standings-table td { padding: 3px 1px; }.standings-table th:nth-child(n+7), .standings-table td:nth-child(n+7) { display: none; } }

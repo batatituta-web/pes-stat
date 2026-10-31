@@ -137,6 +137,12 @@ export function LeagueDashboard() {
 
       <div className="classic-content">
         <header className="country-header"><span>🇪🇸</span> ESPAÑA <span>🇪🇸</span></header>
+        <section className="league-identity" aria-label="Resumen de la competición">
+          <div className="league-code"><span className="status-dot" /> LIGA / ES-01 <strong>LIVE BOARD</strong></div>
+          <div className="identity-stat"><small>TEMPORADA</small><b>2024 / 25</b></div>
+          <div className="identity-stat"><small>JORNADA ACTUAL</small><b>02 <em>de 38</em></b></div>
+          <div className="identity-stat"><small>PARTIDOS</small><b>06 <em>cargados</em></b></div>
+        </section>
         <nav className="score-nav" aria-label="Navegación principal"><button type="button" className="selected">Resultados</button><button type="button">Noticias</button><button type="button">Mis marcadores</button><button type="button">Configuración</button></nav>
         <nav className="section-tabs" aria-label="Secciones de España">
           {leagueTabs.map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}
