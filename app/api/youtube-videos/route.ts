@@ -27,14 +27,15 @@ export async function GET() {
       const channelData = await channelResponse.json()
       const uploadsPlaylistId = channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads
       if (uploadsPlaylistId) {
-        const videos: { title: string; url: string; published?: string }[] = []
+        const videos: { title: string; description?: string; url: string; published?: string }[] = []
         let pageToken = ''
         for (let page = 0; page < 5; page += 1) {
           const token = pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''
           const playlistResponse = await fetch(`${YOUTUBE_API_URL}/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsPlaylistId}&key=${apiKey}${token}`, { next: { revalidate: 300 } })
           const playlistData = await playlistResponse.json()
-          videos.push(...(playlistData.items ?? []).map((item: { snippet?: { title?: string; publishedAt?: string; resourceId?: { videoId?: string } } }) => ({
+          videos.push(...(playlistData.items ?? []).map((item: { snippet?: { title?: string; description?: string; publishedAt?: string; resourceId?: { videoId?: string } } }) => ({
             title: item.snippet?.title ?? '',
+            description: item.snippet?.description ?? '',
             url: `https://www.youtube.com/watch?v=${item.snippet?.resourceId?.videoId ?? ''}`,
             published: item.snippet?.publishedAt,
           })).filter((video: { title: string; url: string }) => video.title && !video.url.endsWith('=')))
