@@ -1,162 +1,49 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 
-type TeamRow = {
-  position: number
-  name: string
-  short: string
-  points: number
-  played: number
-  won: number
-  drawn: number
-  lost: number
-  goalsFor: number
-  goalsAgainst: number
-  difference: string
-}
-
-type Match = {
-  home: string
-  away: string
-  homeScore?: string
-  awayScore?: string
-  time?: string
-  scorers?: string
-}
+type Match = { home: string; away: string; homeScore?: string; awayScore?: string; scorers?: string }
 
 const navigationGroups = [
-  {
-    label: '🌐 Ligas',
-    items: ['🏴 Premier League', '🇪🇸 La Liga', '🇮🇹 Serie A', '🇩🇪 Bundesliga', '🇫🇷 Ligue 1', '🇳🇱 Eredivisie', '🇧🇷 Brasileirao', '🇺🇾 Uruguay', '🇵🇾 Paraguay', '🇨🇴 Colombia', '🇨🇱 Chile', '🇲🇽 Liga MX', '🇺🇸 MLS'],
-  },
-  {
-    label: '⚑ Selecciones',
-    items: ['Qatar 22', 'Mundial FEM', 'Mundial Sub 20', '-Elim. Conmebol', 'Copa America', 'Eurocopa', 'J. Olimpicos', 'Naciones UEFA', 'Historial Selección'],
-  },
+  { label: 'Destacado', items: ['Liga Profesional', 'Prim. B Nacional', 'Libertadores', 'Sudamericana', 'Copa Argentina', 'Champions', 'Elim. Conmebol', 'Ranking Títulos', 'Ranking Copas Int'] },
+  { label: '🇦🇷 Argentina', items: ['Liga Profesional', 'Copa de la Liga', '-Historiales', '-Tabla Historica', 'Copa Argentina', 'Copas Nacionales', 'Ranking Títulos', 'Prim. B Nacional', 'B Metro', 'Federal A', 'Primera C', 'Prom. Amateur', 'Reserva', 'Femenino'] },
+  { label: '🏆 Copas Int.', items: ['Ranking Copas Int', 'Mundial Clubes', 'Libertadores', 'Sudamericana', '+Copas Conmebol', 'Champions', 'Europa League', 'Conference', '+Copas UEFA', 'Copas AFC', 'Copas CAF', 'Copas OFC'] },
+  { label: '🌐 Ligas', items: ['🇬🇧 Premier League', '🇪🇸 La Liga', '🇮🇹 Serie A', '🇩🇪 Bundesliga', '🇫🇷 Ligue 1', '🇳🇱 Eredivisie', '🇧🇷 Brasileirao', '🇺🇾 Uruguay', '🇵🇾 Paraguay', '🇨🇴 Colombia', '🇨🇱 Chile', '🇲🇽 Liga MX', '🇺🇸 MLS'] },
+  { label: '⚑ Selecciones', items: ['Qatar 22', 'Mundial FEM', 'Mundial Sub 20', '-Elim. Conmebol', 'Copa America', 'Eurocopa', 'J. Olimpicos', 'Naciones UEFA', 'Historial Selección'] },
 ]
 
-const teams = ['Celta de Vigo', 'Barcelona', 'Villarreal', 'Osasuna', 'Rayo Vallecano', 'Valladolid', 'Real Sociedad', 'Getafe', 'Atlético Madrid', 'Las Palmas', 'Betis', 'Girona', 'Leganés', 'Real Madrid', 'Sevilla', 'Athletic Bilbao', 'Mallorca', 'Alavés', 'Espanyol', 'Valencia']
-
+const teams = ['Manchester City', 'Brighton And Hove', 'Arsenal FC', 'Liverpool', 'Tottenham', 'Newcastle', 'Nottingham Forest', 'Chelsea', 'West Ham', 'Fulham', 'Manchester United', 'Aston Villa', 'Brentford', 'Bournemouth', 'Leicester City', 'Southampton', 'Crystal Palace', 'Ipswich Town', 'Wolverhampton', 'Everton']
 const fixtures: Match[] = [
-  { home: 'Celta de Vigo', away: 'Valencia', homeScore: '3', awayScore: '1', scorers: '23\' O. Míngueza; 28\' I. Aspas; 60\' F. Beltrán' },
-  { home: 'Sevilla', away: 'Villarreal', homeScore: '1', awayScore: '2', scorers: '45\' D. Lukébakio; 2\' A. Danjuma' },
-  { home: 'Osasuna', away: 'Mallorca', homeScore: '1', awayScore: '0', scorers: '55\' R. García' },
-  { home: 'Barcelona', away: 'Athletic Bilbao', homeScore: '2', awayScore: '1', scorers: '24\' L. Yamal; 75\' R. Lewandowski' },
-  { home: 'Espanyol', away: 'Real Sociedad', homeScore: '0', awayScore: '1', scorers: '80\' T. Kubo' },
-  { home: 'Getafe', away: 'Rayo Vallecano', homeScore: '0', awayScore: '0', scorers: '' },
+  { home: 'Brighton And Hove', away: 'Manchester United', homeScore: '2', awayScore: '1', scorers: "32' D. Welbeck; 90(+5)' J. Pedro; 60' A. Traoré" },
+  { home: 'Crystal Palace', away: 'West Ham', homeScore: '0', awayScore: '2', scorers: "67' T. Soucek; 72' J. Bowen" },
+  { home: 'Fulham', away: 'Leicester City', homeScore: '2', awayScore: '1', scorers: "18' E. Smith-Rowe; 70' A. Iwobi; 38' W. Faes" },
+  { home: 'Manchester City', away: 'Ipswich Town', homeScore: '4', awayScore: '1', scorers: "12' E. Haaland; 14' K. De Bruyne; 16' E. Haaland; 88' E. Haaland" },
+  { home: 'Southampton', away: 'Nottingham Forest', homeScore: '0', awayScore: '1', scorers: "72' C. Gibbs-White" },
+  { home: 'Tottenham', away: 'Everton', homeScore: '4', awayScore: '0', scorers: "14' Y. Bissouma; 25' S. Heung-Min" },
+  { home: 'Aston Villa', away: 'Arsenal FC', homeScore: '0', awayScore: '2', scorers: "67' L. Trossard; 77' T. Partey" },
+  { home: 'Liverpool', away: 'Brentford', homeScore: '2', awayScore: '0', scorers: "13' L. Díaz; 70' M. Salah" },
 ]
 
-function teamInitials(name: string) {
-  return name.split(' ').map((word) => word[0]).slice(0, 2).join('')
-}
+const scorers = [['E. Haaland (Manchester City)', '4', '(1)'], ['N. Madueke (Chelsea)', '3', '(0)'], ['D. Welbeck (Brighton And Hove)', '2', '(0)'], ['M. Salah (Liverpool)', '2', '(0)'], ['S. Heung Min (Tottenham)', '2', '(0)']]
+const assists = [['C. Palmer (Chelsea)', '3'], ['J. Maddison (Tottenham)', '2'], ['B. Saka (Arsenal FC)', '2']]
+
+function ClubBadge({ name }: { name: string }) { return <span className="club-badge" aria-hidden="true">{name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span> }
 
 function StandingsTable() {
-  const rows: TeamRow[] = teams.map((name, index) => ({
-    position: index + 1,
-    name,
-    short: teamInitials(name),
-    points: Math.max(0, 6 - Math.floor(index / 3)),
-    played: index < 6 ? 2 : 1,
-    won: index < 3 ? 2 : index < 8 ? 1 : 0,
-    drawn: index % 3 === 0 ? 1 : 0,
-    lost: index > 8 ? 1 : 0,
-    goalsFor: 5 - (index % 4),
-    goalsAgainst: 2 + (index % 4),
-    difference: index < 4 ? '+3' : index % 3 === 0 ? '+1' : '0',
-  }))
-
-  return (
-    <section className="standings-panel" aria-labelledby="standings-title">
-      <div id="standings-title" className="panel-title">Tabla Puntos</div>
-      <div className="table-scroll">
-        <table className="standings-table">
-          <thead>
-            <tr><th>#</th><th>Equipo</th><th>Pts</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DIF</th></tr>
-          </thead>
-          <tbody>
-            {rows.map((team) => (
-              <tr key={team.name} className={team.position === 1 ? 'leader-row' : ''}>
-                <td>{team.position}</td>
-                <td><span className="team-badge">{team.short}</span>{team.name}</td>
-                <td>{team.points}</td><td>{team.played}</td><td>{team.won}</td><td>{team.drawn}</td><td>{team.lost}</td><td>{team.goalsFor}</td><td>{team.goalsAgainst}</td><td>{team.difference}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="legend"><span>• Puesto de Champions League.</span><span>• Puesto de Europa League.</span><span>• Puesto de Liga de Conferencia.</span><span>• Los últimos 3 equipos descienden.</span></div>
-    </section>
-  )
+  return <section className="standings-panel"><div className="panel-title">Tabla Puntos</div><table className="standings-table"><thead><tr><th>#</th><th>Equipo</th><th>Pts</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DIF</th></tr></thead><tbody>{teams.map((team, index) => <tr className={index === 0 ? 'leader-row' : ''} key={team}><td>{index + 1}</td><td><ClubBadge name={team} />{team}</td><td>{Math.max(0, 6 - Math.floor(index / 3))}</td><td>2</td><td>{index < 3 ? 2 : index < 8 ? 1 : 0}</td><td>{index % 3 === 0 ? 0 : 1}</td><td>{index > 8 ? 1 : 0}</td><td>{5 - (index % 4)}</td><td>{index % 4}</td><td>{index < 4 ? '+3' : index % 3 === 0 ? '+1' : '0'}</td></tr>)}</tbody></table><div className="table-legend"><span>• Puesto de Champions League.</span><span>• Puesto de Europa League.</span><span>• Puesto de Conference League.</span><span>• Los últimos 3 equipos descienden.</span></div></section>
 }
 
 function FixturesPanel() {
-  const [fixtureDay, setFixtureDay] = useState(2)
-  return (
-    <section className="fixtures-panel" aria-labelledby="fixtures-title">
-      <div className="matchday-controls">
-        <button type="button" aria-label="Jornada anterior" onClick={() => setFixtureDay(Math.max(1, fixtureDay - 1))}><ChevronLeft /></button>
-        <div><strong>FECHA {fixtureDay}</strong><span>La Liga</span></div>
-        <button type="button" aria-label="Jornada siguiente" onClick={() => setFixtureDay(fixtureDay + 1)}><ChevronRight /></button>
-      </div>
-      <h2 id="fixtures-title" className="sr-only">Fixture y resultados</h2>
-      <div className="fixture-date">Viernes 23 de Agosto</div>
-      {fixtures.map((match, index) => (
-        <div className="fixture-match" key={`${match.home}-${match.away}`}>
-          <div className="fixture-teams"><span className="status">{index < 2 ? 'Final' : '—'}</span><strong>{match.home}</strong><b>{match.homeScore ?? '-'}</b><b>{match.awayScore ?? '-'}</b><strong>{match.away}</strong><button type="button" aria-label={`Agregar evento de ${match.home} y ${match.away}`}><Plus /></button></div>
-          <div className="fixture-scorers">{match.scorers || 'Sin eventos cargados'}</div>
-        </div>
-      ))}
-      <div className="fixture-date">Domingo 25 de Agosto</div>
-      <div className="upcoming-row"><span>12:00</span><strong>Real Madrid</strong><span>vs</span><strong>Valladolid</strong></div>
-      <div className="upcoming-row"><span>14:00</span><strong>Leganés</strong><span>vs</span><strong>Las Palmas</strong></div>
-    </section>
-  )
+  const [day, setDay] = useState(2)
+  return <section className="fixtures-panel"><div className="round-picker">{Array.from({ length: 38 }, (_, index) => <button type="button" key={index}>{index + 1}</button>)}</div><div className="matchday-controls"><button type="button" aria-label="Fecha anterior" onClick={() => setDay(Math.max(1, day - 1))}><ChevronLeft /></button><div><b>FECHA {day}</b><strong>Premier League</strong></div><button type="button" aria-label="Fecha siguiente" onClick={() => setDay(day + 1)}><ChevronRight /></button></div><div className="fixture-date">Sábado 24 de Agosto</div>{fixtures.map((match) => <div className="fixture-match" key={`${match.home}-${match.away}`}><div className="fixture-teams"><span className="status">Final</span><strong><ClubBadge name={match.home} />{match.home}</strong><b>{match.homeScore}</b><b>{match.awayScore}</b><strong>{match.away}<ClubBadge name={match.away} /></strong><button type="button" aria-label={`Añadir evento ${match.home}`}><Plus /></button></div><div className="fixture-scorers">{match.scorers}</div></div>)}<div className="fixture-date">Domingo 25 de Agosto</div><div className="fixture-match"><div className="fixture-teams"><span className="status">Final</span><strong><ClubBadge name="Bournemouth" />Bournemouth</strong><b>1</b><b>1</b><strong>Newcastle<ClubBadge name="Newcastle" /></strong><button type="button" aria-label="Añadir evento Bournemouth Newcastle"><Plus /></button></div></div><div className="stats-footer"><b>Estadísticas Fecha:</b><br />32 goles en 10 partidos (3.20 de media)<br />Vig. locales: 17 · Goles visitantes: 15</div></section>
 }
 
+function RankingTables() { return <div className="ranking-grid"><section className="ranking-card"><div className="panel-title">Goleadores</div><table><thead><tr><th>Jugador</th><th>Goles</th><th>(Penal)</th></tr></thead><tbody>{scorers.map(([name, goals, penalty]) => <tr key={name}><td><ClubBadge name={name} />{name}</td><td>{goals}</td><td>{penalty}</td></tr>)}</tbody></table></section><section className="ranking-card"><div className="panel-title">Asistencias</div><table><thead><tr><th>Jugador</th><th>Asist.</th></tr></thead><tbody>{assists.map(([name, total]) => <tr key={name}><td><ClubBadge name={name} />{name}</td><td>{total}</td></tr>)}</tbody></table></section></div> }
+
 export function LeagueDashboard() {
-  const [activeSection, setActiveSection] = useState('Liga Profesional')
+  const [activeSection, setActiveSection] = useState('🇬🇧 Premier League')
   const [activeTab, setActiveTab] = useState('Fixture y Tablas')
-  const [query, setQuery] = useState('')
-  const leagueTabs = ['Resumen', 'Fixture y Tablas', 'Tabla de posiciones', 'Equipos y Planteles', 'Noticias', 'Estadísticas', 'Campeones Liga', 'Campeones Copas', 'Copa del Rey']
-
-  return (
-    <main className="classic-site-shell">
-      <aside className="classic-sidebar">
-        <div className="brand-mark">PROMIEDOS<span>.com.ar</span></div>
-        <button className="login-box" type="button">●<br /><strong>Click acá para entrar/<br />registrar usuario</strong><br />en Promiedos.</button>
-        <button className="home-link" type="button" onClick={() => setActiveSection('Inicio')}>⌂ <span>Inicio</span></button>
-        {navigationGroups.map((group) => (
-          <div className="nav-group" key={group.label}>
-            <h2>{group.label}</h2>
-            {group.items.map((item) => <button type="button" className={activeSection === item ? 'active' : ''} onClick={() => setActiveSection(item)} key={`${group.label}-${item}`}>{item}</button>)}
-          </div>
-        ))}
-      </aside>
-
-      <div className="classic-content">
-        <header className="live-header" aria-label="Resultados en vivo de Premier League">
-          <div className="live-league-logo" role="img" aria-label="Logo de la Premier League" />
-          <div className="live-header-content">
-            <div className="live-title-row"><h1>RESULTADOS EN VIVO DE PREMIER LEAGUE</h1><button type="button" className="follow-button">Seguir</button><span className="followers">98.49M</span></div>
-            <nav className="live-tabs" aria-label="Secciones de Premier League">
-              {['Resumen', 'Partidos', 'Posiciones', 'Noticias', 'Estadísticas', 'Pronósticos', 'Cuotas', 'Transferencia', 'Historia'].map((tab, index) => <button type="button" className={index === 0 ? 'active' : ''} key={tab}>{tab}</button>)}
-            </nav>
-          </div>
-        </header>
-        <section className="league-identity compact-identity" aria-label="Resumen de la competición">
-          <div className="league-code"><span className="status-dot" /> PREMIER / EN-01 <strong>LIVE BOARD</strong></div>
-          <div className="identity-stat"><small>TEMPORADA</small><b>2026 / 27</b></div>
-          <div className="identity-stat"><small>JORNADA ACTUAL</small><b>02 <em>de 38</em></b></div>
-          <div className="identity-stat"><small>PARTIDOS</small><b>06 <em>cargados</em></b></div>
-        </section>
-        <nav className="section-tabs" aria-label="Secciones de España">
-          {leagueTabs.map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}
-        </nav>
-        <div className="search-strip"><span>{activeSection} / {activeTab}</span><label><Search /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar placeholder..." /></label></div>
-        <div className="content-grid"><StandingsTable /><div className="right-column"><div className="round-selector">{Array.from({ length: 38 }, (_, index) => <button type="button" key={index}>{index + 1}</button>)}</div><FixturesPanel /></div></div>
-      </div>
-    </main>
-  )
+  const tabs = ['Fixture y Tablas', 'Equipos y Planteles', 'Campeones Liga', 'Campeones Copas', 'Carabao EFL Cup', 'FA. CUP']
+  return <main className="classic-site-shell"><aside className="classic-sidebar"><div className="brand-mark">PROMIEDOS<span>.com.ar</span></div><button className="login-box" type="button">●<br /><strong>Login/Registros<br />momentáneamente<br />desactivado, pronto<br />volverá.</strong></button><button className="home-link" type="button" onClick={() => setActiveSection('Inicio')}>⌂ Inicio</button>{navigationGroups.map((group) => <div className="nav-group" key={group.label}><h2>{group.label}</h2>{group.items.map((item) => <button type="button" key={item} className={activeSection === item ? 'active' : ''} onClick={() => setActiveSection(item)}>{item}</button>)}</div>)}<div className="sidebar-footer"><button>♣ Comunidad</button><button>▣ Promiedos</button><button>▣ Calendario</button><p>Contacto</p><small>Legal - Privacidad</small><small>Promiedos 2009-2024</small></div></aside><div className="classic-content"><div className="classic-brand-banner">PROMIEDOS<span>.com.ar</span></div><header className="country-header">🏴 PREMIER LEAGUE 🏴</header><nav className="section-tabs">{tabs.map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}</nav><div className="content-grid"><StandingsTable /><FixturesPanel /></div><RankingTables /><div className="timezone">Horarios: Argentina/UY/Br <small>(cambiar en inicio)</small></div></div></main>
 }

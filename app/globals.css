@@ -2,98 +2,43 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-:root {
-  --page: #101317;
-  --green-900: #171c22;
-  --green-800: #202832;
-  --green-700: #303b47;
-  --green-600: #d99a32;
-  --green-100: #f1d08a;
-  --ink: #e7e9e8;
-  --line: #3a4651;
-}
-
+:root { --bg: #151819; --green-dark: #004d24; --green: #056329; --green-light: #6c9d3c; --ink: #f4f4e8; --line: #44654b; }
 * { box-sizing: border-box; }
-html { background: var(--page); }
-body { margin: 0; background: var(--page); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
-button, input { font: inherit; }
-button { cursor: pointer; }
-
-.classic-site-shell { min-height: 100vh; display: flex; gap: 14px; max-width: 1000px; margin: 0 auto; padding: 0 0 48px; background: linear-gradient(135deg, rgba(217, 154, 50, .06), transparent 28%), var(--page); }
-.classic-sidebar { flex: 0 0 135px; background: #171c22; color: white; min-height: 100vh; border-right: 1px solid #3a4651; box-shadow: 5px 0 18px rgba(0,0,0,.35); }
-.brand-mark { display: flex; align-items: end; justify-content: center; height: 56px; padding: 8px 4px; color: #d99a32; font-size: 20px; font-weight: 900; letter-spacing: -1.8px; text-shadow: 1px 1px #0a0d10; white-space: nowrap; }
-.brand-mark span { color: #aeb7bf; font-size: 10px; letter-spacing: -.6px; }
-.login-box { width: 100%; min-height: 98px; border: 0; border-top: 1px solid #45515c; border-bottom: 1px solid #0c0f12; background: #28323c; color: white; font-size: 12px; line-height: 1.15; text-align: center; }
-.login-box:first-line { color: #cbe9ff; font-size: 22px; }
-.home-link, .nav-group button { width: 100%; display: block; border: 0; color: #e7e9e8; background: transparent; text-align: left; padding: 4px 6px; font-size: 14px; line-height: 1.22; }
-.home-link { margin-top: 8px; background: #d99a32; color: #171c22; font-weight: 800; }
-.home-link span { margin-left: 3px; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: Arial, Helvetica, sans-serif; font-size: 14px; }
+button { cursor: pointer; font: inherit; }
+.classic-site-shell { display: flex; gap: 13px; width: 100%; max-width: 895px; min-height: 100vh; margin: 0 auto; background: #151819; }
+.classic-sidebar { flex: 0 0 120px; min-height: 100vh; background: #004525; color: white; }
+.brand-mark { height: 68px; display: flex; align-items: center; justify-content: center; padding: 0 3px; background: linear-gradient(110deg, #1c422b, #07502d); color: #9abf22; font-size: 25px; font-weight: 900; letter-spacing: -2px; text-shadow: 2px 2px #102114; white-space: nowrap; }
+.brand-mark span { align-self: end; margin-bottom: 18px; color: #c6d7c5; font-size: 9px; letter-spacing: -.7px; }
+.login-box { width: 100%; min-height: 101px; border: 0; border-bottom: 1px solid #1b6c3a; background: #135a3c; color: white; font-size: 11px; line-height: 1.12; text-align: center; }
+.login-box:first-line { color: #b7dcff; font-size: 19px; }
+.home-link, .nav-group button { display: block; width: 100%; border: 0; padding: 3px 5px; background: transparent; color: white; font-size: 13px; line-height: 1.18; text-align: left; }
+.home-link { margin-top: 6px; background: var(--green-light); color: white; font-weight: 700; }
 .nav-group { margin-top: 8px; }
-.nav-group h2 { margin: 0; padding: 4px 6px; color: #f1d08a; background: #0c1014; border-left: 3px solid #d99a32; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; }
-.nav-group button:nth-child(even) { background: #202832; }
-.nav-group button:hover, .nav-group button.active { background: #d99a32; color: #171c22; font-weight: 800; }
-.classic-content { flex: 1; min-width: 0; padding-top: 0; }
-.live-header { display: flex; align-items: stretch; min-height: 116px; border-top: 1px solid #33404b; border-bottom: 1px solid #33404b; background: #151b20; }
-.live-league-logo { flex: 0 0 120px; width: 120px; background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen-sqPVdEk7NRZ65gjuYfVosDQsL4cE0M.png'); background-position: 12px center; background-size: auto 96px; background-repeat: no-repeat; }
-.live-header-content { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0 0; }
-.live-title-row { display: flex; align-items: center; gap: 18px; padding: 0 22px; white-space: nowrap; }
-.live-title-row h1 { margin: 0; color: #f2f4f5; font-size: clamp(23px, 3vw, 32px); font-weight: 400; letter-spacing: -.04em; }
-.follow-button { min-width: 105px; border: 1px solid #248ee7; border-radius: 18px; padding: 4px 17px; background: transparent; color: #248ee7; font-size: 14px; }
-.follow-button:hover { background: #248ee7; color: #101317; }
-.followers { color: #aeb7bf; font-size: 13px; }
-.live-tabs { display: flex; align-items: end; gap: 0; overflow-x: auto; padding: 0 9px; }
-.live-tabs button { position: relative; flex: 0 0 auto; border: 0; padding: 12px 22px 13px; background: transparent; color: #9ca7b1; font-size: 14px; }
-.live-tabs button:hover, .live-tabs button.active { color: #f2f4f5; }
-.live-tabs button.active::after { content: ''; position: absolute; right: 9px; bottom: 0; left: 9px; height: 2px; background: #248ee7; }
-.league-identity { display: grid; grid-template-columns: minmax(160px, 1.6fr) repeat(3, minmax(90px, 1fr)); gap: 1px; margin-top: 8px; border: 1px solid #3a4651; background: #3a4651; }
-.league-code, .identity-stat { min-height: 42px; background: #171c22; padding: 6px 9px; }
-.league-code { display: flex; align-items: center; gap: 7px; color: #f1d08a; font-size: 11px; letter-spacing: .08em; }
-.league-code strong { margin-left: auto; border: 1px solid #8b672c; padding: 2px 4px; color: #d99a32; font-size: 9px; letter-spacing: .04em; }
-.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #d99a32; box-shadow: 0 0 8px #d99a32; }
-.identity-stat { display: flex; flex-direction: column; justify-content: center; gap: 1px; border-left: 1px solid #3a4651; }
-.identity-stat small { color: #aeb7bf; font-size: 9px; letter-spacing: .08em; }
-.identity-stat b { color: #e7e9e8; font-size: 13px; }
-.identity-stat em { color: #aeb7bf; font-size: 10px; font-style: normal; font-weight: 400; }
-.score-nav { display: flex; align-items: center; gap: 0; height: 36px; margin-top: 8px; border-bottom: 1px solid #3a4651; background: #0c1014; }
-.score-nav button { height: 100%; border: 0; border-right: 1px solid #303b47; padding: 0 13px; background: transparent; color: #aeb7bf; font-size: 12px; text-transform: uppercase; }
-.score-nav button:hover, .score-nav button.selected { background: #303b47; color: #f1d08a; }
-.section-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 18px 9px 0; min-height: 190px; align-content: start; }
-.section-tabs button { min-height: 48px; border: 1px solid #596571; border-radius: 0; padding: 6px 9px; background: linear-gradient(#4b5863, #28323c); color: #e7e9e8; box-shadow: 2px 4px 6px #080a0c; font-size: 14px; font-weight: 700; line-height: 1.1; text-shadow: 1px 1px #101317; clip-path: polygon(0 0, 94% 0, 100% 18%, 100% 100%, 6% 100%, 0 82%); }
-.section-tabs button.selected, .section-tabs button:hover { background: linear-gradient(#e2a83d, #ad6e1e); border-color: #f1d08a; color: #171c22; text-shadow: none; }
-.search-strip { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 0 9px 8px; padding: 4px 8px; border: 1px solid #2b6f41; background: #062d1b; color: #d2efa4; font-size: 13px; }
-.search-strip label { display: flex; align-items: center; gap: 4px; color: #b6d6a2; }
-.search-strip svg { width: 14px; height: 14px; }
-.search-strip input { width: 150px; border: 1px solid #477955; background: #10291d; color: white; padding: 2px 4px; font-size: 12px; outline: none; }
-.content-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(280px, .95fr); gap: 16px; padding: 0 9px; align-items: start; }
-.panel-title { border: 1px solid #596571; border-left: 3px solid #d99a32; background: #202832; color: #f1d08a; text-align: center; font-size: 14px; line-height: 18px; text-transform: uppercase; letter-spacing: .04em; }
-.standings-table { width: 100%; border-collapse: collapse; background: #cbd0d2; color: #171c22; font-size: 12px; }
-.standings-table th, .standings-table td { border: 1px solid #596571; padding: 3px 3px; text-align: center; white-space: nowrap; }
-.standings-table th { background: #101317; color: #f1d08a; font-size: 11px; }
-.standings-table td:nth-child(2) { text-align: left; font-weight: 700; }
-.standings-table tr:nth-child(even) { background: #e0e3e4; }
-.standings-table .leader-row { background: #e0b45a; }
-.team-badge { display: inline-grid; place-items: center; width: 19px; height: 19px; margin-right: 3px; border: 1px solid #74907b; border-radius: 50%; background: #f4f8ee; color: #276030; font-size: 8px; vertical-align: middle; }
-.legend { display: flex; flex-direction: column; gap: 0; color: white; font-size: 11px; line-height: 15px; }
-.legend span:nth-child(1) { background: #596571; }.legend span:nth-child(2) { background: #6b7781; }.legend span:nth-child(3) { background: #7f8991; }.legend span:nth-child(4) { background: #a35d2e; }
-.round-selector { display: flex; flex-wrap: wrap; gap: 2px; margin: 0 0 14px; }
-.round-selector button { width: 21px; height: 20px; border: 1px solid #596571; background: #202832; color: #e7e9e8; font-size: 11px; }
-.round-selector button:hover { background: #d99a32; color: #171c22; }
-.matchday-controls { display: flex; align-items: center; justify-content: space-between; height: 50px; border: 1px solid #596571; border-left: 3px solid #d99a32; background: #202832; color: #f1d08a; text-align: center; }
-.matchday-controls button { display: grid; place-items: center; width: 48px; height: 100%; border: 0; background: transparent; color: #d99a32; }
-.matchday-controls svg { width: 38px; height: 38px; stroke-width: 4; }
-.matchday-controls strong, .matchday-controls span { display: block; line-height: 18px; }
-.matchday-controls span { color: #fff300; font-weight: 700; }
-.fixture-date { margin-top: 10px; padding: 3px; background: #d99a32; color: #171c22; text-align: center; font-size: 12px; font-weight: 800; text-transform: uppercase; }
-.fixture-match { border: 1px solid #596571; background: #cbd0d2; color: #171c22; }
-.fixture-teams { display: grid; grid-template-columns: 36px minmax(0, 1fr) 25px 25px minmax(0, 1fr) 25px; align-items: center; min-height: 32px; text-align: center; font-size: 11px; }
-.fixture-teams .status { background: #101317; color: #f1d08a; align-self: stretch; display: grid; place-items: center; font-size: 10px; }
-.fixture-teams b { font-size: 16px; }
-.fixture-teams button { display: grid; place-items: center; align-self: stretch; border: 0; background: #d99a32; color: #171c22; }
-.fixture-teams svg { width: 15px; }
-.fixture-scorers { padding: 1px 3px; border-top: 1px solid #596571; min-height: 16px; color: #8b4e2d; font-size: 10px; }
-.upcoming-row { display: grid; grid-template-columns: 42px 1fr 22px 1fr; padding: 5px 3px; border: 1px solid #596571; background: #202832; color: #e7e9e8; font-size: 11px; text-align: center; }
-.upcoming-row span:first-child { color: #f4ffff; font-weight: 700; }
-
-@media (max-width: 800px) { .classic-site-shell { gap: 8px; }.classic-sidebar { flex-basis: 118px; }.brand-mark { font-size: 16px; }.content-grid { grid-template-columns: 1fr; }.right-column { display: grid; grid-template-columns: 1fr; }.section-tabs { min-height: auto; padding-bottom: 24px; }.search-strip { margin-top: 12px; }.live-title-row { gap: 10px; padding: 0 14px; }.live-tabs button { padding-right: 14px; padding-left: 14px; }.league-identity { grid-template-columns: 1.3fr repeat(3, 1fr); }.league-code { font-size: 10px; } }
-@media (max-width: 560px) { .classic-site-shell { display: block; }.classic-sidebar { min-height: auto; }.nav-group { display: none; }.brand-mark { height: 42px; }.login-box { min-height: 62px; }.home-link { margin-top: 0; }.content-grid { padding: 0 5px; }.score-nav { overflow-x: auto; }.score-nav button { flex: 0 0 auto; padding: 0 9px; }.premier-header { gap: 10px; min-height: 126px; padding: 12px 14px; }.premier-logo { flex-basis: 68px; width: 68px; height: 82px; background-position: -45px -30px; background-size: 780px 122px; }.premier-title-row h1 { font-size: 21px; }.premier-title-row strong { font-size: 11px; }.premier-meta { margin-top: 12px; font-size: 12px; }.league-identity { grid-template-columns: repeat(2, 1fr); }.league-code { grid-column: 1 / -1; }.section-tabs { padding: 16px 5px 8px; }.section-tabs button { flex: 1 1 28%; font-size: 12px; }.search-strip { margin-left: 5px; margin-right: 5px; } .standings-table { font-size: 10px; }.standings-table th, .standings-table td { padding: 3px 1px; }.standings-table th:nth-child(n+7), .standings-table td:nth-child(n+7) { display: none; } }
-@media (max-width: 560px) { .live-header { min-height: 112px; }.live-league-logo { flex-basis: 76px; width: 76px; background-size: auto 72px; background-position: 3px center; }.live-header-content { padding-top: 17px; }.live-title-row { gap: 7px; padding: 0 8px; }.live-title-row h1 { font-size: 18px; white-space: normal; line-height: 1.05; }.follow-button { min-width: auto; padding: 3px 10px; font-size: 11px; }.followers { display: none; }.live-tabs button { padding: 10px 11px 11px; font-size: 12px; } }
+.nav-group h2 { margin: 0; padding: 3px 5px; background: #0b2b16; color: #eaff00; font-size: 14px; line-height: 1.15; }
+.nav-group button:nth-child(odd) { background: #005322; }
+.nav-group button:hover, .nav-group button.active { background: var(--green-light); color: white; }
+.sidebar-footer { margin-top: 10px; padding-bottom: 18px; }
+.sidebar-footer button { display: block; width: 100%; border: 1px solid #729b4e; padding: 3px; background: var(--green-light); color: white; font-size: 13px; text-align: left; }
+.sidebar-footer p, .sidebar-footer small { display: block; margin: 38px 0 0; color: #efff00; text-align: center; font-size: 11px; }.sidebar-footer small { margin-top: 30px; font-size: 10px; }
+.classic-content { flex: 1; min-width: 0; padding-bottom: 30px; }
+.classic-brand-banner { height: 68px; padding: 16px 5px; background: linear-gradient(110deg, #18422c, #07512e); color: #9abd20; font-size: 35px; font-weight: 900; letter-spacing: -3px; text-shadow: 2px 2px #112718; }
+.classic-brand-banner span { color: #ced7c4; font-size: 12px; letter-spacing: -1px; }
+.country-header { height: 25px; margin: 15px 0 19px; border: 1px solid #84a675; background: #064d25; color: white; font-size: 18px; line-height: 23px; text-align: center; }
+.section-tabs { display: flex; flex-wrap: wrap; gap: 7px; min-height: 69px; padding: 0 8px; align-content: start; }
+.section-tabs button { min-height: 40px; border: 1px solid #4a773c; padding: 4px 7px; background: linear-gradient(#709e4d, #3d712e); color: white; box-shadow: 2px 3px 5px #080b09; font-size: 13px; font-weight: 700; line-height: 1.05; text-shadow: 1px 1px #20301d; }
+.section-tabs button.selected, .section-tabs button:hover { background: linear-gradient(#087746, #005524); }
+.content-grid { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); gap: 14px; padding: 0 8px; align-items: start; }
+.panel-title { border: 1px solid #73926d; background: #005526; color: white; font-size: 13px; line-height: 17px; text-align: center; }
+.standings-table, .ranking-card table { width: 100%; border-collapse: collapse; background: #d0d3d1; color: #17221b; font-size: 11px; }
+.standings-table th, .standings-table td, .ranking-card th, .ranking-card td { border: 1px solid #727b77; padding: 2px 3px; white-space: nowrap; text-align: center; }
+.standings-table th, .ranking-card th { background: #080c0a; color: white; font-size: 10px; }.standings-table td:nth-child(2), .ranking-card td:first-child { text-align: left; font-weight: 700; }.standings-table tr:nth-child(even), .ranking-card tr:nth-child(even) { background: #e0e2df; }.standings-table .leader-row { background: #277a19; color: white; }
+.club-badge { display: inline-grid; place-items: center; width: 15px; height: 15px; margin-right: 2px; border: 1px solid #77877a; border-radius: 50%; background: #eef2eb; color: #27643b; font-size: 7px; font-weight: 700; vertical-align: middle; }
+.table-legend { display: flex; flex-direction: column; gap: 0; color: white; font-size: 10px; line-height: 14px; }.table-legend span:nth-child(1) { background: #197d16; }.table-legend span:nth-child(2) { background: #777d14; }.table-legend span:nth-child(3) { background: #8b8420; }.table-legend span:nth-child(4) { background: #d00000; }
+.round-picker { display: flex; flex-wrap: wrap; gap: 2px; margin-bottom: 14px; }.round-picker button { width: 20px; height: 19px; border: 1px solid #8baa7d; background: #075326; color: white; font-size: 10px; }.round-picker button:hover { background: #6e9b3b; }
+.matchday-controls { display: flex; align-items: center; justify-content: space-between; height: 45px; border: 1px solid #5c9460; background: #00572a; color: #f3ff00; text-align: center; }.matchday-controls button { display: grid; place-items: center; width: 45px; height: 100%; border: 0; background: transparent; color: #8fd141; }.matchday-controls svg { width: 38px; height: 38px; stroke-width: 4; }.matchday-controls b, .matchday-controls strong { display: block; line-height: 16px; }.matchday-controls strong { font-size: 14px; }
+.fixture-date { margin-top: 8px; padding: 3px; background: #dde4dc; color: #1c271f; font-size: 11px; font-weight: 700; text-align: center; }.fixture-match { border: 1px solid #45514b; background: #ced2cf; color: #17221b; }.fixture-teams { display: grid; grid-template-columns: 35px minmax(0, 1fr) 22px 22px minmax(0, 1fr) 22px; align-items: center; min-height: 27px; font-size: 10px; text-align: center; }.fixture-teams .status { display: grid; align-self: stretch; place-items: center; background: #18221d; color: white; font-size: 9px; }.fixture-teams b { font-size: 15px; }.fixture-teams strong:last-of-type { text-align: right; }.fixture-teams button { display: grid; align-self: stretch; place-items: center; border: 0; background: #07841c; color: white; }.fixture-teams svg { width: 14px; }.fixture-scorers { min-height: 14px; border-top: 1px solid #717a75; padding: 1px 3px; color: #ac2525; font-size: 9px; }.stats-footer { margin-top: 8px; padding: 5px; background: #00622d; color: white; font-size: 10px; text-align: center; }.stats-footer b { font-size: 11px; }
+.ranking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 640px; margin: 22px 8px 0; }.ranking-card table { font-size: 11px; }.timezone { width: fit-content; margin: 45px auto 0; padding: 2px 12px; background: #007220; color: white; font-size: 11px; }.timezone small { font-style: italic; }
+@media (max-width: 700px) { .classic-site-shell { gap: 6px; }.classic-sidebar { flex-basis: 118px; }.classic-brand-banner { font-size: 27px; }.content-grid { grid-template-columns: 1fr; }.ranking-grid { grid-template-columns: 1fr; }.section-tabs { min-height: auto; margin-bottom: 18px; } }
+@media (max-width: 520px) { .classic-site-shell { display: block; }.classic-sidebar { min-height: auto; }.nav-group { display: none; }.brand-mark { height: 48px; }.login-box { min-height: 67px; }.home-link { margin-top: 0; }.classic-brand-banner { height: 55px; padding: 11px 5px; font-size: 25px; }.country-header { margin-top: 10px; }.content-grid { padding: 0 4px; }.section-tabs { padding: 0 4px; }.section-tabs button { flex: 1 1 29%; font-size: 11px; }.standings-table { font-size: 10px; }.standings-table th:nth-child(n+7), .standings-table td:nth-child(n+7) { display: none; } }
