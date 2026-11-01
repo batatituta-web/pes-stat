@@ -6,9 +6,7 @@ import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 type Match = { home: string; away: string; homeScore?: string; awayScore?: string; scorers?: string }
 
 const navigationGroups = [
-  { label: 'Destacado', items: ['Liga Profesional', 'Prim. B Nacional', 'Libertadores', 'Sudamericana', 'Copa Argentina', 'Champions', 'Elim. Conmebol', 'Ranking Títulos', 'Ranking Copas Int'] },
-  { label: '🇦🇷 Argentina', items: ['Liga Profesional', 'Copa de la Liga', '-Historiales', '-Tabla Historica', 'Copa Argentina', 'Copas Nacionales', 'Ranking Títulos', 'Prim. B Nacional', 'B Metro', 'Federal A', 'Primera C', 'Prom. Amateur', 'Reserva', 'Femenino'] },
-  { label: '🏆 Copas Int.', items: ['Ranking Copas Int', 'Mundial Clubes', 'Libertadores', 'Sudamericana', '+Copas Conmebol', 'Champions', 'Europa League', 'Conference', '+Copas UEFA', 'Copas AFC', 'Copas CAF', 'Copas OFC'] },
+  { label: 'Destacado', items: ['Liga Profesional', 'Prim. B Nacional', 'Libertadores', 'Sudamericana', 'Champions', 'Elim. Conmebol', 'Ranking Títulos'] },
   { label: '🌐 Ligas', items: ['🇬🇧 Premier League', '🇪🇸 La Liga', '🇮🇹 Serie A', '🇩🇪 Bundesliga', '🇫🇷 Ligue 1', '🇳🇱 Eredivisie', '🇧🇷 Brasileirao', '🇺🇾 Uruguay', '🇵🇾 Paraguay', '🇨🇴 Colombia', '🇨🇱 Chile', '🇲🇽 Liga MX', '🇺🇸 MLS'] },
   { label: '⚑ Selecciones', items: ['Qatar 22', 'Mundial FEM', 'Mundial Sub 20', '-Elim. Conmebol', 'Copa America', 'Eurocopa', 'J. Olimpicos', 'Naciones UEFA', 'Historial Selección'] },
 ]
