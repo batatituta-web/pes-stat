@@ -15,14 +15,10 @@ const navigationGroups = [
 
 const teams = ['Manchester City', 'Brighton And Hove', 'Arsenal FC', 'Liverpool', 'Tottenham', 'Newcastle', 'Nottingham Forest', 'Chelsea']
 const fixtures: Match[] = [
-  { home: 'Brighton And Hove', away: 'Manchester United', homeScore: '2', awayScore: '1', scorers: "32' D. Welbeck; 90(+5)' J. Pedro; 60' A. Traoré" },
-  { home: 'Crystal Palace', away: 'West Ham', homeScore: '0', awayScore: '2', scorers: "67' T. Soucek; 72' J. Bowen" },
-  { home: 'Fulham', away: 'Leicester City', homeScore: '2', awayScore: '1', scorers: "18' E. Smith-Rowe; 70' A. Iwobi; 38' W. Faes" },
-  { home: 'Manchester City', away: 'Ipswich Town', homeScore: '4', awayScore: '1', scorers: "12' E. Haaland; 14' K. De Bruyne; 16' E. Haaland; 88' E. Haaland" },
-  { home: 'Southampton', away: 'Nottingham Forest', homeScore: '0', awayScore: '1', scorers: "72' C. Gibbs-White" },
-  { home: 'Tottenham', away: 'Everton', homeScore: '4', awayScore: '0', scorers: "14' Y. Bissouma; 25' S. Heung-Min" },
-  { home: 'Aston Villa', away: 'Arsenal FC', homeScore: '0', awayScore: '2', scorers: "67' L. Trossard; 77' T. Partey" },
-  { home: 'Liverpool', away: 'Brentford', homeScore: '2', awayScore: '0', scorers: "13' L. Díaz; 70' M. Salah" },
+  { home: 'Manchester City', away: 'Brighton And Hove', homeScore: '2', awayScore: '1', scorers: "32' Haaland; 70' Foden; 60' Pedro" },
+  { home: 'Arsenal FC', away: 'Liverpool', homeScore: '1', awayScore: '1', scorers: "18' Saka; 64' Salah" },
+  { home: 'Tottenham', away: 'Newcastle', homeScore: '3', awayScore: '2', scorers: "14' Son; 51' Gordon; 77' Maddison" },
+  { home: 'Nottingham Forest', away: 'Chelsea', homeScore: '0', awayScore: '2', scorers: "42' Palmer; 81' Jackson" },
 ]
 
 const scorers = [['E. Haaland (Manchester City)', '4', '(1)'], ['N. Madueke (Chelsea)', '3', '(0)'], ['D. Welbeck (Brighton And Hove)', '2', '(0)'], ['M. Salah (Liverpool)', '2', '(0)'], ['S. Heung Min (Tottenham)', '2', '(0)']]
