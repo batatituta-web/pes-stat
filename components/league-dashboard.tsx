@@ -136,10 +136,16 @@ export function LeagueDashboard() {
       </aside>
 
       <div className="classic-content">
-        <header className="country-header"><span>🇪🇸</span> ESPAÑA <span>🇪🇸</span></header>
+        <header className="premier-header" aria-label="Premier League">
+          <div className="premier-logo" role="img" aria-label="Logo de la Premier League" />
+          <div className="premier-heading">
+            <div className="premier-title-row"><h1>Premier League 2026/2027</h1><strong>1.2M <span>seguidores</span></strong></div>
+            <div className="premier-meta"><span className="england-badge" aria-hidden="true" /><b>Inglaterra</b><button type="button" className="season-select">26/27 <span>▼</span></button></div>
+          </div>
+        </header>
         <section className="league-identity" aria-label="Resumen de la competición">
-          <div className="league-code"><span className="status-dot" /> LIGA / ES-01 <strong>LIVE BOARD</strong></div>
-          <div className="identity-stat"><small>TEMPORADA</small><b>2024 / 25</b></div>
+          <div className="league-code"><span className="status-dot" /> PREMIER / EN-01 <strong>LIVE BOARD</strong></div>
+          <div className="identity-stat"><small>TEMPORADA</small><b>2026 / 27</b></div>
           <div className="identity-stat"><small>JORNADA ACTUAL</small><b>02 <em>de 38</em></b></div>
           <div className="identity-stat"><small>PARTIDOS</small><b>06 <em>cargados</em></b></div>
         </section>

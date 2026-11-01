@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'España · Fixture y tablas',
-  description: 'Plantilla editable de una página de fixtures y tablas de fútbol.',
+  title: 'Premier League · Fixture y tablas',
+  description: 'Panel editable de la Premier League con fixture, tabla y resultados.',
   generator: 'v0.app',
   icons: {
     icon: [
