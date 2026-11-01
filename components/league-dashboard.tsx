@@ -11,12 +11,12 @@ const navigationGroups = [
   { label: '⚑ Selecciones', items: ['Qatar 22', 'Mundial FEM', 'Mundial Sub 20', '-Elim. Conmebol', 'Copa America', 'Eurocopa', 'J. Olimpicos', 'Naciones UEFA', 'Historial Selección'] },
 ]
 
-const teams = ['Manchester City', 'Brighton And Hove', 'Arsenal FC', 'Liverpool', 'Tottenham', 'Newcastle', 'Nottingham Forest', 'Chelsea']
+const teams = ['Arsenal FC', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton And Hove', 'Chelsea', 'Crystal Palace', 'Everton']
 const fixtures: Match[] = [
-  { home: 'Manchester City', away: 'Brighton And Hove', homeScore: '2', awayScore: '1', scorers: "32' Haaland; 70' Foden; 60' Pedro" },
-  { home: 'Arsenal FC', away: 'Liverpool', homeScore: '1', awayScore: '1', scorers: "18' Saka; 64' Salah" },
-  { home: 'Tottenham', away: 'Newcastle', homeScore: '3', awayScore: '2', scorers: "14' Son; 51' Gordon; 77' Maddison" },
-  { home: 'Nottingham Forest', away: 'Chelsea', homeScore: '0', awayScore: '2', scorers: "42' Palmer; 81' Jackson" },
+  { home: 'Arsenal FC', away: 'Aston Villa', homeScore: '2', awayScore: '1', scorers: "18' Saka; 64' Watkins; 78' Ødegaard" },
+  { home: 'Bournemouth', away: 'Brentford', homeScore: '1', awayScore: '1', scorers: "32' Solanke; 70' Toney" },
+  { home: 'Brighton And Hove', away: 'Chelsea', homeScore: '2', awayScore: '0', scorers: "42' Mitoma; 81' Pedro" },
+  { home: 'Crystal Palace', away: 'Everton', homeScore: '0', awayScore: '1', scorers: "57' Calvert-Lewin" },
 ]
 
 const scorers = [['E. Haaland (Manchester City)', '4', '(1)'], ['N. Madueke (Chelsea)', '3', '(0)'], ['D. Welbeck (Brighton And Hove)', '2', '(0)'], ['M. Salah (Liverpool)', '2', '(0)'], ['S. Heung Min (Tottenham)', '2', '(0)']]
@@ -35,9 +35,13 @@ function FixturesPanel() {
 
 function RankingTables() { return <div className="ranking-grid"><section className="ranking-card"><div className="panel-title">Goleadores</div><table><thead><tr><th>Jugador</th><th>Goles</th><th>(Penal)</th></tr></thead><tbody>{scorers.map(([name, goals, penalty]) => <tr key={name}><td><ClubBadge name={name} />{name}</td><td>{goals}</td><td>{penalty}</td></tr>)}</tbody></table></section><section className="ranking-card"><div className="panel-title">Asistencias</div><table><thead><tr><th>Jugador</th><th>Asist.</th></tr></thead><tbody>{assists.map(([name, total]) => <tr key={name}><td><ClubBadge name={name} />{name}</td><td>{total}</td></tr>)}</tbody></table></section></div> }
 
+function SquadsPanel() {
+  return <section className="squads-panel" aria-label="Equipos y planteles"><div className="squads-title">EQUIPOS<br /><em>(Pulsar en el equipo para ver su info detallada)</em></div><div className="squads-grid">{teams.map((team) => <button className="squad-card" type="button" key={team}><ClubBadge name={team} /><strong>{team}</strong></button>)}</div></section>
+}
+
 export function LeagueDashboard() {
   const [activeSection, setActiveSection] = useState('🇬🇧 Premier League')
   const [activeTab, setActiveTab] = useState('Fixture y Tablas')
   const tabs = ['Fixture y Tablas', 'Equipos y Planteles', 'Campeones Liga', 'Campeones Copas', 'FA. CUP']
-  return <main className="classic-site-shell"><aside className="classic-sidebar"><div className="brand-mark">PROMIEDOS<span>.com.ar</span></div><button className="login-box" type="button">●<br /><strong>Login/Registros<br />momentáneamente<br />desactivado, pronto<br />volverá.</strong></button><button className="home-link" type="button" onClick={() => setActiveSection('Inicio')}>⌂ Inicio</button>{navigationGroups.map((group) => <div className="nav-group" key={group.label}><h2>{group.label}</h2>{group.items.map((item) => <button type="button" key={item} className={activeSection === item ? 'active' : ''} onClick={() => setActiveSection(item)}>{item}</button>)}</div>)}<div className="sidebar-footer"><button>♣ Comunidad</button><button>▣ Promiedos</button><button>▣ Calendario</button><p>Contacto</p><small>Legal - Privacidad</small><small>Promiedos 2009-2024</small></div></aside><div className="classic-content"><div className="classic-brand-banner">PROMIEDOS<span>.com.ar</span></div><header className="country-header">🏴 PREMIER LEAGUE 🏴</header><nav className="section-tabs">{tabs.map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}</nav><div className="content-grid"><StandingsTable /><FixturesPanel /></div><RankingTables /></div></main>
+  return <main className="classic-site-shell"><aside className="classic-sidebar"><div className="brand-mark">PROMIEDOS<span>.com.ar</span></div><button className="login-box" type="button">●<br /><strong>Login/Registros<br />momentáneamente<br />desactivado, pronto<br />volverá.</strong></button><button className="home-link" type="button" onClick={() => setActiveSection('Inicio')}>⌂ Inicio</button>{navigationGroups.map((group) => <div className="nav-group" key={group.label}><h2>{group.label}</h2>{group.items.map((item) => <button type="button" key={item} className={activeSection === item ? 'active' : ''} onClick={() => setActiveSection(item)}>{item}</button>)}</div>)}<div className="sidebar-footer"><button>♣ Comunidad</button><button>▣ Promiedos</button><button>▣ Calendario</button><p>Contacto</p><small>Legal - Privacidad</small><small>Promiedos 2009-2024</small></div></aside><div className="classic-content"><div className="classic-brand-banner">PROMIEDOS<span>.com.ar</span></div><header className="country-header">🏴 PREMIER LEAGUE 🏴</header><nav className="section-tabs">{tabs.map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}</nav>{activeTab === 'Equipos y Planteles' ? <SquadsPanel /> : <><div className="content-grid"><StandingsTable /><FixturesPanel /></div><RankingTables /></>}</div></main>
 }
