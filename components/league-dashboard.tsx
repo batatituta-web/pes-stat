@@ -114,7 +114,7 @@ function getTeamLogo(name: string): string | null {
     'Leicester': 'https://resources.premierleague.com/premierleague/badges/t13.png',
     'Bournemouth': 'https://resources.premierleague.com/premierleague/badges/t67.png',
     'Wolverhampton': 'https://resources.premierleague.com/premierleague/badges/t39.png',
-    'Crystal Palace': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-10-31_225113188-removebg-preview-dfE6e9P2lKwbYpagYv8yslOzglxhZq.png',
+    'Crystal Palace': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-10-31_225457250-ZGm4wXMfxbjUU6Pv0GrGtl58X9a3yR.png',
     'Nottingham Forest': 'https://resources.premierleague.com/premierleague/badges/t17.png',
     'Southampton': 'https://resources.premierleague.com/premierleague/badges/t20.png',
     'Real Madrid': '/teams/real-madrid.png',
