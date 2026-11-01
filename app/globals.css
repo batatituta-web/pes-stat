@@ -9,7 +9,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: Arial, 
 button { cursor: pointer; font: inherit; }
 .classic-site-shell { display: flex; gap: 13px; width: 100%; max-width: 895px; min-height: 100vh; margin: 0 auto; background: #101516; }
 .classic-sidebar { flex: 0 0 120px; min-height: 100vh; background: #004523; color: white; border-right: 1px solid #0b2d1c; box-shadow: 5px 0 20px rgba(0,0,0,.35); }
-.brand-mark { height: 68px; display: flex; align-items: center; justify-content: center; padding: 0 3px; background: linear-gradient(135deg, #00602d, #00391c); color: #b8d92e; font-size: 25px; font-weight: 900; letter-spacing: -2px; text-shadow: 2px 2px #06100a; white-space: nowrap; }
+.brand-mark { height: 68px; display: flex; align-items: center; justify-content: center; padding: 0 3px; background: transparent; color: transparent; font-size: 0; }
 .brand-mark span { align-self: end; margin-bottom: 18px; color: #d8e4d3; font-size: 9px; letter-spacing: -.7px; }
 .login-box { width: 100%; min-height: 101px; border: 0; border-bottom: 1px solid #1b6440; background: #246453; color: white; font-size: 11px; line-height: 1.12; text-align: center; }
 .login-box:first-line { color: #cce9ff; font-size: 19px; }
@@ -23,7 +23,7 @@ button { cursor: pointer; font: inherit; }
 .sidebar-footer button { display: block; width: 100%; border: 1px solid #31546b; padding: 3px; background: #c89b3c; color: #08121f; font-size: 13px; text-align: left; }
 .sidebar-footer p, .sidebar-footer small { display: block; margin: 38px 0 0; color: #0ac8b9; text-align: center; font-size: 11px; }.sidebar-footer small { margin-top: 30px; font-size: 10px; }
 .classic-content { flex: 1; min-width: 0; padding-bottom: 30px; }
-.classic-brand-banner { height: 68px; padding: 16px 5px; background-color: #005522; background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen-60OHJXqUjvAiBVbrBHeKtM0RXMRbjm.png'); background-position: 0 0; background-size: 893px 281px; color: transparent; font-size: 35px; font-weight: 900; letter-spacing: -3px; text-shadow: none; }
+.classic-brand-banner { height: 68px; width: calc(100% + 133px); margin-left: -133px; padding: 16px 5px; background-color: #005522; background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen-60OHJXqUjvAiBVbrBHeKtM0RXMRbjm.png'); background-position: -55px 0; background-size: 893px 281px; color: transparent; font-size: 35px; font-weight: 900; letter-spacing: -3px; text-shadow: none; }
 .classic-brand-banner span { color: #d8e4d3; font-size: 12px; letter-spacing: -1px; }
 .country-header { height: 25px; margin: 15px 0 19px; border: 1px solid #70a969; background: #005522; color: white; font-size: 18px; line-height: 23px; text-align: center; text-shadow: 0 0 8px rgba(0,0,0,.5); }
 .section-tabs { display: flex; flex-wrap: wrap; gap: 7px; min-height: 69px; padding: 0 8px; align-content: start; }
