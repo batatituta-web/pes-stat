@@ -205,8 +205,9 @@ export function LeagueDashboard() {
   const [showFoxy, setShowFoxy] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [canEdit, setCanEdit] = useState(false)
+  const previewHeaders = typeof window !== 'undefined' && (window.location.hostname === 'v0.app' || window.location.hostname === 'v0.dev' || window.location.hostname.endsWith('.v0.app') || window.location.hostname.endsWith('.v0.dev') || window.location.hostname.endsWith('.v0.build')) ? { 'x-v0-preview': '1' } : undefined
   useEffect(() => {
-    fetch('/api/access', { cache: 'no-store' })
+    fetch('/api/access', { cache: 'no-store', headers: previewHeaders })
       .then((response) => response.json())
       .then((payload) => setCanEdit(payload.canEdit === true))
       .catch(() => setCanEdit(false))
@@ -351,7 +352,7 @@ export function LeagueDashboard() {
         saveQueueRef.current = saveQueueRef.current
           .catch(() => undefined)
           .then(async () => {
-            const response = await fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+            const response = await fetch('/api/league-state', { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(previewHeaders ?? {}) }, body: payload })
             if (!response.ok) throw new Error(`Persistence failed: ${response.status}`)
           })
           .catch((error) => {
