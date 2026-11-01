@@ -33,20 +33,6 @@ button { cursor: pointer; }
 .nav-group button:nth-child(even) { background: #202832; }
 .nav-group button:hover, .nav-group button.active { background: #d99a32; color: #171c22; font-weight: 800; }
 .classic-content { flex: 1; min-width: 0; padding-top: 0; }
-.premier-header { display: flex; align-items: center; gap: 18px; min-height: 146px; margin-top: 8px; padding: 16px 34px; border: 1px solid #252d35; border-left: 3px solid #d99a32; background: #171c22; }
-.premier-logo { flex: 0 0 92px; width: 92px; height: 100px; background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen-0onS9C6NxYmFfRi3LJTy9yNinZAZpZ.png'); background-position: -38px -23px; background-size: 938px 147px; background-repeat: no-repeat; }
-.premier-heading { min-width: 0; }
-.premier-title-row { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
-.premier-title-row h1 { margin: 0; color: #f1f2f4; font-size: clamp(24px, 3vw, 31px); letter-spacing: -.04em; }
-.premier-title-row strong { color: #8094e8; font-size: 13px; }
-.premier-title-row strong span { color: #aeb7bf; font-size: 11px; font-weight: 400; }
-.premier-meta { display: flex; align-items: center; gap: 9px; margin-top: 18px; color: #e7e9e8; font-size: 14px; }
-.england-badge { position: relative; display: block; width: 31px; height: 31px; border-radius: 50%; background: #f2f2ef; overflow: hidden; }
-.england-badge::before, .england-badge::after { content: ''; position: absolute; background: #d33d42; }
-.england-badge::before { top: 0; left: 12px; width: 7px; height: 31px; }
-.england-badge::after { top: 12px; left: 0; width: 31px; height: 7px; }
-.season-select { margin-left: 11px; border: 1px solid #46515c; border-radius: 6px; padding: 7px 8px; background: #101317; color: #e7e9e8; font-size: 13px; }
-.season-select span { display: inline-block; margin-left: 8px; color: #aeb7bf; font-size: 11px; }
 .league-identity { display: grid; grid-template-columns: minmax(160px, 1.6fr) repeat(3, minmax(90px, 1fr)); gap: 1px; margin-top: 8px; border: 1px solid #3a4651; background: #3a4651; }
 .league-code, .identity-stat { min-height: 42px; background: #171c22; padding: 6px 9px; }
 .league-code { display: flex; align-items: center; gap: 7px; color: #f1d08a; font-size: 11px; letter-spacing: .08em; }
