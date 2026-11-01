@@ -33,6 +33,18 @@ button { cursor: pointer; }
 .nav-group button:nth-child(even) { background: #202832; }
 .nav-group button:hover, .nav-group button.active { background: #d99a32; color: #171c22; font-weight: 800; }
 .classic-content { flex: 1; min-width: 0; padding-top: 0; }
+.live-header { display: flex; align-items: stretch; min-height: 116px; border-top: 1px solid #33404b; border-bottom: 1px solid #33404b; background: #151b20; }
+.live-league-logo { flex: 0 0 120px; width: 120px; background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen-sqPVdEk7NRZ65gjuYfVosDQsL4cE0M.png'); background-position: 12px center; background-size: auto 96px; background-repeat: no-repeat; }
+.live-header-content { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0 0; }
+.live-title-row { display: flex; align-items: center; gap: 18px; padding: 0 22px; white-space: nowrap; }
+.live-title-row h1 { margin: 0; color: #f2f4f5; font-size: clamp(23px, 3vw, 32px); font-weight: 400; letter-spacing: -.04em; }
+.follow-button { min-width: 105px; border: 1px solid #248ee7; border-radius: 18px; padding: 4px 17px; background: transparent; color: #248ee7; font-size: 14px; }
+.follow-button:hover { background: #248ee7; color: #101317; }
+.followers { color: #aeb7bf; font-size: 13px; }
+.live-tabs { display: flex; align-items: end; gap: 0; overflow-x: auto; padding: 0 9px; }
+.live-tabs button { position: relative; flex: 0 0 auto; border: 0; padding: 12px 22px 13px; background: transparent; color: #9ca7b1; font-size: 14px; }
+.live-tabs button:hover, .live-tabs button.active { color: #f2f4f5; }
+.live-tabs button.active::after { content: ''; position: absolute; right: 9px; bottom: 0; left: 9px; height: 2px; background: #248ee7; }
 .league-identity { display: grid; grid-template-columns: minmax(160px, 1.6fr) repeat(3, minmax(90px, 1fr)); gap: 1px; margin-top: 8px; border: 1px solid #3a4651; background: #3a4651; }
 .league-code, .identity-stat { min-height: 42px; background: #171c22; padding: 6px 9px; }
 .league-code { display: flex; align-items: center; gap: 7px; color: #f1d08a; font-size: 11px; letter-spacing: .08em; }
@@ -82,5 +94,6 @@ button { cursor: pointer; }
 .upcoming-row { display: grid; grid-template-columns: 42px 1fr 22px 1fr; padding: 5px 3px; border: 1px solid #596571; background: #202832; color: #e7e9e8; font-size: 11px; text-align: center; }
 .upcoming-row span:first-child { color: #f4ffff; font-weight: 700; }
 
-@media (max-width: 800px) { .classic-site-shell { gap: 8px; }.classic-sidebar { flex-basis: 118px; }.brand-mark { font-size: 16px; }.content-grid { grid-template-columns: 1fr; }.right-column { display: grid; grid-template-columns: 1fr; }.section-tabs { min-height: auto; padding-bottom: 24px; }.search-strip { margin-top: 12px; }.premier-header { padding: 14px 20px; }.league-identity { grid-template-columns: 1.3fr repeat(3, 1fr); }.league-code { font-size: 10px; } }
+@media (max-width: 800px) { .classic-site-shell { gap: 8px; }.classic-sidebar { flex-basis: 118px; }.brand-mark { font-size: 16px; }.content-grid { grid-template-columns: 1fr; }.right-column { display: grid; grid-template-columns: 1fr; }.section-tabs { min-height: auto; padding-bottom: 24px; }.search-strip { margin-top: 12px; }.live-title-row { gap: 10px; padding: 0 14px; }.live-tabs button { padding-right: 14px; padding-left: 14px; }.league-identity { grid-template-columns: 1.3fr repeat(3, 1fr); }.league-code { font-size: 10px; } }
 @media (max-width: 560px) { .classic-site-shell { display: block; }.classic-sidebar { min-height: auto; }.nav-group { display: none; }.brand-mark { height: 42px; }.login-box { min-height: 62px; }.home-link { margin-top: 0; }.content-grid { padding: 0 5px; }.score-nav { overflow-x: auto; }.score-nav button { flex: 0 0 auto; padding: 0 9px; }.premier-header { gap: 10px; min-height: 126px; padding: 12px 14px; }.premier-logo { flex-basis: 68px; width: 68px; height: 82px; background-position: -45px -30px; background-size: 780px 122px; }.premier-title-row h1 { font-size: 21px; }.premier-title-row strong { font-size: 11px; }.premier-meta { margin-top: 12px; font-size: 12px; }.league-identity { grid-template-columns: repeat(2, 1fr); }.league-code { grid-column: 1 / -1; }.section-tabs { padding: 16px 5px 8px; }.section-tabs button { flex: 1 1 28%; font-size: 12px; }.search-strip { margin-left: 5px; margin-right: 5px; } .standings-table { font-size: 10px; }.standings-table th, .standings-table td { padding: 3px 1px; }.standings-table th:nth-child(n+7), .standings-table td:nth-child(n+7) { display: none; } }
+@media (max-width: 560px) { .live-header { min-height: 112px; }.live-league-logo { flex-basis: 76px; width: 76px; background-size: auto 72px; background-position: 3px center; }.live-header-content { padding-top: 17px; }.live-title-row { gap: 7px; padding: 0 8px; }.live-title-row h1 { font-size: 18px; white-space: normal; line-height: 1.05; }.follow-button { min-width: auto; padding: 3px 10px; font-size: 11px; }.followers { display: none; }.live-tabs button { padding: 10px 11px 11px; font-size: 12px; } }

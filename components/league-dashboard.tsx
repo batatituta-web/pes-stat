@@ -136,13 +136,21 @@ export function LeagueDashboard() {
       </aside>
 
       <div className="classic-content">
+        <header className="live-header" aria-label="Resultados en vivo de Premier League">
+          <div className="live-league-logo" role="img" aria-label="Logo de la Premier League" />
+          <div className="live-header-content">
+            <div className="live-title-row"><h1>RESULTADOS EN VIVO DE PREMIER LEAGUE</h1><button type="button" className="follow-button">Seguir</button><span className="followers">98.49M</span></div>
+            <nav className="live-tabs" aria-label="Secciones de Premier League">
+              {['Resumen', 'Partidos', 'Posiciones', 'Noticias', 'Estadísticas', 'Pronósticos', 'Cuotas', 'Transferencia', 'Historia'].map((tab, index) => <button type="button" className={index === 0 ? 'active' : ''} key={tab}>{tab}</button>)}
+            </nav>
+          </div>
+        </header>
         <section className="league-identity compact-identity" aria-label="Resumen de la competición">
           <div className="league-code"><span className="status-dot" /> PREMIER / EN-01 <strong>LIVE BOARD</strong></div>
           <div className="identity-stat"><small>TEMPORADA</small><b>2026 / 27</b></div>
           <div className="identity-stat"><small>JORNADA ACTUAL</small><b>02 <em>de 38</em></b></div>
           <div className="identity-stat"><small>PARTIDOS</small><b>06 <em>cargados</em></b></div>
         </section>
-        <nav className="score-nav" aria-label="Navegación principal"><button type="button" className="selected">Resultados</button><button type="button">Noticias</button><button type="button">Mis marcadores</button><button type="button">Configuración</button></nav>
         <nav className="section-tabs" aria-label="Secciones de España">
           {leagueTabs.map((tab) => <button type="button" className={activeTab === tab ? 'selected' : ''} onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}
         </nav>
