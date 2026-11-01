@@ -13,7 +13,7 @@ const navigationGroups = [
   { label: '⚑ Selecciones', items: ['Qatar 22', 'Mundial FEM', 'Mundial Sub 20', '-Elim. Conmebol', 'Copa America', 'Eurocopa', 'J. Olimpicos', 'Naciones UEFA', 'Historial Selección'] },
 ]
 
-const teams = ['Manchester City', 'Brighton And Hove', 'Arsenal FC', 'Liverpool', 'Tottenham', 'Newcastle', 'Nottingham Forest', 'Chelsea', 'West Ham', 'Fulham', 'Manchester United', 'Aston Villa', 'Brentford', 'Bournemouth', 'Leicester City', 'Southampton', 'Crystal Palace', 'Ipswich Town', 'Wolverhampton', 'Everton']
+const teams = ['Manchester City', 'Brighton And Hove', 'Arsenal FC', 'Liverpool', 'Tottenham', 'Newcastle', 'Nottingham Forest', 'Chelsea']
 const fixtures: Match[] = [
   { home: 'Brighton And Hove', away: 'Manchester United', homeScore: '2', awayScore: '1', scorers: "32' D. Welbeck; 90(+5)' J. Pedro; 60' A. Traoré" },
   { home: 'Crystal Palace', away: 'West Ham', homeScore: '0', awayScore: '2', scorers: "67' T. Soucek; 72' J. Bowen" },
