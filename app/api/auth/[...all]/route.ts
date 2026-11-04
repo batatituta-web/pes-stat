@@ -1,3 +1,3 @@
 import { auth } from '@/lib/auth'
 
-export const { GET, POST, PUT, PATCH, DELETE } = auth.handler()
+export const { GET, POST, PUT, DELETE, PATCH } = auth.handler()

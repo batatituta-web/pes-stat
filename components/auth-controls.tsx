@@ -1,11 +1,19 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
-import { signIn, signOut, signUp, useSession } from '@/lib/auth-client'
+import { FormEvent, useEffect, useState } from 'react'
+import { authClient, signIn, signOut, signUp } from '@/lib/auth-client'
 
 export function AuthControls() {
-  const { data: session, isPending } = useSession()
+  const [session, setSession] = useState<{ user?: { name?: string | null } } | null>(null)
+  const [isPending, setIsPending] = useState(true)
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    authClient.getSession().then(({ data }) => {
+      setSession(data)
+      setIsPending(false)
+    })
+  }, [])
   const [mode, setMode] = useState<'sign-in' | 'sign-up'>('sign-in')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

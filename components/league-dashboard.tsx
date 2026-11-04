@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown, ChevronLeft, ChevronRight, Circle, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Play, Square, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { stableStringify } from '@/lib/sync-utils'
-import { useSession } from '@/lib/auth-client'
+import { authClient } from '@/lib/auth-client'
 import { AuthControls } from '@/components/auth-controls'
 
 type Player = { id: string; name: string; initials: string; color: string }
@@ -203,7 +203,7 @@ export function LeagueDashboard() {
   const [activeTournament, setActiveTournament] = useState('General')
   const [activeSeason, setActiveSeason] = useState<Season>('2024/2025')
   const [tableCorners, setTableCorners] = useState<'rounded' | 'square'>('rounded')
-  const { data: session } = useSession()
+  const [session, setSession] = useState<{ user?: { id: string } } | null>(null)
   const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
@@ -215,6 +215,10 @@ export function LeagueDashboard() {
       .then((response) => response.json())
       .then((payload) => setCanEdit(payload.canEdit === true))
       .catch(() => setCanEdit(false))
+  }, [])
+
+  useEffect(() => {
+    authClient.getSession().then(({ data }) => setSession(data))
   }, [])
 
   useEffect(() => {
