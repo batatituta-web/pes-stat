@@ -264,9 +264,12 @@ section:has(.manual-results-title) {
 main[data-table-corners="square"] section:has(table),
 main[data-table-corners="square"] section.matchlist-section,
 main[data-table-corners="square"] section[class*="bracket"],
-main[data-table-corners="square"] div[class*="rounded-2xl"],
-main[data-table-corners="square"] div[class*="rounded-xl"],
-main[data-table-corners="square"] [class*="rounded-"] {
+main[data-table-corners="square"] .matchday-card,
+main[data-table-corners="square"] .tournament-content-enter > div[class*="rounded"] {
+  border-radius: 0 !important;
+}
+
+main[data-table-corners="square"] table {
   border-radius: 0 !important;
 }
 
