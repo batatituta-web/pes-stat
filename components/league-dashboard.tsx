@@ -200,6 +200,7 @@ export function LeagueDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
   const [activeTournament, setActiveTournament] = useState('General')
   const [activeSeason, setActiveSeason] = useState<Season>('2024/2025')
+  const [tableCorners, setTableCorners] = useState<'rounded' | 'square'>('rounded')
   const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
@@ -516,14 +517,13 @@ export function LeagueDashboard() {
       <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <button onClick={() => selectTournament('General')} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></button>
-          <div className="flex items-center gap-2 pr-4 sm:pr-6">
-
+          <div className="flex items-center gap-2 pr-4 sm:pr-6"><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Estilo de esquinas de las tablas"><button type="button" aria-pressed={tableCorners === 'rounded'} onClick={() => setTableCorners('rounded')} className={`rounded-md px-2 py-1.5 text-xs font-semibold transition-colors ${tableCorners === 'rounded' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}>Redondeadas</button><button type="button" aria-pressed={tableCorners === 'square'} onClick={() => setTableCorners('square')} className={`rounded-md px-2 py-1.5 text-xs font-semibold transition-colors ${tableCorners === 'square' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}>Cuadradas</button></div>
             {canEdit && <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>}
           </div>
         </div>
       </header>
       {showFoxy && <div className="fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-black" role="status" aria-label="Foxy"><img key={activeTournament} src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/foxy-OxhycBedDoHP4KY8nmeJDQhi40ouT9.gif" alt="Foxy" className="h-full w-full object-contain" /></div>}
-      <main data-active-tab={activeTab} className="flex min-h-[calc(100vh-81px)] w-full flex-col gap-0 px-0 py-0 lg:flex-row [&_table]:w-full [&_table]:border [&_table]:border-[#55d6a4]/80 [&_table]:bg-[#004a34] [&_th]:border [&_th]:border-[#55d6a4]/55 [&_td]:border [&_td]:border-[#55d6a4]/40 [&_thead]:bg-[#003d2b] [&_tbody_tr]:border-[#159a72]/50 [&_tbody_tr]:bg-[#004a34]">
+      <main data-active-tab={activeTab} data-table-corners={tableCorners} className="flex min-h-[calc(100vh-81px)] w-full flex-col gap-0 px-0 py-0 lg:flex-row [&_table]:w-full [&_table]:border [&_table]:border-[#55d6a4]/80 [&_table]:bg-[#004a34] [&_th]:border [&_th]:border-[#55d6a4]/55 [&_td]:border [&_td]:border-[#55d6a4]/40 [&_thead]:bg-[#003d2b] [&_tbody_tr]:border-[#159a72]/50 [&_tbody_tr]:bg-[#004a34]">
         <aside className="max-h-[calc(100vh-5rem)] shrink-0 overflow-y-auto border-b border-[#007a55] bg-transparent p-4 lg:h-fit lg:max-h-none lg:overflow-visible lg:w-72 lg:border-b-0 lg:border-r-0 lg:p-3">
           <nav aria-label="Navegación principal y de torneos" className="flex flex-col gap-2">
             <button type="button" onClick={() => selectTournament('General')} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide transition-colors hover:bg-[#004a34] hover:text-white ${activeTournament === 'General' ? 'bg-[#007a55] text-white' : 'text-emerald-100'}`}><LayoutDashboard className="size-4" />General</button>

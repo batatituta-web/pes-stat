@@ -261,6 +261,11 @@ section:has(.manual-results-title) {
   display: none;
 }
 
+main[data-table-corners="square"] section:has(table),
+main[data-table-corners="square"] section.matchlist-section {
+  border-radius: 0 !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
