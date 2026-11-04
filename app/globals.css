@@ -261,6 +261,29 @@ section:has(.manual-results-title) {
   display: none;
 }
 
+main[data-table-corners="square"] section:has(table),
+main[data-table-corners="square"] section.matchlist-section,
+main[data-table-corners="square"] .matchday-card,
+main[data-table-corners="square"] .matchday-card article,
+main[data-table-corners="square"] .bracket-card,
+main[data-table-corners="square"] .bracket-card > div,
+main[data-table-corners="square"] .bracket-card .rounded-xl,
+main[data-table-corners="square"] .bracket-card .rounded-lg {
+  border-radius: 0 !important;
+}
+
+main[data-table-corners="square"] table {
+  border-radius: 0 !important;
+}
+
+main[data-table-corners="square"] .corner-style-surface,
+main[data-table-corners="square"] .corner-style-surface button,
+main[data-table-corners="square"] .corner-style-surface .rounded-lg,
+main[data-table-corners="square"] .corner-style-surface .rounded-xl,
+main[data-table-corners="square"] .corner-style-surface .rounded-2xl {
+  border-radius: 0 !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
