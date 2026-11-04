@@ -42,8 +42,11 @@ export function AuthControls() {
       }
       setOpen(false)
       window.location.reload()
-    } catch {
-      setError('No se pudo conectar con el servicio de autenticación. Intenta de nuevo.')
+    } catch (caught) {
+      const message = caught instanceof Error ? caught.message : ''
+      setError(/invalid origin/i.test(message)
+        ? 'Este dominio todavía no está autorizado para iniciar sesión. Avísale al administrador.'
+        : 'No se pudo conectar con el servicio de autenticación. Intenta de nuevo.')
     } finally {
       setBusy(false)
     }
