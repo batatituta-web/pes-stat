@@ -618,7 +618,7 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
     } catch { return null }
   }
 
-  return <section className="rounded-2xl border border-[#159a72] bg-[#005c40] p-4 sm:p-5">
+  return <section className="matchday-card rounded-2xl border border-[#159a72] bg-[#005c40] p-4 sm:p-5">
     <div className="mb-4 flex items-center justify-between border-b border-[#159a72]/50 pb-4">
       <button type="button" aria-label="Fecha anterior" disabled={roundIndex === 0} onClick={() => setRoundIndex((index) => Math.max(0, index - 1))} className="rounded-full p-2 text-emerald-100 transition hover:bg-[#007a55] disabled:cursor-not-allowed disabled:opacity-30"><ChevronLeft className="size-6" /></button>
       <div className="text-center"><p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-200">Partidos</p><h2 className="text-2xl font-black">{currentRound.label}</h2></div>
@@ -652,7 +652,7 @@ function StandingsTable({ table }: { table: ReturnType<typeof calculateTable> })
 function CopaAmericaBracket({ players, bracket, onChange }: { players: Player[]; bracket: CopaBracket; onChange: React.Dispatch<React.SetStateAction<CopaBracket>> }) {
   const update = (match: keyof CopaBracket, field: keyof BracketMatch, value: string) => onChange((current) => ({ ...current, [match]: { ...current[match], [field]: value } }))
   const matchCard = (title: string, key: keyof CopaBracket) => { const match = bracket[key]; return <div className="rounded-xl border border-[#159a72]/60 bg-[#004a34] p-4"><h3 className="mb-3 font-bold">{title}</h3><div className="grid gap-2 sm:grid-cols-[1fr_70px_70px_1fr]"><select aria-label={`${title} equipo local`} value={match.home} onChange={(e) => update(key, 'home', e.target.value)} className="rounded-lg border border-[#159a72] bg-[#005c40] p-2 text-sm text-white"><option value="">Elegir equipo</option>{players.map((player) => <option key={player.id} value={player.id}>{player.name}</option>)}</select><input aria-label={`${title} goles local`} type="number" min="0" value={match.homeGoals} onChange={(e) => update(key, 'homeGoals', e.target.value)} placeholder="0" className="rounded-lg border border-[#159a72] bg-[#005c40] p-2 text-center text-white" /><input aria-label={`${title} goles visitante`} type="number" min="0" value={match.awayGoals} onChange={(e) => update(key, 'awayGoals', e.target.value)} placeholder="0" className="rounded-lg border border-[#159a72] bg-[#005c40] p-2 text-center text-white" /><select aria-label={`${title} equipo visitante`} value={match.away} onChange={(e) => update(key, 'away', e.target.value)} className="rounded-lg border border-[#159a72] bg-[#005c40] p-2 text-sm text-white"><option value="">Elegir equipo</option>{players.map((player) => <option key={player.id} value={player.id}>{player.name}</option>)}</select></div></div> }
-  return <section className="mt-6 rounded-2xl border border-[#159a72] bg-[#005c40] p-5"><div className="mb-4"><h2 className="text-lg font-bold">Cuadro de eliminación</h2><p className="text-xs text-emerald-100">Completá los equipos y resultados de semifinales y final.</p></div><div className="grid gap-5 lg:grid-cols-3"><div><p className="mb-2 text-sm font-bold text-emerald-200">Semifinales</p><div className="space-y-3">{matchCard('Semifinal 1', 'semifinal1')}{matchCard('Semifinal 2', 'semifinal2')}</div></div><div className="lg:col-span-2"><p className="mb-2 text-sm font-bold text-emerald-200">Final</p>{matchCard('Final', 'final')}</div></div></section>
+  return <section className="bracket-card mt-6 rounded-2xl border border-[#159a72] bg-[#005c40] p-5"><div className="mb-4"><h2 className="text-lg font-bold">Cuadro de eliminación</h2><p className="text-xs text-emerald-100">Completá los equipos y resultados de semifinales y final.</p></div><div className="grid gap-5 lg:grid-cols-3"><div><p className="mb-2 text-sm font-bold text-emerald-200">Semifinales</p><div className="space-y-3">{matchCard('Semifinal 1', 'semifinal1')}{matchCard('Semifinal 2', 'semifinal2')}</div></div><div className="lg:col-span-2"><p className="mb-2 text-sm font-bold text-emerald-200">Final</p>{matchCard('Final', 'final')}</div></div></section>
 }
 
 function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onChampionChange, competition = 'Copa América' }: { players: Player[]; bracket: CopaVisualBracket; onChange: React.Dispatch<React.SetStateAction<CopaVisualBracket>>; champion: string; onChampionChange: (value: string) => void; competition?: string }) {
@@ -702,7 +702,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
   )
   
   return (
-    <section className="mt-6 mb-10 overflow-hidden rounded-2xl border border-[#103e2d] bg-[#06291e] p-3 pb-8 sm:p-4 sm:pb-10">
+    <section className="bracket-card mt-6 mb-10 overflow-hidden rounded-2xl border border-[#103e2d] bg-[#06291e] p-3 pb-8 sm:p-4 sm:pb-10">
       <div className="mb-4">
         <h2 className="text-lg font-black text-white">Cuadro de eliminaci��n</h2>
         <p className="text-xs text-emerald-200">{hasRound16 ? 'Octavos, cuartos de final, semifinales y final' : ['FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil'].includes(competition) ? 'Cuartos de final, semifinales y final' : 'Semifinales y final'}</p>
