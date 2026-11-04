@@ -5,6 +5,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown, ChevronLeft, ChevronRight, Circle, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Play, Square, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { stableStringify } from '@/lib/sync-utils'
+import { authClient } from '@/lib/auth-client'
+import { AuthControls } from '@/components/auth-controls'
 
 type Player = { id: string; name: string; initials: string; color: string }
 type PlayerStat = { id: string; name: string; goals: number; assists: number; penalties: number; yellowCards: number; redCards: number; injuries: number }
@@ -201,6 +203,7 @@ export function LeagueDashboard() {
   const [activeTournament, setActiveTournament] = useState('General')
   const [activeSeason, setActiveSeason] = useState<Season>('2024/2025')
   const [tableCorners, setTableCorners] = useState<'rounded' | 'square'>('rounded')
+  const [session, setSession] = useState<{ user?: { id: string } } | null>(null)
   const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
@@ -213,6 +216,31 @@ export function LeagueDashboard() {
       .then((payload) => setCanEdit(payload.canEdit === true))
       .catch(() => setCanEdit(false))
   }, [])
+
+  useEffect(() => {
+    authClient.getSession().then(({ data }) => setSession(data))
+  }, [])
+
+  useEffect(() => {
+    if (!session?.user) return
+    fetch('/api/preferences', { cache: 'no-store' })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (payload.tableCorners === 'rounded' || payload.tableCorners === 'square') setTableCorners(payload.tableCorners)
+      })
+      .catch(() => undefined)
+  }, [session?.user])
+
+  const changeTableCorners = (value: 'rounded' | 'square') => {
+    setTableCorners(value)
+    if (session?.user) {
+      void fetch('/api/preferences', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tableCorners: value }),
+      })
+    }
+  }
 
   useEffect(() => {
     if (!isUnavailableTournament) {
@@ -517,8 +545,9 @@ export function LeagueDashboard() {
       <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <button onClick={() => selectTournament('General')} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></button>
-          <div className="flex items-center gap-2 pr-4 sm:pr-6"><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Estilo de esquinas de las tablas"><button type="button" aria-label="Esquinas redondeadas" title="Esquinas redondeadas" aria-pressed={tableCorners === 'rounded'} onClick={() => setTableCorners('rounded')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'rounded' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Circle className="size-4" /></button><button type="button" aria-label="Esquinas cuadradas" title="Esquinas cuadradas" aria-pressed={tableCorners === 'square'} onClick={() => setTableCorners('square')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'square' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Square className="size-4" /></button></div>
-            {canEdit && <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>}
+          <div className="flex items-center gap-2 pr-4 sm:pr-6"><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Estilo de esquinas de las tablas"><button type="button" aria-label="Esquinas redondeadas" title="Esquinas redondeadas" aria-pressed={tableCorners === 'rounded'} onClick={() => changeTableCorners('rounded')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'rounded' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Circle className="size-4" /></button><button type="button" aria-label="Esquinas cuadradas" title="Esquinas cuadradas" aria-pressed={tableCorners === 'square'} onClick={() => changeTableCorners('square')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'square' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Square className="size-4" /></button></div>
+            <AuthControls />
+  {canEdit && <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>}
           </div>
         </div>
       </header>
