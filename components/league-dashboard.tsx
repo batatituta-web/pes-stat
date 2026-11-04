@@ -2,7 +2,7 @@
 
 import useSWR from 'swr'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ChevronDown, ChevronLeft, ChevronRight, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Play, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, Circle, CirclePlus, Globe2, LayoutDashboard, ListOrdered, MoreHorizontal, Play, Square, Trash2, Settings2, Shield, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { stableStringify } from '@/lib/sync-utils'
 
@@ -517,7 +517,7 @@ export function LeagueDashboard() {
       <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <button onClick={() => selectTournament('General')} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></button>
-          <div className="flex items-center gap-2 pr-4 sm:pr-6"><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Estilo de esquinas de las tablas"><button type="button" aria-pressed={tableCorners === 'rounded'} onClick={() => setTableCorners('rounded')} className={`rounded-md px-2 py-1.5 text-xs font-semibold transition-colors ${tableCorners === 'rounded' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}>Redondeadas</button><button type="button" aria-pressed={tableCorners === 'square'} onClick={() => setTableCorners('square')} className={`rounded-md px-2 py-1.5 text-xs font-semibold transition-colors ${tableCorners === 'square' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}>Cuadradas</button></div>
+          <div className="flex items-center gap-2 pr-4 sm:pr-6"><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Estilo de esquinas de las tablas"><button type="button" aria-label="Esquinas redondeadas" title="Esquinas redondeadas" aria-pressed={tableCorners === 'rounded'} onClick={() => setTableCorners('rounded')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'rounded' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Circle className="size-4" /></button><button type="button" aria-label="Esquinas cuadradas" title="Esquinas cuadradas" aria-pressed={tableCorners === 'square'} onClick={() => setTableCorners('square')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'square' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Square className="size-4" /></button></div>
             {canEdit && <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>}
           </div>
         </div>
