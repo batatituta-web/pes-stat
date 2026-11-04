@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@neondatabase/auth": "0.7.0-beta",
     "@vercel/analytics": "1.6.1",
+    "better-auth": "^1.7.15",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.4",
     "lucide-react": "^1.16.0",
     "next": "16.4.0",
     "pg": "^8.23.1",
