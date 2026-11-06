@@ -247,7 +247,7 @@ html[data-theme='purple'] {
 }
 
 html[data-theme='purple'] img[alt='PES 6 que me gusta'],
-html[data-theme='black'] img[alt='PES 6 que me gusta'] {
+html[data-theme='black'] img[alt='PES 6 que me gusta'][data-logo='default'] {
   filter: drop-shadow(1px 0 0 #ffffff) drop-shadow(-1px 0 0 #ffffff) drop-shadow(0 1px 0 #ffffff) drop-shadow(0 -1px 0 #ffffff);
 }
 
@@ -336,8 +336,11 @@ html[data-theme='black'] h2 {
 }
 
 html[data-theme='black'] .football-background {
-  background-color: #0a0a0a;
-  background-image: none;
+  background-color: #04160b;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url("/themes/black-background.png");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 html[data-theme='black'] .football-background::before {
