@@ -197,28 +197,49 @@
 }
 
 html[data-theme='black'] {
-  --pt-accent: #8a8a8a;
-  --pt-surface: #111111;
-  --pt-surface-hover: #1e1e1e;
-  --pt-border: #4d4d4d;
-  --pt-deep: #050505;
-  --pt-deep-alt: #0c0c0c;
-  --pt-line: #d9d9d9;
-  --pt-head: #0a0a0a;
-  --pt-panel: #171717;
-  --pt-panel-deep: #0f0f0f;
-  --pt-surface-strong: #262626;
-  --pt-pitch: #2b2b2b;
-  --pt-panel-alt: #151515;
-  --pt-bracket-line: rgba(217, 217, 217, 0.45);
-  --color-emerald-50: #fafafa;
-  --color-emerald-100: #ececec;
-  --color-emerald-200: #d4d4d4;
-  --color-emerald-300: #b0b0b0;
-  --color-emerald-400: #8a8a8a;
-  --color-emerald-600: #4d4d4d;
+  --pt-accent: #d9540b;
+  --pt-surface: #0e0e0e;
+  --pt-surface-hover: #1a120d;
+  --pt-border: #3a2a20;
+  --pt-deep: #030303;
+  --pt-deep-alt: #0a0a0a;
+  --pt-line: #ff8a3d;
+  --pt-head: #080808;
+  --pt-panel: #141414;
+  --pt-panel-deep: #0b0b0b;
+  --pt-surface-strong: #2a1508;
+  --pt-pitch: #1d120a;
+  --pt-panel-alt: #111111;
+  --pt-bracket-line: rgba(255, 122, 26, 0.5);
+  --color-emerald-50: #fff7f0;
+  --color-emerald-100: #ffe6d1;
+  --color-emerald-200: #ffc08a;
+  --color-emerald-300: #ff9a4d;
+  --color-emerald-400: #ff7a1a;
+  --color-emerald-600: #c2410c;
   --color-emerald-950: #0a0a0a;
-  --color-teal-500: #6b6b6b;
+  --color-teal-500: #ff6a1a;
+}
+
+html[data-theme='black'] body::before {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 60;
+  height: 2px;
+  content: '';
+  pointer-events: none;
+  background: #ff7a1a;
+}
+
+html[data-theme='black'] img[alt='PES 6 que me gusta'] {
+  filter: drop-shadow(1px 0 0 #ffe6d1) drop-shadow(-1px 0 0 #ffe6d1) drop-shadow(0 1px 0 #ffe6d1) drop-shadow(0 -1px 0 #ffe6d1);
+}
+
+html[data-theme='black'] h2 {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .football-background {
@@ -292,14 +313,14 @@ html[data-theme='black'] {
 }
 
 html[data-theme='black'] .football-background {
-  background-color: #070707;
+  background-color: #050505;
   background-image: none;
 }
 
 html[data-theme='black'] .football-background::before {
   background:
-    radial-gradient(ellipse at 18% 22%, rgba(255, 255, 255, 0.07), transparent 24%),
-    radial-gradient(ellipse at 82% 74%, rgba(255, 255, 255, 0.05), transparent 28%);
+    radial-gradient(ellipse at 18% 22%, rgba(255, 122, 26, 0.1), transparent 24%),
+    radial-gradient(ellipse at 82% 74%, rgba(255, 122, 26, 0.07), transparent 28%);
 }
 
 html[data-theme='black'] .football-background::after {
