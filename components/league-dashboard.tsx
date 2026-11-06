@@ -748,9 +748,9 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
   )
   
   return (
-    <section className="bracket-card mt-6 mb-10 overflow-hidden rounded-2xl border border-[color:var(--pt-panel-alt)] bg-[color:var(--pt-deep)] p-3 pb-8 sm:p-4 sm:pb-10">
+    <section className="bracket-card mt-6 mb-10 overflow-hidden rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)] p-3 pb-8 sm:p-4 sm:pb-10">
       <div className="mb-4">
-        <h2 className="text-lg font-black text-white">Cuadro de eliminaci��n</h2>
+        <h2 className="text-lg font-black text-white">Cuadro de eliminación</h2>
         <p className="text-xs text-emerald-200">{hasRound16 ? 'Octavos, cuartos de final, semifinales y final' : ['FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil'].includes(competition) ? 'Cuartos de final, semifinales y final' : 'Semifinales y final'}</p>
       </div>
       <div className="bracket-scroll overflow-x-auto pb-2">

@@ -225,6 +225,10 @@ html[data-theme='black'] img[alt='PES 6 que me gusta'] {
   filter: drop-shadow(1px 0 0 #ffffff) drop-shadow(-1px 0 0 #ffffff) drop-shadow(0 1px 0 #ffffff) drop-shadow(0 -1px 0 #ffffff);
 }
 
+aside nav button {
+  border: 1px solid var(--pt-accent);
+}
+
 html[data-theme='black'] h2 {
   letter-spacing: 0.06em;
   text-transform: uppercase;
