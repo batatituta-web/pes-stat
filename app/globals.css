@@ -221,6 +221,32 @@ html[data-theme='black'] {
   --color-teal-500: #00d936;
 }
 
+html[data-theme='purple'] {
+  --pt-accent: #a855f7;
+  --pt-surface: #3b1a6e;
+  --pt-surface-hover: #4a2387;
+  --pt-border: #7c3fd6;
+  --pt-deep: #160a2c;
+  --pt-deep-alt: #21103f;
+  --pt-line: #c4a2ff;
+  --pt-head: #2e1259;
+  --pt-panel: #2a1650;
+  --pt-panel-deep: #1d0e3a;
+  --pt-surface-strong: #5b2ba8;
+  --pt-pitch: #351b66;
+  --pt-panel-alt: #301a5a;
+  --pt-bracket-line: rgba(192, 132, 252, 0.55);
+  --color-emerald-50: #faf5ff;
+  --color-emerald-100: #f3e8ff;
+  --color-emerald-200: #e9d5ff;
+  --color-emerald-300: #d8b4fe;
+  --color-emerald-400: #c084fc;
+  --color-emerald-600: #9333ea;
+  --color-emerald-950: #160a2c;
+  --color-teal-500: #a855f7;
+}
+
+html[data-theme='purple'] img[alt='PES 6 que me gusta'],
 html[data-theme='black'] img[alt='PES 6 que me gusta'] {
   filter: drop-shadow(1px 0 0 #ffffff) drop-shadow(-1px 0 0 #ffffff) drop-shadow(0 1px 0 #ffffff) drop-shadow(0 -1px 0 #ffffff);
 }
@@ -233,6 +259,7 @@ aside nav button[aria-current='page'] {
   border-color: var(--pt-accent);
 }
 
+html[data-theme='purple'] h2,
 html[data-theme='black'] h2 {
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -321,6 +348,22 @@ html[data-theme='black'] .football-background::before {
 
 html[data-theme='black'] .football-background::after {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.3));
+}
+
+html[data-theme='purple'] .football-background {
+  background-color: #12072a;
+  background-image: none;
+}
+
+html[data-theme='purple'] .football-background::before {
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(168, 85, 247, 0.22), transparent 26%),
+    radial-gradient(ellipse at 82% 74%, rgba(124, 63, 214, 0.28), transparent 30%),
+    radial-gradient(ellipse at 52% 50%, rgba(192, 132, 252, 0.1), transparent 44%);
+}
+
+html[data-theme='purple'] .football-background::after {
+  background: linear-gradient(180deg, rgba(10, 4, 24, 0.05), rgba(10, 4, 24, 0.3));
 }
 
 section:has(.lucide-ellipsis),

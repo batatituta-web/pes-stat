@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 import { userPreferences } from '@/lib/db/schema'
 
 const CORNERS = ['rounded', 'square'] as const
-const THEMES = ['green', 'black'] as const
+const THEMES = ['green', 'black', 'purple'] as const
 
 export async function GET() {
   const { data: session } = await auth.getSession()

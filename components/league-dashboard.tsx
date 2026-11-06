@@ -203,7 +203,7 @@ export function LeagueDashboard() {
   const [activeTournament, setActiveTournament] = useState('General')
   const [activeSeason, setActiveSeason] = useState<Season>('2024/2025')
   const [tableCorners, setTableCorners] = useState<'rounded' | 'square'>('rounded')
-  const [theme, setTheme] = useState<'green' | 'black'>('green')
+  const [theme, setTheme] = useState<'green' | 'black' | 'purple'>('green')
   const [session, setSession] = useState<{ user?: { id: string } } | null>(null)
   const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
@@ -228,7 +228,7 @@ export function LeagueDashboard() {
       .then((response) => response.json())
       .then((payload) => {
         if (payload.tableCorners === 'rounded' || payload.tableCorners === 'square') setTableCorners(payload.tableCorners)
-        if (payload.theme === 'green' || payload.theme === 'black') setTheme(payload.theme)
+        if (payload.theme === 'green' || payload.theme === 'black' || payload.theme === 'purple') setTheme(payload.theme)
       })
       .catch(() => undefined)
   }, [session?.user])
@@ -237,7 +237,7 @@ export function LeagueDashboard() {
     document.documentElement.dataset.theme = theme
   }, [theme])
 
-  const changeTheme = (value: 'green' | 'black') => {
+  const changeTheme = (value: 'green' | 'black' | 'purple') => {
     setTheme(value)
     if (session?.user) {
       void fetch('/api/preferences', {
@@ -562,7 +562,7 @@ export function LeagueDashboard() {
       <header className="sticky top-0 z-50 border-b-0 bg-transparent text-white">
         <div className="flex w-full items-center justify-between px-0 py-3">
           <button onClick={() => selectTournament('General')} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"><img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pes6qmegusta-tNntMKA1i3DQVIlxMBiR5m5u0VXTtm.png" alt="PES 6 que me gusta" className="h-24 w-auto max-w-[500px] object-contain sm:h-28" /></button>
-          <div className="flex items-center gap-2 pr-4 sm:pr-6"><div className="flex flex-col items-end gap-1.5"><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Tema de colores de la página"><button type="button" aria-label="Tema verde" title="Tema verde" aria-pressed={theme === 'green'} onClick={() => changeTheme('green')} className={`rounded-md p-1.5 transition-colors ${theme === 'green' ? 'bg-white/25' : 'hover:bg-white/10'}`}><span className="block size-4 rounded-sm border border-[#55d6a4] bg-[#004a34]" /></button><button type="button" aria-label="Tema negro" title="Tema negro" aria-pressed={theme === 'black'} onClick={() => changeTheme('black')} className={`rounded-md p-1.5 transition-colors ${theme === 'black' ? 'bg-white/25' : 'hover:bg-white/10'}`}><span className="block size-4 rounded-sm border border-[#d9d9d9] bg-[#0a0a0a]" /></button></div><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Estilo de esquinas de las tablas"><button type="button" aria-label="Esquinas redondeadas" title="Esquinas redondeadas" aria-pressed={tableCorners === 'rounded'} onClick={() => changeTableCorners('rounded')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'rounded' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Circle className="size-4" /></button><button type="button" aria-label="Esquinas cuadradas" title="Esquinas cuadradas" aria-pressed={tableCorners === 'square'} onClick={() => changeTableCorners('square')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'square' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Square className="size-4" /></button></div></div>
+          <div className="flex items-center gap-2 pr-4 sm:pr-6"><div className="flex flex-col items-end gap-1.5"><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Tema de colores de la página"><button type="button" aria-label="Tema verde" title="Tema verde" aria-pressed={theme === 'green'} onClick={() => changeTheme('green')} className={`rounded-md p-1.5 transition-colors ${theme === 'green' ? 'bg-white/25' : 'hover:bg-white/10'}`}><span className="block size-4 rounded-sm border border-[#55d6a4] bg-[#004a34]" /></button><button type="button" aria-label="Tema negro" title="Tema negro" aria-pressed={theme === 'black'} onClick={() => changeTheme('black')} className={`rounded-md p-1.5 transition-colors ${theme === 'black' ? 'bg-white/25' : 'hover:bg-white/10'}`}><span className="block size-4 rounded-sm border border-[#d9d9d9] bg-[#0a0a0a]" /></button><button type="button" aria-label="Tema morado" title="Tema morado" aria-pressed={theme === 'purple'} onClick={() => changeTheme('purple')} className={`rounded-md p-1.5 transition-colors ${theme === 'purple' ? 'bg-white/25' : 'hover:bg-white/10'}`}><span className="block size-4 rounded-sm border border-[#c4a2ff] bg-[#3b1a6e]" /></button></div><div className="flex items-center gap-1 rounded-lg border border-white/25 bg-white/10 p-1" role="group" aria-label="Estilo de esquinas de las tablas"><button type="button" aria-label="Esquinas redondeadas" title="Esquinas redondeadas" aria-pressed={tableCorners === 'rounded'} onClick={() => changeTableCorners('rounded')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'rounded' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Circle className="size-4" /></button><button type="button" aria-label="Esquinas cuadradas" title="Esquinas cuadradas" aria-pressed={tableCorners === 'square'} onClick={() => changeTableCorners('square')} className={`rounded-md p-1.5 transition-colors ${tableCorners === 'square' ? 'bg-white/25 text-white' : 'text-emerald-100 hover:bg-white/10'}`}><Square className="size-4" /></button></div></div>
             <AuthControls />
   {canEdit && <Button variant="outline" size="sm" className="border-white/25 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25" onClick={() => { setMatchType('played'); setHomeGoals(''); setAwayGoals(''); setMatchDate(''); setMatchRound(''); setShowForm(true) }}><CirclePlus data-icon="inline-start" />Cargar resultado</Button>}
           </div>
