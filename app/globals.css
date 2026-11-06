@@ -197,28 +197,28 @@
 }
 
 html[data-theme='black'] {
-  --pt-accent: #737373;
-  --pt-surface: #0e0e0e;
-  --pt-surface-hover: #1a1a1a;
-  --pt-border: #333333;
-  --pt-deep: #030303;
-  --pt-deep-alt: #0a0a0a;
-  --pt-line: #d4d4d4;
-  --pt-head: #080808;
-  --pt-panel: #141414;
-  --pt-panel-deep: #0b0b0b;
-  --pt-surface-strong: #262626;
-  --pt-pitch: #1a1a1a;
-  --pt-panel-alt: #111111;
-  --pt-bracket-line: rgba(163, 163, 163, 0.5);
-  --color-emerald-50: #fafafa;
-  --color-emerald-100: #f0f0f0;
-  --color-emerald-200: #e0e0e0;
-  --color-emerald-300: #cfcfcf;
-  --color-emerald-400: #b3b3b3;
-  --color-emerald-600: #737373;
+  --pt-accent: #6f8a10;
+  --pt-surface: #121212;
+  --pt-surface-hover: #1c1c1c;
+  --pt-border: #2e2e2e;
+  --pt-deep: #050505;
+  --pt-deep-alt: #0b0b0b;
+  --pt-line: #6b6b6b;
+  --pt-head: #0a0a0a;
+  --pt-panel: #161616;
+  --pt-panel-deep: #0e0e0e;
+  --pt-surface-strong: #27300a;
+  --pt-pitch: #161616;
+  --pt-panel-alt: #131313;
+  --pt-bracket-line: rgba(198, 242, 26, 0.4);
+  --color-emerald-50: #ffffff;
+  --color-emerald-100: #f5f5f5;
+  --color-emerald-200: #e8e8e8;
+  --color-emerald-300: #c9c9c9;
+  --color-emerald-400: #c6f21a;
+  --color-emerald-600: #5f7d0e;
   --color-emerald-950: #0a0a0a;
-  --color-teal-500: #a3a3a3;
+  --color-teal-500: #7a9a12;
 }
 
 html[data-theme='black'] body::before {
@@ -230,11 +230,11 @@ html[data-theme='black'] body::before {
   height: 2px;
   content: '';
   pointer-events: none;
-  background: #a3a3a3;
+  background: #c6f21a;
 }
 
 html[data-theme='black'] img[alt='PES 6 que me gusta'] {
-  filter: drop-shadow(1px 0 0 #f0f0f0) drop-shadow(-1px 0 0 #f0f0f0) drop-shadow(0 1px 0 #f0f0f0) drop-shadow(0 -1px 0 #f0f0f0);
+  filter: drop-shadow(1px 0 0 #ffffff) drop-shadow(-1px 0 0 #ffffff) drop-shadow(0 1px 0 #ffffff) drop-shadow(0 -1px 0 #ffffff);
 }
 
 html[data-theme='black'] h2 {
@@ -313,18 +313,18 @@ html[data-theme='black'] h2 {
 }
 
 html[data-theme='black'] .football-background {
-  background-color: #050505;
+  background-color: #0a0a0a;
   background-image: none;
 }
 
 html[data-theme='black'] .football-background::before {
   background:
-    radial-gradient(ellipse at 18% 22%, rgba(212, 212, 212, 0.08), transparent 24%),
-    radial-gradient(ellipse at 82% 74%, rgba(212, 212, 212, 0.05), transparent 28%);
+    radial-gradient(ellipse at 18% 22%, rgba(198, 242, 26, 0.06), transparent 24%),
+    radial-gradient(ellipse at 82% 74%, rgba(198, 242, 26, 0.04), transparent 28%);
 }
 
 html[data-theme='black'] .football-background::after {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.3));
 }
 
 section:has(.lucide-ellipsis),
