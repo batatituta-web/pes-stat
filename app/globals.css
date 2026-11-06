@@ -197,7 +197,7 @@
 }
 
 html[data-theme='black'] {
-  --pt-accent: #6f8a10;
+  --pt-accent: #2f80b5;
   --pt-surface: #121212;
   --pt-surface-hover: #1c1c1c;
   --pt-border: #2e2e2e;
@@ -207,30 +207,18 @@ html[data-theme='black'] {
   --pt-head: #0a0a0a;
   --pt-panel: #161616;
   --pt-panel-deep: #0e0e0e;
-  --pt-surface-strong: #27300a;
+  --pt-surface-strong: #10293b;
   --pt-pitch: #161616;
   --pt-panel-alt: #131313;
-  --pt-bracket-line: rgba(198, 242, 26, 0.4);
+  --pt-bracket-line: rgba(102, 192, 244, 0.4);
   --color-emerald-50: #ffffff;
   --color-emerald-100: #f5f5f5;
   --color-emerald-200: #e8e8e8;
   --color-emerald-300: #c9c9c9;
-  --color-emerald-400: #c6f21a;
-  --color-emerald-600: #5f7d0e;
+  --color-emerald-400: #66c0f4;
+  --color-emerald-600: #1f6e9f;
   --color-emerald-950: #0a0a0a;
-  --color-teal-500: #7a9a12;
-}
-
-html[data-theme='black'] body::before {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 60;
-  height: 2px;
-  content: '';
-  pointer-events: none;
-  background: #c6f21a;
+  --color-teal-500: #4a9fd0;
 }
 
 html[data-theme='black'] img[alt='PES 6 que me gusta'] {
@@ -319,8 +307,8 @@ html[data-theme='black'] .football-background {
 
 html[data-theme='black'] .football-background::before {
   background:
-    radial-gradient(ellipse at 18% 22%, rgba(198, 242, 26, 0.06), transparent 24%),
-    radial-gradient(ellipse at 82% 74%, rgba(198, 242, 26, 0.04), transparent 28%);
+    radial-gradient(ellipse at 18% 22%, rgba(102, 192, 244, 0.06), transparent 24%),
+    radial-gradient(ellipse at 82% 74%, rgba(102, 192, 244, 0.04), transparent 28%);
 }
 
 html[data-theme='black'] .football-background::after {
