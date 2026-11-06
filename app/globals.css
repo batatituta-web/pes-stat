@@ -226,7 +226,11 @@ html[data-theme='black'] img[alt='PES 6 que me gusta'] {
 }
 
 aside nav button {
-  border: 1px solid var(--pt-accent);
+  border: 1px solid transparent;
+}
+
+aside nav button[aria-current='page'] {
+  border-color: var(--pt-accent);
 }
 
 html[data-theme='black'] h2 {
