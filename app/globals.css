@@ -337,7 +337,7 @@ html[data-theme='black'] h2 {
 
 html[data-theme='black'] .football-background {
   background-color: #020a05;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/themes/black-background.png");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/themes/black-background-neon.png");
   background-position: center;
   background-size: cover;
   background-attachment: fixed;
