@@ -179,6 +179,48 @@
   }
 }
 
+:root {
+  --pt-accent: #159a72;
+  --pt-surface: #004a34;
+  --pt-surface-hover: #005c40;
+  --pt-border: #007a55;
+  --pt-deep: #06291e;
+  --pt-deep-alt: #064522;
+  --pt-line: #55d6a4;
+  --pt-head: #003d2b;
+  --pt-panel: #123d2e;
+  --pt-panel-deep: #0d3327;
+  --pt-surface-strong: #006646;
+  --pt-pitch: #075d2d;
+  --pt-panel-alt: #103e2d;
+  --pt-bracket-line: rgba(21, 154, 114, 0.55);
+}
+
+html[data-theme='black'] {
+  --pt-accent: #8a8a8a;
+  --pt-surface: #111111;
+  --pt-surface-hover: #1e1e1e;
+  --pt-border: #4d4d4d;
+  --pt-deep: #050505;
+  --pt-deep-alt: #0c0c0c;
+  --pt-line: #d9d9d9;
+  --pt-head: #0a0a0a;
+  --pt-panel: #171717;
+  --pt-panel-deep: #0f0f0f;
+  --pt-surface-strong: #262626;
+  --pt-pitch: #2b2b2b;
+  --pt-panel-alt: #151515;
+  --pt-bracket-line: rgba(217, 217, 217, 0.45);
+  --color-emerald-50: #fafafa;
+  --color-emerald-100: #ececec;
+  --color-emerald-200: #d4d4d4;
+  --color-emerald-300: #b0b0b0;
+  --color-emerald-400: #8a8a8a;
+  --color-emerald-600: #4d4d4d;
+  --color-emerald-950: #0a0a0a;
+  --color-teal-500: #6b6b6b;
+}
+
 .football-background {
   position: relative;
   isolation: isolate;
@@ -245,8 +287,23 @@
     right: -1rem;
     top: 50%;
     width: 1rem;
-    border-top: 1px solid rgba(21, 154, 114, 0.55);
+    border-top: 1px solid var(--pt-bracket-line);
   }
+}
+
+html[data-theme='black'] .football-background {
+  background-color: #070707;
+  background-image: none;
+}
+
+html[data-theme='black'] .football-background::before {
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(255, 255, 255, 0.07), transparent 24%),
+    radial-gradient(ellipse at 82% 74%, rgba(255, 255, 255, 0.05), transparent 28%);
+}
+
+html[data-theme='black'] .football-background::after {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45));
 }
 
 section:has(.lucide-ellipsis),
