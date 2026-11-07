@@ -680,7 +680,7 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
         return <article key={matchId} className="overflow-hidden rounded-xl border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)]">
           <div className="flex items-center justify-between gap-3 p-4">
             <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-2 font-bold"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
-            <strong className="shrink-0 rounded-lg bg-[color:var(--pt-surface)] px-3 py-2 text-lg font-black">{match.homeGoals} - {match.awayGoals}</strong>
+            <strong className="shrink-0 rounded-lg border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-surface)] px-3 py-2 text-lg font-black">{match.homeGoals} - {match.awayGoals}</strong>
             <div className="min-w-0 flex-1"><div className="flex items-center gap-2 font-bold"><span>{getFlag(match.away)}</span><span className="truncate">{getName(match.away)}</span></div></div>
           </div>
           <button type="button" onClick={() => setExpandedMatchId(isExpanded ? null : matchId)} aria-expanded={isExpanded} className="flex w-full items-center justify-center gap-2 border-t border-[color:var(--pt-accent)]/50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-emerald-200 transition hover:bg-[color:var(--pt-border)]/40"><span>{isExpanded ? 'Ocultar detalles' : 'Ver más'}</span><ChevronDown className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} /></button>
