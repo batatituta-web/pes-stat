@@ -179,6 +179,96 @@
   }
 }
 
+:root {
+  --pt-accent: #159a72;
+  --pt-surface: #004a34;
+  --pt-surface-hover: #005c40;
+  --pt-border: #007a55;
+  --pt-deep: #06291e;
+  --pt-deep-alt: #064522;
+  --pt-line: #55d6a4;
+  --pt-head: #003d2b;
+  --pt-panel: #123d2e;
+  --pt-panel-deep: #0d3327;
+  --pt-surface-strong: #006646;
+  --pt-pitch: #075d2d;
+  --pt-panel-alt: #103e2d;
+  --pt-bracket-line: rgba(21, 154, 114, 0.55);
+}
+
+html[data-theme='black'] {
+  --pt-accent: #0fa23a;
+  --pt-surface: #080808;
+  --pt-surface-hover: #0d0d0d;
+  --pt-border: #111111;
+  --pt-deep: #020202;
+  --pt-deep-alt: #050505;
+  --pt-line: #1b1b1b;
+  --pt-head: #030303;
+  --pt-panel: #090909;
+  --pt-panel-deep: #060606;
+  --pt-surface-strong: #0d2e17;
+  --pt-pitch: #090909;
+  --pt-panel-alt: #080808;
+  --pt-bracket-line: rgba(0, 255, 65, 0.4);
+  --color-emerald-50: #ffffff;
+  --color-emerald-100: #f5f5f5;
+  --color-emerald-200: #e8e8e8;
+  --color-emerald-300: #c9c9c9;
+  --color-emerald-400: #00ff41;
+  --color-emerald-600: #0fa23a;
+  --color-emerald-950: #0a0a0a;
+  --color-teal-500: #00d936;
+}
+
+html[data-theme='purple'] {
+  --pt-accent: #a855f7;
+  --pt-surface: #3b1a6e;
+  --pt-surface-hover: #4a2387;
+  --pt-border: #7c3fd6;
+  --pt-deep: #160a2c;
+  --pt-deep-alt: #21103f;
+  --pt-line: #c4a2ff;
+  --pt-head: #2e1259;
+  --pt-panel: #2a1650;
+  --pt-panel-deep: #1d0e3a;
+  --pt-surface-strong: #5b2ba8;
+  --pt-pitch: #351b66;
+  --pt-panel-alt: #301a5a;
+  --pt-bracket-line: rgba(192, 132, 252, 0.55);
+  --color-emerald-50: #faf5ff;
+  --color-emerald-100: #f3e8ff;
+  --color-emerald-200: #e9d5ff;
+  --color-emerald-300: #d8b4fe;
+  --color-emerald-400: #c084fc;
+  --color-emerald-600: #9333ea;
+  --color-emerald-950: #160a2c;
+  --color-teal-500: #a855f7;
+}
+
+html[data-theme='purple'] img[alt='PES 6 que me gusta'],
+html[data-theme='black'] img[alt='PES 6 que me gusta'] {
+  filter: drop-shadow(1px 0 0 #ffffff) drop-shadow(-1px 0 0 #ffffff) drop-shadow(0 1px 0 #ffffff) drop-shadow(0 -1px 0 #ffffff);
+}
+
+aside nav button {
+  border: 1px solid transparent;
+}
+
+aside nav button[aria-current='page'] {
+  border-color: var(--pt-accent);
+}
+
+html[data-theme='black'] .matchday-card {
+  background-color: var(--pt-deep);
+}
+
+html[data-theme='purple'] h2,
+html[data-theme='black'] h2 {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .football-background {
   position: relative;
   isolation: isolate;
@@ -245,8 +335,42 @@
     right: -1rem;
     top: 50%;
     width: 1rem;
-    border-top: 1px solid rgba(21, 154, 114, 0.55);
+    border-top: 1px solid var(--pt-bracket-line);
   }
+}
+
+html[data-theme='black'] .football-background {
+  background-color: #020a05;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("/themes/black-background-neon.png");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+html[data-theme='black'] .football-background::before {
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(0, 255, 65, 0.06), transparent 24%),
+    radial-gradient(ellipse at 82% 74%, rgba(0, 255, 65, 0.04), transparent 28%);
+}
+
+html[data-theme='black'] .football-background::after {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.3));
+}
+
+html[data-theme='purple'] .football-background {
+  background-color: #12072a;
+  background-image: none;
+}
+
+html[data-theme='purple'] .football-background::before {
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(168, 85, 247, 0.22), transparent 26%),
+    radial-gradient(ellipse at 82% 74%, rgba(124, 63, 214, 0.28), transparent 30%),
+    radial-gradient(ellipse at 52% 50%, rgba(192, 132, 252, 0.1), transparent 44%);
+}
+
+html[data-theme='purple'] .football-background::after {
+  background: linear-gradient(180deg, rgba(10, 4, 24, 0.05), rgba(10, 4, 24, 0.3));
 }
 
 section:has(.lucide-ellipsis),
