@@ -259,6 +259,10 @@ aside nav button[aria-current='page'] {
   border-color: var(--pt-accent);
 }
 
+html[data-theme='black'] .matchday-card {
+  background-color: var(--pt-deep);
+}
+
 html[data-theme='purple'] h2,
 html[data-theme='black'] h2 {
   letter-spacing: 0.06em;

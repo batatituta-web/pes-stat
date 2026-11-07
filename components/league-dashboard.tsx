@@ -719,7 +719,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
     const placeholderFlag = <span className="mr-2 inline-flex size-6 shrink-0 items-center justify-center rounded-full border border-emerald-300/60 text-xs font-black text-emerald-100">?</span>
     
     return (
-      <div className="rounded-lg bg-[color:var(--pt-pitch)] p-0">
+      <div className="rounded-lg border border-[color:var(--pt-accent)]/70 bg-[color:var(--pt-pitch)] p-0">
         <div className="mb-1 bg-[color:var(--pt-deep-alt)] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-200">{label}</div>
         <div className="space-y-1 p-2">
           <div className="flex items-center gap-1.5">
