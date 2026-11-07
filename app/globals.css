@@ -198,18 +198,18 @@
 
 html[data-theme='black'] {
   --pt-accent: #0fa23a;
-  --pt-surface: #121212;
-  --pt-surface-hover: #1c1c1c;
-  --pt-border: #2e2e2e;
-  --pt-deep: #050505;
-  --pt-deep-alt: #0b0b0b;
-  --pt-line: #6b6b6b;
-  --pt-head: #0a0a0a;
-  --pt-panel: #161616;
-  --pt-panel-deep: #0e0e0e;
+  --pt-surface: #080808;
+  --pt-surface-hover: #0d0d0d;
+  --pt-border: #111111;
+  --pt-deep: #020202;
+  --pt-deep-alt: #050505;
+  --pt-line: #1b1b1b;
+  --pt-head: #030303;
+  --pt-panel: #090909;
+  --pt-panel-deep: #060606;
   --pt-surface-strong: #0d2e17;
-  --pt-pitch: #161616;
-  --pt-panel-alt: #131313;
+  --pt-pitch: #090909;
+  --pt-panel-alt: #080808;
   --pt-bracket-line: rgba(0, 255, 65, 0.4);
   --color-emerald-50: #ffffff;
   --color-emerald-100: #f5f5f5;
