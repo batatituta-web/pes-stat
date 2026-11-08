@@ -225,20 +225,36 @@ function PremierChampionSimulator({ players, matches, table }: { players: Player
   const champion = simulatedTable[0]
   const target = simulatedTable.find((team) => team.id === targetId)
   const updatePrediction = (matchId: number, side: 'home' | 'away', value: string) => setPredictions((current) => ({ ...current, [matchId]: { home: current[matchId]?.home ?? '', away: current[matchId]?.away ?? '', [side]: value.replace(/[^0-9]/g, '').slice(0, 2) } }))
+  const lastTrustSignature = useRef('')
   const trustPrediction = () => {
     if (!targetId) return
     const currentPoints = new Map(table.map((team) => [team.id, team.points]))
-    const confident: Record<number, { home: string; away: string }> = {}
-    matchesFromStart.forEach((match) => {
-      if (match.home === targetId) confident[match.id] = { home: '3', away: '0' }
-      else if (match.away === targetId) confident[match.id] = { home: '0', away: '3' }
-      else {
-        const homePoints = currentPoints.get(match.home) ?? 0
-        const awayPoints = currentPoints.get(match.away) ?? 0
-        confident[match.id] = homePoints <= awayPoints ? { home: '1', away: '0' } : { home: '0', away: '1' }
-      }
-    })
-    setPredictions(confident)
+    let chosen: Record<number, { home: string; away: string }> | null = null
+    let fallback: Record<number, { home: string; away: string }> | null = null
+    let fallbackRank = Number.POSITIVE_INFINITY
+    for (let attempt = 0; attempt < 300; attempt += 1) {
+      const candidate: Record<number, { home: string; away: string }> = {}
+      matchesFromStart.forEach((match) => {
+        if (match.home === targetId) candidate[match.id] = { home: String(1 + Math.floor(Math.random() * 4)), away: String(Math.floor(Math.random() * 2)) }
+        else if (match.away === targetId) candidate[match.id] = { home: String(Math.floor(Math.random() * 2)), away: String(1 + Math.floor(Math.random() * 4)) }
+        else if (Math.random() < 0.12) {
+          const goals = String(Math.floor(Math.random() * 2))
+          candidate[match.id] = { home: goals, away: goals }
+        } else {
+          const homePoints = currentPoints.get(match.home) ?? 0
+          const awayPoints = currentPoints.get(match.away) ?? 0
+          const homeWins = Math.random() < (homePoints <= awayPoints ? 0.78 : 0.22)
+          candidate[match.id] = homeWins ? { home: String(1 + Math.floor(Math.random() * 3)), away: String(Math.floor(Math.random() * 2)) } : { home: String(Math.floor(Math.random() * 2)), away: String(1 + Math.floor(Math.random() * 3)) }
+        }
+      })
+      const candidateMatches = playedBeforeStart.concat(matchesFromStart.map((match) => ({ ...match, homeGoals: Number(candidate[match.id].home), awayGoals: Number(candidate[match.id].away), status: 'played' as const })))
+      const candidateTable = calculateTable(players, candidateMatches)
+      const candidateRank = candidateTable.findIndex((team) => team.id === targetId)
+      const signature = JSON.stringify(candidate)
+      if (candidateRank >= 0 && candidateRank < fallbackRank) { fallback = candidate; fallbackRank = candidateRank }
+      if (candidateRank === 0 && signature !== lastTrustSignature.current) { chosen = candidate; lastTrustSignature.current = signature; break }
+    }
+    setPredictions(chosen ?? fallback ?? {})
   }
 
   return <section className="mb-6 rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-surface-hover)] p-5 shadow-xl">
