@@ -724,27 +724,27 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
     } catch { return null }
   }
 
-  return <section className="matchday-card rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-surface-hover)] p-4 sm:p-5">
-    <div className="mb-4 flex items-center justify-between border-b border-[color:var(--pt-accent)]/50 pb-4">
+  return <section className="matchday-card rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-surface-hover)] p-3 sm:p-4 lg:p-2.5">
+    <div className="mb-3 flex items-center justify-between border-b border-[color:var(--pt-accent)]/50 pb-3 lg:mb-2 lg:pb-2">
       <button type="button" aria-label="Fecha anterior" disabled={roundIndex === 0} onClick={() => setRoundIndex((index) => Math.max(0, index - 1))} className="rounded-full p-2 text-emerald-100 transition hover:bg-[color:var(--pt-border)] disabled:cursor-not-allowed disabled:opacity-30"><ChevronLeft className="size-6" /></button>
       <div className="text-center"><p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-200">Partidos</p><h2 className="text-2xl font-black">{currentRound.label}</h2></div>
       <button type="button" aria-label="Siguiente fecha o ronda" disabled={roundIndex === rounds.length - 1 || rounds.length === 0} onClick={() => setRoundIndex((index) => Math.min(rounds.length - 1, index + 1))} className="rounded-full p-2 text-emerald-100 transition hover:bg-[color:var(--pt-border)] disabled:cursor-not-allowed disabled:opacity-30"><ChevronRight className="size-6" /></button>
     </div>
-    <div className="space-y-3">
+<div className="space-y-2">
       {roundMatches.length === 0 && <p className="py-8 text-center text-sm text-emerald-100">Todavía no hay resultados cargados.</p>}
       {roundMatches.map((match, matchIndex) => {
         const matchId = 'id' in match ? match.id : `${currentRound.label}-${matchIndex}`
         const isExpanded = expandedMatchId === matchId
         const savedVideoUrl = 'videoUrl' in match ? match.videoUrl : undefined
         const embedUrl = 'status' in match && match.status === 'upcoming' ? null : getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label))
-        return <article key={matchId} className="overflow-hidden rounded-xl border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)]">
-          <div className="flex items-center justify-between gap-3 p-4">
-            <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-2 font-bold"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
-            <strong className="shrink-0 rounded-lg border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-surface)] px-3 py-2 text-lg font-black">{'status' in match && match.status === 'upcoming' ? '?' : `${match.homeGoals} - ${match.awayGoals}`}</strong>
-            <div className="min-w-0 flex-1"><div className="flex items-center gap-2 font-bold"><span>{getFlag(match.away)}</span><span className="truncate">{getName(match.away)}</span></div></div>
+        return <article key={matchId} className="overflow-hidden rounded-lg border border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)]">
+          <div className="flex items-center justify-between gap-2 p-3 lg:p-2">
+            <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-1.5 text-sm font-bold lg:text-xs"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
+            <strong className="shrink-0 rounded-md border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-surface)] px-2.5 py-1.5 text-base font-black lg:px-2 lg:py-1 lg:text-sm">{'status' in match && match.status === 'upcoming' ? '?' : `${match.homeGoals} - ${match.awayGoals}`}</strong>
+            <div className="min-w-0 flex-1"><div className="flex items-center gap-1.5 text-sm font-bold lg:text-xs"><span>{getFlag(match.away)}</span><span className="truncate">{getName(match.away)}</span></div></div>
           </div>
-          <button type="button" onClick={() => setExpandedMatchId(isExpanded ? null : matchId)} aria-expanded={isExpanded} className="flex w-full items-center justify-center gap-2 border-t border-[color:var(--pt-accent)]/50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-emerald-200 transition hover:bg-[color:var(--pt-border)]/40"><span>{isExpanded ? 'Ocultar detalles' : 'Ver más'}</span><ChevronDown className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} /></button>
-          {isExpanded && <div className="space-y-3 border-t border-[color:var(--pt-accent)]/50 p-3"><p className="text-xs text-emerald-200">{'date' in match ? match.date : `Ronda: ${currentRound.label}`}</p>{embedUrl ? <div className="aspect-video overflow-hidden rounded-lg bg-black"><iframe src={embedUrl} title={`Video de ${getName(match.home)} contra ${getName(match.away)}`} className="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div> : <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-[color:var(--pt-accent)] p-5 text-sm text-emerald-100"><Play className="size-4" />No hay video asociado a este partido.</div>}</div>}
+          <button type="button" onClick={() => setExpandedMatchId(isExpanded ? null : matchId)} aria-expanded={isExpanded} className="flex w-full items-center justify-center gap-2 border-t border-[color:var(--pt-accent)]/50 px-3 py-1.5 text-[11px] lg:py-1 font-bold uppercase tracking-wider text-emerald-200 transition hover:bg-[color:var(--pt-border)]/40"><span>{isExpanded ? 'Ocultar detalles' : 'Ver más'}</span><ChevronDown className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} /></button>
+          {isExpanded && <div className="space-y-2 border-t border-[color:var(--pt-accent)]/50 p-2"><p className="text-xs text-emerald-200">{'date' in match ? match.date : `Ronda: ${currentRound.label}`}</p>{embedUrl ? <div className="aspect-video overflow-hidden rounded-lg bg-black"><iframe src={embedUrl} title={`Video de ${getName(match.home)} contra ${getName(match.away)}`} className="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div> : <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-[color:var(--pt-accent)] p-5 text-sm text-emerald-100"><Play className="size-4" />No hay video asociado a este partido.</div>}</div>}
         </article>
       })}
     </div>
