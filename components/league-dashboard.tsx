@@ -211,13 +211,14 @@ function calculateTable(players: Player[], matches: Match[]) {
 }
 
 function PremierChampionSimulator({ players, matches, table }: { players: Player[]; matches: Match[]; table: ReturnType<typeof calculateTable> }) {
-  const upcoming = matches.filter((match) => match.status === 'upcoming')
+  const simulationMatches = matches.some((match) => match.status === 'upcoming') ? matches : premierLeague2026Matches
+  const upcoming = simulationMatches.filter((match) => match.status === 'upcoming')
   const roundNumbers = Array.from(new Set(upcoming.map((match) => Number(match.round.match(/\\d+/)?.[0] ?? 0)))).filter(Boolean).sort((a, b) => a - b)
   const [targetId, setTargetId] = useState(players[0]?.id ?? '')
   const [startRound, setStartRound] = useState(roundNumbers[0] ?? 1)
   const [predictions, setPredictions] = useState<Record<number, { home: string; away: string }>>({})
   const predictedMatches = upcoming.filter((match) => Number(match.round.match(/\\d+/)?.[0] ?? 0) >= startRound)
-  const simulatedMatches = matches.filter((match) => match.status === 'played').concat(predictedMatches.map((match) => ({ ...match, homeGoals: Number(predictions[match.id]?.home ?? 0), awayGoals: Number(predictions[match.id]?.away ?? 0), status: 'played' as const })))
+  const simulatedMatches = simulationMatches.filter((match) => match.status === 'played').concat(predictedMatches.map((match) => ({ ...match, homeGoals: Number(predictions[match.id]?.home ?? 0), awayGoals: Number(predictions[match.id]?.away ?? 0), status: 'played' as const })))
   const simulatedTable = calculateTable(players, simulatedMatches)
   const champion = simulatedTable[0]
   const target = simulatedTable.find((team) => team.id === targetId)
