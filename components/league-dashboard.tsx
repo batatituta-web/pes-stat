@@ -219,7 +219,7 @@ function PremierChampionSimulator({ players, matches, table }: { players: Player
   const getRoundNumber = (match: Match) => Number(match.round.match(/\d+/)?.[0] ?? 0)
   const matchesFromStart = simulationMatches.filter((match) => getRoundNumber(match) >= startRound)
   const playedBeforeStart = simulationMatches.filter((match) => match.status === 'played' && getRoundNumber(match) < startRound)
-  const simulatedMatches = playedBeforeStart.concat(matchesFromStart.map((match) => ({ ...match, homeGoals: Number(predictions[match.id]?.home ?? 0), awayGoals: Number(predictions[match.id]?.away ?? 0), status: 'played' as const })))
+  const simulatedMatches = playedBeforeStart.concat(matchesFromStart.filter((match) => predictions[match.id]?.home !== undefined && predictions[match.id]?.home !== '' && predictions[match.id]?.away !== undefined && predictions[match.id]?.away !== '').map((match) => ({ ...match, homeGoals: Number(predictions[match.id].home), awayGoals: Number(predictions[match.id].away), status: 'played' as const })))
   const predictedMatches = matchesFromStart
   const simulatedTable = calculateTable(players, simulatedMatches)
   const champion = simulatedTable[0]
