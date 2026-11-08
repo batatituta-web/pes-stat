@@ -802,7 +802,14 @@ function PlayerLeaderboards({ players, table, playerStats, expanded, onToggle }:
   const entries = (field: 'goals' | 'assists') => {
     const allEntries = players.flatMap((team) => (playerStats[team.id] ?? []).filter((player) => player[field] > 0).map((player) => ({ ...player, team: team.name, teamId: team.id })))
     const firstPlaceValue = Math.max(...allEntries.map((entry) => entry[field]), 0)
-    return allEntries.sort((a, b) => b[field] - a[field] || (a[field] === firstPlaceValue && b[field] === firstPlaceValue ? (teamPositions.get(a.teamId) ?? Number.MAX_SAFE_INTEGER) - (teamPositions.get(b.teamId) ?? Number.MAX_SAFE_INTEGER) : a.name.localeCompare(b.name)))
+    return allEntries.sort((a, b) => {
+      const valueDifference = b[field] - a[field]
+      if (valueDifference !== 0) return valueDifference
+      if (a[field] !== firstPlaceValue || b[field] !== firstPlaceValue) return a.name.localeCompare(b.name)
+      const teamDifference = (teamPositions.get(a.teamId) ?? Number.MAX_SAFE_INTEGER) - (teamPositions.get(b.teamId) ?? Number.MAX_SAFE_INTEGER)
+      if (teamDifference !== 0) return teamDifference
+      return a.penalties - b.penalties || a.name.localeCompare(b.name)
+    })
   }
   const renderBoard = (title: string, field: 'goals' | 'assists', label: string) => {
     const rows = entries(field)
