@@ -698,7 +698,7 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
         const matchId = 'id' in match ? match.id : `${currentRound.label}-${matchIndex}`
         const isExpanded = expandedMatchId === matchId
         const savedVideoUrl = 'videoUrl' in match ? match.videoUrl : undefined
-        const embedUrl = getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label))
+        const embedUrl = 'status' in match && match.status === 'upcoming' ? null : getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label))
         return <article key={matchId} className="overflow-hidden rounded-xl border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)]">
           <div className="flex items-center justify-between gap-3 p-4">
             <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-2 font-bold"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
