@@ -217,7 +217,7 @@ function PremierChampionSimulator({ players, matches, table }: { players: Player
   const [targetId, setTargetId] = useState(players[0]?.id ?? '')
   const [startRound, setStartRound] = useState(roundNumbers[0] ?? 1)
   const [predictions, setPredictions] = useState<Record<number, { home: string; away: string }>>({})
-  const predictedMatches = upcoming.filter((match) => Number(match.round.match(/\\d+/)?.[0] ?? 0) >= startRound)
+  const predictedMatches = upcoming.filter((match) => Number(match.round.match(/\d+/)?.[0] ?? 0) >= startRound)
   const simulatedMatches = simulationMatches.filter((match) => match.status === 'played').concat(predictedMatches.map((match) => ({ ...match, homeGoals: Number(predictions[match.id]?.home ?? 0), awayGoals: Number(predictions[match.id]?.away ?? 0), status: 'played' as const })))
   const simulatedTable = calculateTable(players, simulatedMatches)
   const champion = simulatedTable[0]
