@@ -335,7 +335,7 @@ export function LeagueDashboard() {
       if (data.version) lastRemoteVersionRef.current = data.version
       if (state && typeof state === 'object') {
         const remoteTournament = activeTournamentRef.current
-        const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? state)
+        const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? (SEASON_TOURNAMENTS.has(remoteTournament) ? { players: [], matches: [] } : state))
         const sharedState = { ...state }
         const remoteState = stableStringify(sharedState)
         lastSyncedRef.current = remoteState
@@ -374,7 +374,7 @@ export function LeagueDashboard() {
       lastRemoteStateRef.current = incoming
       const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
       const remoteTournament = activeTournamentRef.current
-      const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? state)
+      const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? (SEASON_TOURNAMENTS.has(remoteTournament) ? { players: [], matches: [] } : state))
       const remotePlayers = Array.isArray(selectedState.players) ? selectedState.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
@@ -541,7 +541,7 @@ export function LeagueDashboard() {
     const nextSeason: Season = tournament === 'Premier League' ? '2026/2027' : activeSeason
     const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament === 'Premier League' && nextSeason === '2026/2027' ? 'Premier League::2026/2027' : tournament
   const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' ? { players: [], matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
-    const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStates[tournamentStateKey(tournament, nextSeason)] ?? (nextSeason === '2024/2025' ? tournamentStates[tournament] : undefined)
+    const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStatesRef.current[tournamentStateKey(tournament, nextSeason)]
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
     if (typeof savedState?.copaChampion === 'string') setCopaChampion(savedState.copaChampion)
@@ -572,7 +572,12 @@ export function LeagueDashboard() {
     setTournamentStates(nextTournamentStates)
     const dataKey = activeTournament === 'UEFA Champions League' ? 'Champions League' : activeTournament === 'Premier League' && season === '2026/2027' ? 'Premier League::2026/2027' : activeTournament
     const selected = tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
-    const savedState = nextTournamentStates[tournamentStateKey(activeTournament, season)] ?? (season === '2024/2025' ? nextTournamentStates[activeTournament] : undefined)
+    const savedState = nextTournamentStates[tournamentStateKey(activeTournament, season)]
+    if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
+    else setCopaBracket({ semifinal1: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, semifinal2: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
+    if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
+    else setCopaVisualBracket({ round16: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), quarterfinals: Array.from({ length: 4 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), semifinals: Array.from({ length: 2 }, () => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })), final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
+    setCopaChampion(savedState?.copaChampion ?? '')
     const nextPlayers = savedState?.players ?? selected.players ?? initialPlayers
     const nextMatches = (savedState?.matches ?? selected.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveSeason(season)
