@@ -536,15 +536,17 @@ export function LeagueDashboard() {
   function selectTournament(tournament: string) {
     markLocalChange()
     setTournamentStates((current) => ({ ...current, [tournamentStateKey(activeTournament, activeSeason)]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-  const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament === 'Premier League' && activeSeason === '2026/2027' ? 'Premier League::2026/2027' : tournament
+    const nextSeason: Season = tournament === 'Premier League' ? '2026/2027' : activeSeason
+    const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament === 'Premier League' && nextSeason === '2026/2027' ? 'Premier League::2026/2027' : tournament
   const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' ? { players: [], matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
-    const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStates[tournamentStateKey(tournament, activeSeason)] ?? (activeSeason === '2024/2025' ? tournamentStates[tournament] : undefined)
+    const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStates[tournamentStateKey(tournament, nextSeason)] ?? (nextSeason === '2024/2025' ? tournamentStates[tournament] : undefined)
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
     if (typeof savedState?.copaChampion === 'string') setCopaChampion(savedState.copaChampion)
     const nextPlayers = savedState?.players ?? selected?.players ?? initialPlayers
     const nextMatches = (savedState?.matches ?? selected?.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveTournament(tournament)
+    setActiveSeason(nextSeason)
     setPlayers(nextPlayers)
     setMatches(nextMatches)
     const firstPlayerId = nextPlayers[0]?.id ?? ''
@@ -698,7 +700,7 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
         const matchId = 'id' in match ? match.id : `${currentRound.label}-${matchIndex}`
         const isExpanded = expandedMatchId === matchId
         const savedVideoUrl = 'videoUrl' in match ? match.videoUrl : undefined
-        const embedUrl = getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label))
+        const embedUrl = 'status' in match && match.status === 'upcoming' ? null : getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label))
         return <article key={matchId} className="overflow-hidden rounded-xl border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)]">
           <div className="flex items-center justify-between gap-3 p-4">
             <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-2 font-bold"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
