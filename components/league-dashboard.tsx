@@ -249,8 +249,8 @@ export function LeagueDashboard() {
   const [players, setPlayers] = useState<typeof defaultTournament.players>([])
   const [matches, setMatches] = useState<typeof defaultTournament.matches>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
-  const [activeTournament, setActiveTournament] = useState(() => typeof window === 'undefined' ? 'General' : new URLSearchParams(window.location.search).get('tournament') || 'General')
-  const [activeSeason, setActiveSeason] = useState<Season>(() => typeof window === 'undefined' ? '2024/2025' : (new URLSearchParams(window.location.search).get('season') as Season) || '2024/2025')
+  const [activeTournament, setActiveTournament] = useState('General')
+  const [activeSeason, setActiveSeason] = useState<Season>('2024/2025')
   const [tableCorners, setTableCorners] = useState<'rounded' | 'square'>('rounded')
   const [theme, setTheme] = useState<'green' | 'black' | 'purple'>('green')
   const [session, setSession] = useState<{ user?: { id: string } } | null>(null)
@@ -576,12 +576,6 @@ export function LeagueDashboard() {
     const nextMatches = (savedState?.matches ?? selected?.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveTournament(tournament)
     setActiveSeason(nextSeason)
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href)
-      url.searchParams.set('tournament', tournament)
-      url.searchParams.set('season', nextSeason)
-      window.history.replaceState({}, '', url)
-    }
     setPlayers(nextPlayers)
     setMatches(nextMatches)
     const firstPlayerId = nextPlayers[0]?.id ?? ''
@@ -614,12 +608,6 @@ export function LeagueDashboard() {
     const nextPlayers = savedState?.players ?? selected.players ?? initialPlayers
     const nextMatches = (savedState?.matches ?? selected.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveSeason(season)
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href)
-      url.searchParams.set('tournament', activeTournament)
-      url.searchParams.set('season', season)
-      window.history.replaceState({}, '', url)
-    }
     setPlayers(nextPlayers)
     setMatches(nextMatches)
     setPlayerStats(savedState?.playerStats ?? {})
