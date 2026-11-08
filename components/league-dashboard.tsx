@@ -32,7 +32,29 @@ const initialMatches: Match[] = [
   { id: 4, home: 'newells', away: 'racing', homeGoals: 0, awayGoals: 2, date: '12 Jun, 22:00', round: 'Fecha 3', status: 'played' },
 ]
 
+const premierLeague2026Players: Player[] = [
+  { id: 'nottingham-forest', name: 'Nottingham Forest', initials: 'FOR', color: 'bg-red-700' },
+  { id: 'manchester-united', name: 'Manchester United', initials: 'MUN', color: 'bg-red-600' },
+  { id: 'arsenal', name: 'Arsenal', initials: 'ARS', color: 'bg-red-500' },
+  { id: 'manchester-city', name: 'Manchester City', initials: 'MCI', color: 'bg-sky-500' },
+  { id: 'chelsea', name: 'Chelsea', initials: 'CHE', color: 'bg-blue-700' },
+  { id: 'aston-villa', name: 'Aston Villa', initials: 'AVL', color: 'bg-indigo-800' },
+  { id: 'liverpool', name: 'Liverpool', initials: 'LIV', color: 'bg-red-800' },
+  { id: 'crystal-palace', name: 'Crystal Palace', initials: 'CRY', color: 'bg-blue-800' },
+]
+
+const premierLeague2026Matches: Match[] = [
+  ['Nottingham Forest', 'Manchester United', 1], ['Arsenal', 'Manchester City', 1], ['Chelsea', 'Aston Villa', 1], ['Liverpool', 'Crystal Palace', 1],
+  ['Manchester United', 'Crystal Palace', 2], ['Aston Villa', 'Liverpool', 2], ['Manchester City', 'Chelsea', 2], ['Nottingham Forest', 'Arsenal', 2],
+  ['Manchester United', 'Arsenal', 3], ['Chelsea', 'Nottingham Forest', 3], ['Liverpool', 'Manchester City', 3], ['Crystal Palace', 'Aston Villa', 3],
+  ['Manchester United', 'Aston Villa', 4], ['Manchester City', 'Crystal Palace', 4], ['Nottingham Forest', 'Liverpool', 4], ['Arsenal', 'Chelsea', 4],
+  ['Chelsea', 'Manchester United', 5], ['Liverpool', 'Arsenal', 5], ['Crystal Palace', 'Nottingham Forest', 5], ['Aston Villa', 'Manchester City', 5],
+  ['Manchester United', 'Manchester City', 6], ['Nottingham Forest', 'Aston Villa', 6], ['Arsenal', 'Crystal Palace', 6], ['Chelsea', 'Liverpool', 6],
+  ['Liverpool', 'Manchester United', 7], ['Crystal Palace', 'Chelsea', 7], ['Aston Villa', 'Arsenal', 7], ['Manchester City', 'Nottingham Forest', 7],
+].map(([home, away, round], index) => ({ id: 2701 + index, home: String(home).toLowerCase().replace(/[^a-z0-9]+/g, '-'), away: String(away).toLowerCase().replace(/[^a-z0-9]+/g, '-'), homeGoals: 0, awayGoals: 0, date: 'Por definir', round: `Jornada ${round}`, status: 'upcoming' as const }))
+
 const tournamentData: Record<string, { players: Player[]; matches: Match[] }> = {
+  'Premier League::2026/2027': { players: premierLeague2026Players, matches: premierLeague2026Matches },
   'Champions League': {
     players: [
       { id: 'real-madrid', name: 'Real Madrid', initials: 'RM', color: 'bg-slate-500' },
@@ -514,7 +536,7 @@ export function LeagueDashboard() {
   function selectTournament(tournament: string) {
     markLocalChange()
     setTournamentStates((current) => ({ ...current, [tournamentStateKey(activeTournament, activeSeason)]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-  const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament
+  const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament === 'Premier League' && activeSeason === '2026/2027' ? 'Premier League::2026/2027' : tournament
   const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' ? { players: [], matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
     const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStates[tournamentStateKey(tournament, activeSeason)] ?? (activeSeason === '2024/2025' ? tournamentStates[tournament] : undefined)
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
@@ -540,7 +562,7 @@ export function LeagueDashboard() {
     if (!SEASON_TOURNAMENTS.has(activeTournament)) return
     markLocalChange()
     setTournamentStates((current) => ({ ...current, [tournamentStateKey(activeTournament, activeSeason)]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-    const dataKey = activeTournament === 'UEFA Champions League' ? 'Champions League' : activeTournament
+    const dataKey = activeTournament === 'UEFA Champions League' ? 'Champions League' : activeTournament === 'Premier League' && season === '2026/2027' ? 'Premier League::2026/2027' : activeTournament
     const selected = tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
     const savedState = tournamentStates[tournamentStateKey(activeTournament, season)] ?? (season === '2024/2025' ? tournamentStates[activeTournament] : undefined)
     const nextPlayers = savedState?.players ?? selected.players ?? initialPlayers
@@ -633,10 +655,10 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
   const playedMatches = matches.filter((match) => match.status === 'played')
   const leagueTournaments = ['Premier League', 'La Liga', 'Serie A', 'Brasileirao']
   const hasElimination = !leagueTournaments.includes(competition)
-  const filteredPlayedMatches = leagueTournaments.includes(competition)
-    ? playedMatches.filter((match) => !['Semis', 'Final', 'Semifinal', 'Semifinales', 'Semifinal 1', 'Semifinal 2'].includes(match.round))
+  const matchesForScoreboard = leagueTournaments.includes(competition)
+    ? matches.filter((match) => ['played', 'upcoming'].includes(match.status ?? '')).filter((match) => !['Semis', 'Final', 'Semifinal', 'Semifinales', 'Semifinal 1', 'Semifinal 2'].includes(match.round))
     : playedMatches
-  const dateRounds = Array.from(new Set(filteredPlayedMatches.map((match) => match.round))).sort((a, b) => {
+  const dateRounds = Array.from(new Set(matchesForScoreboard.map((match) => match.round))).sort((a, b) => {
     const dateA = Number(a.match(/\d+/)?.[0] ?? 0)
     const dateB = Number(b.match(/\d+/)?.[0] ?? 0)
     return dateA - dateB || a.localeCompare(b)
@@ -647,7 +669,7 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
     { label: 'Semifinales', matches: bracket.semifinals },
     { label: 'Final', matches: [bracket.final] },
   ].filter((round) => round.matches.some((match) => match.home || match.away)) : []
-  const rounds = [...dateRounds.map((label) => ({ label, matches: filteredPlayedMatches.filter((match) => match.round === label) })), ...knockoutRounds]
+  const rounds = [...dateRounds.map((label) => ({ label, matches: matchesForScoreboard.filter((match) => match.round === label) })), ...knockoutRounds]
   const [roundIndex, setRoundIndex] = useState(0)
   const [expandedMatchId, setExpandedMatchId] = useState<string | number | null>(null)
   const currentRound = rounds[roundIndex] ?? { label: 'Sin fechas', matches: [] }
@@ -680,7 +702,7 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
         return <article key={matchId} className="overflow-hidden rounded-xl border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)]">
           <div className="flex items-center justify-between gap-3 p-4">
             <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-2 font-bold"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
-            <strong className="shrink-0 rounded-lg border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-surface)] px-3 py-2 text-lg font-black">{match.homeGoals} - {match.awayGoals}</strong>
+            <strong className="shrink-0 rounded-lg border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-surface)] px-3 py-2 text-lg font-black">{match.status === 'upcoming' ? '?' : `${match.homeGoals} - ${match.awayGoals}`}</strong>
             <div className="min-w-0 flex-1"><div className="flex items-center gap-2 font-bold"><span>{getFlag(match.away)}</span><span className="truncate">{getName(match.away)}</span></div></div>
           </div>
           <button type="button" onClick={() => setExpandedMatchId(isExpanded ? null : matchId)} aria-expanded={isExpanded} className="flex w-full items-center justify-center gap-2 border-t border-[color:var(--pt-accent)]/50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-emerald-200 transition hover:bg-[color:var(--pt-border)]/40"><span>{isExpanded ? 'Ocultar detalles' : 'Ver más'}</span><ChevronDown className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} /></button>
