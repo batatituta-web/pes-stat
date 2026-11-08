@@ -280,6 +280,12 @@ html[data-theme='black'] h2 {
   background-attachment: fixed;
 }
 
+html body main table th,
+html body main table td {
+  padding-block: 0.35rem;
+  padding-inline: 0.5rem;
+}
+
 .football-background::before,
 .football-background::after {
   position: absolute;
