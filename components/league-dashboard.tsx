@@ -32,7 +32,29 @@ const initialMatches: Match[] = [
   { id: 4, home: 'newells', away: 'racing', homeGoals: 0, awayGoals: 2, date: '12 Jun, 22:00', round: 'Fecha 3', status: 'played' },
 ]
 
+const premierLeague2026Players: Player[] = [
+  { id: 'nottingham-forest', name: 'Nottingham Forest', initials: 'FOR', color: 'bg-red-700' },
+  { id: 'manchester-united', name: 'Manchester United', initials: 'MUN', color: 'bg-red-600' },
+  { id: 'arsenal', name: 'Arsenal', initials: 'ARS', color: 'bg-red-500' },
+  { id: 'manchester-city', name: 'Manchester City', initials: 'MCI', color: 'bg-sky-500' },
+  { id: 'chelsea', name: 'Chelsea', initials: 'CHE', color: 'bg-blue-700' },
+  { id: 'aston-villa', name: 'Aston Villa', initials: 'AVL', color: 'bg-indigo-800' },
+  { id: 'liverpool', name: 'Liverpool', initials: 'LIV', color: 'bg-red-800' },
+  { id: 'crystal-palace', name: 'Crystal Palace', initials: 'CRY', color: 'bg-blue-800' },
+]
+
+const premierLeague2026Matches: Match[] = [
+  ['Nottingham Forest', 'Manchester United', 1], ['Arsenal', 'Manchester City', 1], ['Chelsea', 'Aston Villa', 1], ['Liverpool', 'Crystal Palace', 1],
+  ['Manchester United', 'Crystal Palace', 2], ['Aston Villa', 'Liverpool', 2], ['Manchester City', 'Chelsea', 2], ['Nottingham Forest', 'Arsenal', 2],
+  ['Manchester United', 'Arsenal', 3], ['Chelsea', 'Nottingham Forest', 3], ['Liverpool', 'Manchester City', 3], ['Crystal Palace', 'Aston Villa', 3],
+  ['Manchester United', 'Aston Villa', 4], ['Manchester City', 'Crystal Palace', 4], ['Nottingham Forest', 'Liverpool', 4], ['Arsenal', 'Chelsea', 4],
+  ['Chelsea', 'Manchester United', 5], ['Liverpool', 'Arsenal', 5], ['Crystal Palace', 'Nottingham Forest', 5], ['Aston Villa', 'Manchester City', 5],
+  ['Manchester United', 'Manchester City', 6], ['Nottingham Forest', 'Aston Villa', 6], ['Arsenal', 'Crystal Palace', 6], ['Chelsea', 'Liverpool', 6],
+  ['Liverpool', 'Manchester United', 7], ['Crystal Palace', 'Chelsea', 7], ['Aston Villa', 'Arsenal', 7], ['Manchester City', 'Nottingham Forest', 7],
+].map(([home, away, round], index) => ({ id: 2701 + index, home: String(home).toLowerCase().replace(/[^a-z0-9]+/g, '-'), away: String(away).toLowerCase().replace(/[^a-z0-9]+/g, '-'), homeGoals: 0, awayGoals: 0, date: 'Por definir', round: `Jornada ${round}`, status: 'upcoming' as const }))
+
 const tournamentData: Record<string, { players: Player[]; matches: Match[] }> = {
+  'Premier League::2026/2027': { players: premierLeague2026Players, matches: premierLeague2026Matches },
   'Champions League': {
     players: [
       { id: 'real-madrid', name: 'Real Madrid', initials: 'RM', color: 'bg-slate-500' },
@@ -514,7 +536,7 @@ export function LeagueDashboard() {
   function selectTournament(tournament: string) {
     markLocalChange()
     setTournamentStates((current) => ({ ...current, [tournamentStateKey(activeTournament, activeSeason)]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-  const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament
+  const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament === 'Premier League' && activeSeason === '2026/2027' ? 'Premier League::2026/2027' : tournament
   const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' ? { players: [], matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
     const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStates[tournamentStateKey(tournament, activeSeason)] ?? (activeSeason === '2024/2025' ? tournamentStates[tournament] : undefined)
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
@@ -540,7 +562,7 @@ export function LeagueDashboard() {
     if (!SEASON_TOURNAMENTS.has(activeTournament)) return
     markLocalChange()
     setTournamentStates((current) => ({ ...current, [tournamentStateKey(activeTournament, activeSeason)]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-    const dataKey = activeTournament === 'UEFA Champions League' ? 'Champions League' : activeTournament
+    const dataKey = activeTournament === 'UEFA Champions League' ? 'Champions League' : activeTournament === 'Premier League' && season === '2026/2027' ? 'Premier League::2026/2027' : activeTournament
     const selected = tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
     const savedState = tournamentStates[tournamentStateKey(activeTournament, season)] ?? (season === '2024/2025' ? tournamentStates[activeTournament] : undefined)
     const nextPlayers = savedState?.players ?? selected.players ?? initialPlayers
