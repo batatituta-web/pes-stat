@@ -310,6 +310,8 @@ export function LeagueDashboard() {
   const [copaChampion, setCopaChampion] = useState('')
   const [persistenceLoaded, setPersistenceLoaded] = useState(false)
   const [tournamentStates, setTournamentStates] = useState<Record<string, { players: typeof defaultTournament.players; matches: typeof defaultTournament.matches; playerStats: Record<string, PlayerStat[]>; teamGroups: Record<string, 'A' | 'B'>; copaBracket: CopaBracket; copaVisualBracket: CopaVisualBracket; copaChampion: string }>>({})
+  const tournamentStatesRef = useRef(tournamentStates)
+  tournamentStatesRef.current = tournamentStates
   const activeTournamentRef = useRef(activeTournament)
   activeTournamentRef.current = activeTournament
   const activeSeasonRef = useRef(activeSeason)
@@ -563,10 +565,14 @@ export function LeagueDashboard() {
   function selectSeason(season: Season) {
     if (!SEASON_TOURNAMENTS.has(activeTournament)) return
     markLocalChange()
-    setTournamentStates((current) => ({ ...current, [tournamentStateKey(activeTournament, activeSeason)]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
+    const currentKey = tournamentStateKey(activeTournament, activeSeason)
+    const currentState = { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion }
+    const nextTournamentStates = { ...tournamentStatesRef.current, [currentKey]: currentState }
+    tournamentStatesRef.current = nextTournamentStates
+    setTournamentStates(nextTournamentStates)
     const dataKey = activeTournament === 'UEFA Champions League' ? 'Champions League' : activeTournament === 'Premier League' && season === '2026/2027' ? 'Premier League::2026/2027' : activeTournament
     const selected = tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
-    const savedState = tournamentStates[tournamentStateKey(activeTournament, season)] ?? (season === '2024/2025' ? tournamentStates[activeTournament] : undefined)
+    const savedState = nextTournamentStates[tournamentStateKey(activeTournament, season)] ?? (season === '2024/2025' ? nextTournamentStates[activeTournament] : undefined)
     const nextPlayers = savedState?.players ?? selected.players ?? initialPlayers
     const nextMatches = (savedState?.matches ?? selected.matches ?? initialMatches).map((match) => ({ ...match, status: match.status ?? 'played' as const }))
     setActiveSeason(season)
