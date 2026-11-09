@@ -183,6 +183,8 @@ function getTeamLogo(name: string): string | null {
     'Fluminense': '/teams/fluminense.png',
   }
   const normalizedName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/fc | cf$| sc$| ec$| s\.c\.$/g, '').trim()
+  if (normalizedName.includes('villarreal')) return '/teams/villarreal-new.png'
+  if (normalizedName.includes('espanyol')) return '/teams/espanyol.png'
   const matchingTeam = Object.entries(premierLeagueTeams).find(([teamName]) => {
     const normalizedTeamName = teamName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     return normalizedName === normalizedTeamName || normalizedName.includes(normalizedTeamName) || normalizedTeamName.includes(normalizedName)
