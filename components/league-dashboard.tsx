@@ -147,7 +147,17 @@ function getTeamLogo(name: string): string | null {
     'Atletico Madrid': '/teams/atletico-madrid.png',
     'Sevilla': '/teams/sevilla.png',
     'Valencia': '/teams/valencia.png',
-    'Villarreal': '/teams/villarreal.png',
+    'Villarreal': '/teams/villarreal-new.png',
+    'Celta': '/teams/celta-vigo.png',
+    'Celta de Vigo': '/teams/celta-vigo.png',
+    'Celta Vigo': '/teams/celta-vigo.png',
+    'RC Celta': '/teams/celta-vigo.png',
+    'Rayo': '/teams/rayo-vallecano.png',
+    'Rayo Vallecano': '/teams/rayo-vallecano.png',
+    'Villarreal CF': '/teams/villarreal-new.png',
+    'Espanyol': '/teams/espanyol.png',
+    'RCD Espanyol': '/teams/espanyol.png',
+    'Espanyol de Barcelona': '/teams/espanyol.png',
     'Athletic Club': '/teams/athletic-club.png',
     'Real Betis': '/teams/real-betis.png',
     'Real Sociedad': '/teams/real-sociedad.png',
@@ -173,6 +183,8 @@ function getTeamLogo(name: string): string | null {
     'Fluminense': '/teams/fluminense.png',
   }
   const normalizedName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/fc | cf$| sc$| ec$| s\.c\.$/g, '').trim()
+  if (normalizedName.includes('villarreal')) return '/teams/villarreal-replacement.png'
+  if (normalizedName.includes('espanyol')) return '/teams/espanyol.png'
   const matchingTeam = Object.entries(premierLeagueTeams).find(([teamName]) => {
     const normalizedTeamName = teamName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     return normalizedName === normalizedTeamName || normalizedName.includes(normalizedTeamName) || normalizedTeamName.includes(normalizedName)
@@ -183,7 +195,7 @@ function getTeamLogo(name: string): string | null {
 function countryFlag(name: string) {
   const teamLogo = getTeamLogo(name)
   if (teamLogo) {
-    return <img src={teamLogo} alt="" aria-hidden="true" onError={(event) => { event.currentTarget.style.display = 'none' }} className="mr-2 inline-block size-7 rounded-full object-cover align-middle" />
+    return <img src={teamLogo} alt="" aria-hidden="true" onError={(event) => { event.currentTarget.style.display = 'none' }} className="mr-2 inline-block size-7 rounded-full object-contain align-middle" />
   }
   
   const flags: Record<string, string> = { 'Argentina': '🇦🇷', 'Brasil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴', 'Chile': '🇨🇱', 'Ecuador': '🇪🇨', 'Real Madrid': '🇪🇸', 'Barcelona': '🇪🇸', 'Bayern Munich': '🇩🇪', 'Liverpool': '🇬🇧', 'PSG': '🇫🇷', 'Inter': '🇮🇹', 'Francia': '🇫🇷', 'Alemania': '🇩🇪', 'España': '🇪🇸', 'Inglaterra': '\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E006C}\u{E0061}\u{E006E}\u{E0064}\u{E007F}', 'Perú': '🇵🇪', 'Paraguay': '🇵🇾', 'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪', 'México': '🇲🇽', 'Mexico': '🇲🇽', 'Panamá': '🇵🇦', 'Panama': '🇵🇦', 'Costa Rica': '🇨🇷', 'Estados Unidos': '🇺🇸', 'Canadá': '🇨🇦', 'Canada': '🇨🇦', 'Jap��n': '🇯🇵', 'Japon': '🇯🇵', 'Corea del Sur': '🇰🇷', 'Portugal': '🇵🇹', 'Países Bajos': '🇳🇱', 'Paises Bajos': '🇳🇱', 'Holanda': '🇳🇱', 'Bélgica': '🇧🇪', 'Belgica': '🇧🇪', 'Suiza': '🇨🇭', 'Austria': '🇦🇹', 'Serbia': '🇷🇸', 'Croacia': '🇭🇷', 'Dinamarca': '🇩🇰', 'Suecia': '🇸🇪' }
