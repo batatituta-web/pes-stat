@@ -147,14 +147,14 @@ function getTeamLogo(name: string): string | null {
     'Atletico Madrid': '/teams/atletico-madrid.png',
     'Sevilla': '/teams/sevilla.png',
     'Valencia': '/teams/valencia.png',
-    'Villarreal': '/teams/villarreal-new.png',
+    'Villarreal': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-11-09_165026957-removebg-preview-vGaiB2taY4oiEAJYRbx8VKOIiI9uo6.png',
     'Celta': '/teams/celta-vigo.png',
     'Celta de Vigo': '/teams/celta-vigo.png',
     'Celta Vigo': '/teams/celta-vigo.png',
     'RC Celta': '/teams/celta-vigo.png',
     'Rayo': '/teams/rayo-vallecano.png',
     'Rayo Vallecano': '/teams/rayo-vallecano.png',
-    'Villarreal CF': '/teams/villarreal-new.png',
+    'Villarreal CF': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-11-09_165026957-removebg-preview-vGaiB2taY4oiEAJYRbx8VKOIiI9uo6.png',
     'Espanyol': '/teams/espanyol.png',
     'RCD Espanyol': '/teams/espanyol.png',
     'Espanyol de Barcelona': '/teams/espanyol.png',
@@ -183,7 +183,7 @@ function getTeamLogo(name: string): string | null {
     'Fluminense': '/teams/fluminense.png',
   }
   const normalizedName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/fc | cf$| sc$| ec$| s\.c\.$/g, '').trim()
-  if (normalizedName.includes('villarreal')) return '/teams/villarreal-new.png'
+  if (normalizedName.includes('villarreal')) return 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-11-09_165026957-removebg-preview-vGaiB2taY4oiEAJYRbx8VKOIiI9uo6.png'
   if (normalizedName.includes('espanyol')) return '/teams/espanyol.png'
   const matchingTeam = Object.entries(premierLeagueTeams).find(([teamName]) => {
     const normalizedTeamName = teamName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
