@@ -15,10 +15,6 @@ const HEARTBEAT_MS = 15_000
 // LISTEN/NOTIFY does not work through the pooled (pgbouncer) connection, so the listener needs the direct one.
 const listenerUrl = process.env.DATABASE_URL_UNPOOLED ?? process.env.POSTGRES_URL_NON_POOLING ?? process.env.DATABASE_URL
 
-async function ensureTable() {
-  await pool.query(`CREATE TABLE IF NOT EXISTS league_state (id text PRIMARY KEY, payload jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`)
-}
-
 async function readState() {
   const result = await pool.query('SELECT payload, updated_at FROM league_state WHERE id = $1', [STATE_ID])
   return { state: result.rows[0]?.payload ?? null, version: result.rows[0]?.updated_at ?? null }
@@ -74,7 +70,6 @@ function openStateStream(request: Request) {
       }
 
       try {
-        await ensureTable()
         await listener.connect()
         listener.on('error', () => void close())
         listener.on('end', () => void close())
@@ -115,7 +110,6 @@ export async function GET(request: Request) {
   if (new URL(request.url).searchParams.get('stream') === '1') return openStateStream(request)
 
   try {
-    await ensureTable()
     return NextResponse.json(await readState(), { headers: { 'Cache-Control': 'no-store, max-age=0' } })
   } catch (error) {
     console.error('[v0] Error leyendo estado de Neon:', error)
@@ -128,7 +122,6 @@ export async function PUT(request: Request) {
   const state = await request.json()
   if (!state || typeof state !== 'object' || Array.isArray(state)) return NextResponse.json({ error: 'Invalid state' }, { status: 400 })
   try {
-    await ensureTable()
     const current = await pool.query('SELECT payload FROM league_state WHERE id = $1', [STATE_ID])
     if (current.rows[0] && stableJson(current.rows[0].payload) === stableJson(state)) {
       return NextResponse.json({ ok: true, changed: false })
