@@ -290,7 +290,7 @@ export function LeagueDashboard() {
   const [matches, setMatches] = useState<typeof defaultTournament.matches>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'matches' | 'players'>('overview')
   const [activeTournament, setActiveTournament] = useState('General')
-  const [activeSeason, setActiveSeason] = useState<Season>('2024/2025')
+  const [activeSeason, setActiveSeason] = useState<Season>('2026/2027')
   const [showPredictor, setShowPredictor] = useState(false)
   const [tableCorners, setTableCorners] = useState<'rounded' | 'square'>('rounded')
   const [theme, setTheme] = useState<'green' | 'black' | 'purple'>('green')
@@ -606,7 +606,7 @@ export function LeagueDashboard() {
   function selectTournament(tournament: string) {
     markLocalChange()
     setTournamentStates((current) => ({ ...current, [tournamentStateKey(activeTournament, activeSeason)]: { players, matches, playerStats, teamGroups, copaBracket, copaVisualBracket, copaChampion } }))
-    const nextSeason: Season = tournament === 'Premier League' ? '2026/2027' : activeSeason
+    const nextSeason: Season = SEASONS[SEASONS.length - 1]
     const dataKey = tournament === 'UEFA Champions League' ? 'Champions League' : tournament === 'Premier League' && nextSeason === '2026/2027' ? 'Premier League::2026/2027' : tournament
   const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' ? { players: [], matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
     const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStatesRef.current[tournamentStateKey(tournament, nextSeason)]
