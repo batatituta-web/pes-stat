@@ -295,7 +295,7 @@ export function LeagueDashboard() {
   const [tableCorners, setTableCorners] = useState<'rounded' | 'square'>('rounded')
   const [theme, setTheme] = useState<'green' | 'black' | 'purple'>('green')
   const [session, setSession] = useState<{ user?: { id: string } } | null>(null)
-  const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: true, selections: true, england: false, spain: false, italy: false, brazil: false })
+  const [openTournamentGroups, setOpenTournamentGroups] = useState({ international: false, selections: false, england: false, spain: false, italy: false, brazil: false })
   const isUnavailableTournament = ['UEFA Champions League', 'UEFA Europa League', 'CONMEBOL Libertadores', 'Mundial de Clubes', 'CONMEBOL Sudamericana', 'Mundial'].includes(activeTournament)
   const [showFoxy, setShowFoxy] = useState(false)
   const [showForm, setShowForm] = useState(false)
