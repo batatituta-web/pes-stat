@@ -10,7 +10,7 @@ import { AuthControls } from '@/components/auth-controls'
 
 type Player = { id: string; name: string; initials: string; color: string }
 type PlayerStat = { id: string; name: string; goals: number; assists: number; penalties: number; yellowCards: number; redCards: number; injuries: number }
-type BracketMatch = { home: string; away: string; homeGoals: string; awayGoals: string; homePenalties?: string; awayPenalties?: string }
+type BracketMatch = { home: string; away: string; homeGoals: string; awayGoals: string; homePenalties?: string; awayPenalties?: string; date?: string }
 type CopaBracket = { semifinal1: BracketMatch; semifinal2: BracketMatch; final: BracketMatch }
 type CopaVisualBracket = { round16: BracketMatch[]; quarterfinals: BracketMatch[]; semifinals: BracketMatch[]; final: BracketMatch }
 const createEmptyBracketMatch = (): BracketMatch => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })
@@ -850,6 +850,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
             <input aria-label={`${label} goles visitante`} type="number" min="0" value={match.awayGoals} onChange={(event) => update(round, index, 'awayGoals', event.target.value)} placeholder="-" className="w-8 rounded bg-[color:var(--pt-deep-alt)] px-1 py-0.5 text-center text-xs font-black text-amber-300 outline-none" />
             <input aria-label={`${label} penales visitante`} type="number" min="0" value={match.awayPenalties} onChange={(event) => update(round, index, 'awayPenalties', event.target.value)} placeholder="P" className="w-8 rounded bg-[color:var(--pt-deep-alt)] px-1 py-0.5 text-center text-[10px] font-bold text-sky-200 outline-none" />
           </div>
+          <label className="flex items-center gap-2 px-2 pb-1 text-[10px] font-medium text-emerald-200">Fecha<input aria-label={`${label} fecha`} type="date" value={match.date ?? ''} onChange={(event) => update(round, index, 'date', event.target.value)} className="ml-auto min-w-0 rounded bg-[color:var(--pt-deep-alt)] px-1.5 py-0.5 text-[10px] text-white outline-none" /></label>
         </div>
       </div>
     )
