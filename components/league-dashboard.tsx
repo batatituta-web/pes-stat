@@ -910,8 +910,7 @@ function TeamStatsPanel({ knownPlayerNames, teams, selectedTeamId, onSelectTeam,
   const normalizedPlayerQuery = newPlayer.name.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase()
   const playerNameSuggestions = normalizedPlayerQuery ? knownPlayerNames.filter((name) => {
     const normalizedName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase()
-    const initials = normalizedName.split(/\s+/).map((part) => part[0]).join('')
-    return normalizedName.startsWith(normalizedPlayerQuery) || initials.startsWith(normalizedPlayerQuery)
+    return normalizedName.includes(normalizedPlayerQuery)
   }) : knownPlayerNames
   const choosePlayerName = (name: string) => {
     setNewPlayer((current) => ({ ...current, name }))
