@@ -42,7 +42,10 @@ const getBracketTeamProgress = (bracket: CopaVisualBracket) => {
         winner = homePenalties > awayPenalties ? match.home : awayPenalties > homePenalties ? match.away : ''
       }
 
-      if (winner) progress.set(winner, Math.max(progress.get(winner) ?? 0, Math.min(stage + 1, 4)))
+      if (winner) {
+        const winnerProgress = stage === 4 ? 5 : stage + 1
+        progress.set(winner, Math.max(progress.get(winner) ?? 0, winnerProgress))
+      }
     }
   }
 
