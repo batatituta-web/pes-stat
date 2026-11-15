@@ -52,6 +52,7 @@ const getBracketTeamProgress = (bracket: CopaVisualBracket) => {
   return progress
 }
 type Match = { id: number; home: string; away: string; homeGoals: number; awayGoals: number; date: string; round: string; videoUrl?: string; status?: 'played' | 'upcoming' }
+type TournamentStateSnapshot = { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
 
 const initialPlayers: Player[] = [
   { id: 'racing', name: 'Racing Club', initials: 'RC', color: 'bg-sky-500' },
@@ -328,6 +329,18 @@ function tournamentStateKey(tournament: string, season: Season) {
   return SEASON_TOURNAMENTS.has(tournament) ? `${tournament}::${season}` : tournament
 }
 
+function getTournamentSavedState<T extends { players?: Player[] }>(states: Record<string, T> | undefined, tournament: string, season: Season) {
+  const savedState = states?.[tournamentStateKey(tournament, season)]
+  if (tournament !== 'Champions League' || !savedState?.players?.length) return savedState
+
+  const eurocopaState = states?.[tournamentStateKey('Eurocopa', season)]
+  const eurocopaPlayers = eurocopaState?.players ?? tournamentData.Eurocopa.players
+  const savedTeamIds = new Set(savedState.players.map(({ id }) => id))
+  const isEurocopaRoster = eurocopaPlayers.length === savedState.players.length && eurocopaPlayers.every(({ id }) => savedTeamIds.has(id))
+
+  return isEurocopaRoster ? undefined : savedState
+}
+
 export function LeagueDashboard() {
   const defaultTournament = tournamentData['Eurocopa']
   const [players, setPlayers] = useState<typeof defaultTournament.players>([])
@@ -435,7 +448,7 @@ export function LeagueDashboard() {
       if (data.version) lastRemoteVersionRef.current = data.version
       if (state && typeof state === 'object') {
         const remoteTournament = activeTournamentRef.current
-        const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state))
+        const selectedState: TournamentStateSnapshot = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (getTournamentSavedState(state.tournamentStates, remoteTournament, activeSeasonRef.current) ?? (remoteTournament === 'Champions League' ? tournamentData['Champions League'] : ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state)))
         const sharedState = { ...state }
         const remoteState = stableStringify(sharedState)
         lastSyncedRef.current = remoteState
@@ -474,7 +487,7 @@ export function LeagueDashboard() {
       lastRemoteStateRef.current = incoming
       const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
       const remoteTournament = activeTournamentRef.current
-      const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state))
+      const selectedState: TournamentStateSnapshot = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (getTournamentSavedState(state.tournamentStates, remoteTournament, activeSeasonRef.current) ?? (remoteTournament === 'Champions League' ? tournamentData['Champions League'] : ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state)))
       const remotePlayers = Array.isArray(selectedState.players) ? selectedState.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
@@ -645,7 +658,7 @@ export function LeagueDashboard() {
     const superCupLeagueState = superCupLeague ? (superCupLeague === activeTournament ? { players, matches } : tournamentStatesRef.current[tournamentStateKey(superCupLeague, nextSeason)]) : undefined
     const superCupPlayers = superCupLeague ? (superCupLeagueState?.players ?? tournamentData[superCupLeagueDataKey]?.players) : undefined
     const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' || EMPTY_TOURNAMENTS.has(tournament) ? { players: [], matches: [] } : superCupLeague ? { players: superCupPlayers ?? initialPlayers, matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
-    const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStatesRef.current[tournamentStateKey(tournament, nextSeason)]
+    const savedState = tournament === 'UEFA Champions League' ? undefined : getTournamentSavedState(tournamentStatesRef.current, tournament, nextSeason)
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
     else setCopaVisualBracket(SINGLE_FINAL_TOURNAMENTS.has(tournament) ? createSingleFinalBracket() : createFullBracket())
@@ -680,7 +693,7 @@ export function LeagueDashboard() {
     const superCupLeagueDataKey = superCupLeague === 'Premier League' && season === '2026/2027' ? 'Premier League::2026/2027' : (superCupLeague ?? '')
     const superCupPlayers = superCupLeague ? (nextTournamentStates[tournamentStateKey(superCupLeague, season)]?.players ?? tournamentData[superCupLeagueDataKey]?.players) : undefined
     const selected = superCupLeague ? { players: superCupPlayers ?? initialPlayers, matches: [] } : tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
-    const savedState = nextTournamentStates[tournamentStateKey(activeTournament, season)]
+    const savedState = getTournamentSavedState(nextTournamentStates, activeTournament, season)
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     else setCopaBracket({ semifinal1: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, semifinal2: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
