@@ -16,7 +16,7 @@ type CopaVisualBracket = { round16: BracketMatch[]; quarterfinals: BracketMatch[
 const createEmptyBracketMatch = (): BracketMatch => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })
 const createSingleFinalBracket = (): CopaVisualBracket => ({ round16: [], quarterfinals: [], semifinals: [], final: createEmptyBracketMatch() })
 const createFullBracket = (): CopaVisualBracket => ({ round16: Array.from({ length: 4 }, createEmptyBracketMatch), quarterfinals: Array.from({ length: 4 }, createEmptyBracketMatch), semifinals: Array.from({ length: 2 }, createEmptyBracketMatch), final: createEmptyBracketMatch() })
-const ELIMINATION_TOURNAMENTS = new Set(['Copa América', 'Eurocopa', 'Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'])
+const ELIMINATION_TOURNAMENTS = new Set(['Copa América', 'Eurocopa', 'Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil', 'Champions League', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'])
 const getBracketTeamProgress = (bracket: CopaVisualBracket) => {
   const progress = new Map<string, number>()
   const rounds: Array<[keyof CopaVisualBracket, number]> = [['round16', 1], ['quarterfinals', 2], ['semifinals', 3], ['final', 4]]
@@ -52,6 +52,7 @@ const getBracketTeamProgress = (bracket: CopaVisualBracket) => {
   return progress
 }
 type Match = { id: number; home: string; away: string; homeGoals: number; awayGoals: number; date: string; round: string; videoUrl?: string; status?: 'played' | 'upcoming' }
+type TournamentStateSnapshot = { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
 
 const initialPlayers: Player[] = [
   { id: 'racing', name: 'Racing Club', initials: 'RC', color: 'bg-sky-500' },
@@ -316,7 +317,7 @@ function PremierChampionSimulator({ players, matches, table }: { players: Player
 
 function getPlayerName(players: Player[], id: string) { return players.find((player) => player.id === id)?.name ?? id }
 
-const SEASON_TOURNAMENTS = new Set(['Premier League', 'FA Cup', 'Community Shield', 'La Liga', 'Copa del Rey', 'Supercopa de España', 'Serie A', 'Coppa Italia', 'Supercoppa Italiana', 'Brasileirao', 'Copa do Brasil'])
+const SEASON_TOURNAMENTS = new Set(['Premier League', 'FA Cup', 'Community Shield', 'La Liga', 'Copa del Rey', 'Supercopa de España', 'Serie A', 'Coppa Italia', 'Supercoppa Italiana', 'Brasileirao', 'Copa do Brasil', 'Champions League'])
 const EMPTY_TOURNAMENTS = new Set(['test'])
 const CUP_BY_LEAGUE: Record<string, string> = { 'Premier League': 'FA Cup', 'La Liga': 'Copa del Rey', 'Serie A': 'Coppa Italia', Brasileirao: 'Copa do Brasil' }
 const SUPER_CUP_BY_LEAGUE: Record<string, string> = { 'La Liga': 'Supercopa de España', 'Serie A': 'Supercoppa Italiana' }
@@ -326,6 +327,18 @@ const SEASONS = ['2024/2025', '2026/2027'] as const
 type Season = (typeof SEASONS)[number]
 function tournamentStateKey(tournament: string, season: Season) {
   return SEASON_TOURNAMENTS.has(tournament) ? `${tournament}::${season}` : tournament
+}
+
+function getTournamentSavedState<T extends { players?: Player[] }>(states: Record<string, T> | undefined, tournament: string, season: Season) {
+  const savedState = states?.[tournamentStateKey(tournament, season)]
+  if (tournament !== 'Champions League' || !savedState?.players?.length) return savedState
+
+  const eurocopaState = states?.[tournamentStateKey('Eurocopa', season)]
+  const eurocopaPlayers = eurocopaState?.players ?? tournamentData.Eurocopa.players
+  const savedTeamIds = new Set(savedState.players.map(({ id }) => id))
+  const isEurocopaRoster = eurocopaPlayers.length === savedState.players.length && eurocopaPlayers.every(({ id }) => savedTeamIds.has(id))
+
+  return isEurocopaRoster ? undefined : savedState
 }
 
 export function LeagueDashboard() {
@@ -435,7 +448,7 @@ export function LeagueDashboard() {
       if (data.version) lastRemoteVersionRef.current = data.version
       if (state && typeof state === 'object') {
         const remoteTournament = activeTournamentRef.current
-        const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state))
+        const selectedState: TournamentStateSnapshot = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (getTournamentSavedState(state.tournamentStates, remoteTournament, activeSeasonRef.current) ?? (remoteTournament === 'Champions League' ? tournamentData['Champions League'] : ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state)))
         const sharedState = { ...state }
         const remoteState = stableStringify(sharedState)
         lastSyncedRef.current = remoteState
@@ -474,7 +487,7 @@ export function LeagueDashboard() {
       lastRemoteStateRef.current = incoming
       const state = payload.state as { activeTournament?: string; players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; tournamentStates?: Record<string, { players?: Player[]; matches?: Match[]; playerStats?: Record<string, PlayerStat[]>; teamGroups?: Record<string, 'A' | 'B'>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }>; copaBracket?: CopaBracket; copaVisualBracket?: CopaVisualBracket; copaChampion?: string }
       const remoteTournament = activeTournamentRef.current
-      const selectedState = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (state.tournamentStates?.[tournamentStateKey(remoteTournament, activeSeasonRef.current)] ?? ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state))
+      const selectedState: TournamentStateSnapshot = remoteTournament === 'General' || remoteTournament === 'UEFA Champions League' ? { players: [], matches: [] } : (getTournamentSavedState(state.tournamentStates, remoteTournament, activeSeasonRef.current) ?? (remoteTournament === 'Champions League' ? tournamentData['Champions League'] : ((SEASON_TOURNAMENTS.has(remoteTournament) || EMPTY_TOURNAMENTS.has(remoteTournament)) ? { players: [], matches: [] } : state)))
       const remotePlayers = Array.isArray(selectedState.players) ? selectedState.players : []
       const remotePlayerIds = new Set(remotePlayers.map((player) => player.id))
       const remoteMatches = Array.isArray(selectedState.matches) ? selectedState.matches.filter((match) => match.status !== 'upcoming' || (remotePlayerIds.has(match.home) && remotePlayerIds.has(match.away))) : []
@@ -645,7 +658,7 @@ export function LeagueDashboard() {
     const superCupLeagueState = superCupLeague ? (superCupLeague === activeTournament ? { players, matches } : tournamentStatesRef.current[tournamentStateKey(superCupLeague, nextSeason)]) : undefined
     const superCupPlayers = superCupLeague ? (superCupLeagueState?.players ?? tournamentData[superCupLeagueDataKey]?.players) : undefined
     const selected: { players: Player[]; matches: Match[] } = tournament === 'UEFA Champions League' || EMPTY_TOURNAMENTS.has(tournament) ? { players: [], matches: [] } : superCupLeague ? { players: superCupPlayers ?? initialPlayers, matches: [] } : (tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches })
-    const savedState = tournament === 'UEFA Champions League' ? undefined : tournamentStatesRef.current[tournamentStateKey(tournament, nextSeason)]
+    const savedState = tournament === 'UEFA Champions League' ? undefined : getTournamentSavedState(tournamentStatesRef.current, tournament, nextSeason)
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
     else setCopaVisualBracket(SINGLE_FINAL_TOURNAMENTS.has(tournament) ? createSingleFinalBracket() : createFullBracket())
@@ -680,7 +693,7 @@ export function LeagueDashboard() {
     const superCupLeagueDataKey = superCupLeague === 'Premier League' && season === '2026/2027' ? 'Premier League::2026/2027' : (superCupLeague ?? '')
     const superCupPlayers = superCupLeague ? (nextTournamentStates[tournamentStateKey(superCupLeague, season)]?.players ?? tournamentData[superCupLeagueDataKey]?.players) : undefined
     const selected = superCupLeague ? { players: superCupPlayers ?? initialPlayers, matches: [] } : tournamentData[dataKey] ?? { players: initialPlayers, matches: initialMatches }
-    const savedState = nextTournamentStates[tournamentStateKey(activeTournament, season)]
+    const savedState = getTournamentSavedState(nextTournamentStates, activeTournament, season)
     if (savedState?.copaBracket) setCopaBracket(savedState.copaBracket)
     else setCopaBracket({ semifinal1: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, semifinal2: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }, final: { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' } })
     if (savedState?.copaVisualBracket) setCopaVisualBracket(savedState.copaVisualBracket)
@@ -733,7 +746,7 @@ export function LeagueDashboard() {
           <div className="flex items-center gap-2 px-3 pb-3 pt-3"><Globe2 className="size-4 text-emerald-200" /><span className="text-sm font-bold uppercase tracking-[0.16em] text-emerald-100">Torneos</span></div>
           <nav aria-label="Navegación de torneos" className="flex flex-col gap-2">
             <button type="button" aria-expanded={openTournamentGroups.international} onClick={() => setOpenTournamentGroups((current) => ({ ...current, international: !current.international }))} className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide lg:w-full text-emerald-100 transition-colors hover:bg-[color:var(--pt-surface)] hover:text-white"><span className="flex items-center gap-3"><Trophy className="size-4" />Internacional</span><ChevronDown className={`size-4 transition-transform duration-300 ${openTournamentGroups.international ? 'rotate-180' : ''}`} /></button>
-            <div className={`ml-3 overflow-hidden border-l border-[color:var(--pt-accent)]/60 lg:ml-0 lg:max-w-[15rem] pl-2 transition-[max-height,opacity] duration-300 ease-in-out ${openTournamentGroups.international ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`} aria-hidden={!openTournamentGroups.international}>{['test'].map((tournament) => <button type="button" key={tournament} aria-current={activeTournament === tournament ? 'page' : undefined} onClick={() => selectTournament(tournament)} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm leading-tight transition-all duration-150 active:scale-[0.98] active:brightness-125 ${activeTournament === tournament ? 'bg-[color:var(--pt-border)] font-bold text-white' : 'text-emerald-100 hover:bg-[color:var(--pt-surface)] hover:text-white'}`}><Trophy className="size-3.5 shrink-0" />{tournament}</button>)}</div>
+            <div className={`ml-3 overflow-hidden border-l border-[color:var(--pt-accent)]/60 lg:ml-0 lg:max-w-[15rem] pl-2 transition-[max-height,opacity] duration-300 ease-in-out ${openTournamentGroups.international ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`} aria-hidden={!openTournamentGroups.international}>{['Champions League'].map((tournament) => <button type="button" key={tournament} aria-current={activeTournament === tournament ? 'page' : undefined} onClick={() => selectTournament(tournament)} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm leading-tight transition-all duration-150 active:scale-[0.98] active:brightness-125 ${activeTournament === tournament ? 'bg-[color:var(--pt-border)] font-bold text-white' : 'text-emerald-100 hover:bg-[color:var(--pt-surface)] hover:text-white'}`}><Trophy className="size-3.5 shrink-0" />{tournament}</button>)}</div>
             <button type="button" aria-expanded={openTournamentGroups.selections} onClick={() => setOpenTournamentGroups((current) => ({ ...current, selections: !current.selections }))} className="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide lg:w-full text-emerald-100 transition-colors hover:bg-[color:var(--pt-surface)] hover:text-white"><span className="flex items-center gap-3"><Globe2 className="size-4" />Selecciones</span><ChevronDown className={`size-4 transition-transform duration-300 ${openTournamentGroups.selections ? 'rotate-180' : ''}`} /></button>
             <div className={`ml-3 overflow-hidden border-l border-[color:var(--pt-accent)]/60 lg:ml-0 lg:max-w-[15rem] pl-2 transition-[max-height,opacity] duration-300 ease-in-out ${openTournamentGroups.selections ? 'max-h-72 opacity-100' : 'max-h-0 opacity-0'}`} aria-hidden={!openTournamentGroups.selections}>{['Copa América', 'Eurocopa', 'Mundial'].map((tournament) => <button type="button" key={tournament} aria-current={activeTournament === tournament ? 'page' : undefined} onClick={() => selectTournament(tournament)} className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm leading-tight transition-all duration-150 active:scale-[0.98] active:brightness-125 ${activeTournament === tournament ? 'bg-[color:var(--pt-border)] font-bold text-white' : 'text-emerald-100 hover:bg-[color:var(--pt-surface)] hover:text-white'}`}><Trophy className="size-3.5 shrink-0" />{tournament}</button>)}</div>
             {['Premier League', 'La Liga', 'Serie A', 'Brasileirao'].map((tournament) => <button type="button" key={tournament} aria-current={activeTournament === tournament ? 'page' : undefined} onClick={() => selectTournament(tournament)} className={`mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold uppercase tracking-wide transition-colors hover:bg-[color:var(--pt-surface)] hover:text-white ${activeTournament === tournament ? 'bg-[color:var(--pt-border)] text-white' : 'text-emerald-100'}`}><Trophy className="size-4" />{tournament}</button>)}
@@ -891,7 +904,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
     )
   }
   
-  const hasRound16 = ['UEFA Champions League', 'Mundial de Clubes', 'Mundial'].includes(competition)
+  const hasRound16 = ['Champions League', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'].includes(competition)
   const isSingleFinal = SINGLE_FINAL_TOURNAMENTS.has(competition)
   const column = (title: string, round: 'round16' | 'quarterfinals' | 'semifinals' | 'final', labels: string[]) => (
     <div className={`flex min-w-[200px] flex-1 flex-col ${round === 'quarterfinals' ? 'justify-center gap-3' : round === 'semifinals' ? 'justify-center gap-4' : 'justify-center'}`}>
