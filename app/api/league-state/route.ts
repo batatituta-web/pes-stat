@@ -15,17 +15,9 @@ const HEARTBEAT_MS = 15_000
 // LISTEN/NOTIFY does not work through the pooled (pgbouncer) connection, so the listener needs the direct one.
 const listenerUrl = process.env.DATABASE_URL_UNPOOLED ?? process.env.POSTGRES_URL_NON_POOLING ?? process.env.DATABASE_URL
 
-function hidePrivateNotes(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(hidePrivateNotes)
-  if (!value || typeof value !== 'object') return value
-  const record = value as Record<string, unknown>
-  return Object.fromEntries(Object.entries(record).filter(([key]) => !['yellowCardNote', 'redCardNote', 'injuryNote'].includes(key)).map(([key, item]) => [key, hidePrivateNotes(item)]))
-}
-
-async function readState(includePrivateNotes = false) {
+async function readState() {
   const result = await pool.query('SELECT payload, updated_at FROM league_state WHERE id = $1', [STATE_ID])
-  const state = result.rows[0]?.payload ?? null
-  return { state: includePrivateNotes ? state : hidePrivateNotes(state), version: result.rows[0]?.updated_at ?? null }
+  return { state: result.rows[0]?.payload ?? null, version: result.rows[0]?.updated_at ?? null }
 }
 
 function stableJson(value: unknown): string {
@@ -71,7 +63,7 @@ function openStateStream(request: Request) {
 
       const sendState = async () => {
         try {
-          send(`data: ${JSON.stringify(await readState(isPreviewAdmin(request)))}\n\n`)
+          send(`data: ${JSON.stringify(await readState())}\n\n`)
         } catch (error) {
           console.error('[v0] Error leyendo estado para SSE:', error)
         }
