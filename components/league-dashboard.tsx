@@ -214,6 +214,7 @@ function getTeamLogo(name: string): string | null {
     'AC Milan': '/teams/milan.png',
     'Juventus': '/teams/juventus.png',
     'Napoli': '/teams/napoli.png',
+    'Marseille': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-obJrD2zi6ihsTjTRDrtXjRN36ZYXeT.png',
     'Roma': '/teams/roma.png',
     'Lazio': '/teams/lazio.png',
     'Fiorentina': '/teams/fiorentina.png',
