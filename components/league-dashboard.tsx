@@ -11,14 +11,14 @@ import { AuthControls } from '@/components/auth-controls'
 type Player = { id: string; name: string; initials: string; color: string }
 type TournamentGroup = 'A' | 'B' | 'C' | 'D'
 type PlayerStat = { id: string; name: string; goals: number; assists: number; penalties: number; yellowCards: number; redCards: number; injuries: number }
-type BracketMatch = { home: string; away: string; homeGoals: string; awayGoals: string; homePenalties?: string; awayPenalties?: string; date?: string }
+type BracketMatch = { home: string; away: string; homeGoals: string; awayGoals: string; secondLegHomeGoals?: string; secondLegAwayGoals?: string; homePenalties?: string; awayPenalties?: string; date?: string }
 type CopaBracket = { semifinal1: BracketMatch; semifinal2: BracketMatch; final: BracketMatch }
 type CopaVisualBracket = { round16: BracketMatch[]; quarterfinals: BracketMatch[]; semifinals: BracketMatch[]; final: BracketMatch }
 const createEmptyBracketMatch = (): BracketMatch => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })
 const createSingleFinalBracket = (): CopaVisualBracket => ({ round16: [], quarterfinals: [], semifinals: [], final: createEmptyBracketMatch() })
 const createFullBracket = (): CopaVisualBracket => ({ round16: Array.from({ length: 4 }, createEmptyBracketMatch), quarterfinals: Array.from({ length: 4 }, createEmptyBracketMatch), semifinals: Array.from({ length: 2 }, createEmptyBracketMatch), final: createEmptyBracketMatch() })
 const ELIMINATION_TOURNAMENTS = new Set(['Copa América', 'Eurocopa', 'Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil', 'Champions League', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'])
-const getBracketTeamProgress = (bracket: CopaVisualBracket) => {
+const getBracketTeamProgress = (bracket: CopaVisualBracket, competition: string) => {
   const progress = new Map<string, number>()
   const rounds: Array<[keyof CopaVisualBracket, number]> = [['round16', 1], ['quarterfinals', 2], ['semifinals', 3], ['final', 4]]
 
@@ -33,8 +33,10 @@ const getBracketTeamProgress = (bracket: CopaVisualBracket) => {
       }
 
       if (match.homeGoals === '' || match.awayGoals === '') continue
-      const homeGoals = Number(match.homeGoals)
-      const awayGoals = Number(match.awayGoals)
+      const isTwoLegTie = ['Champions League', 'UEFA Champions League'].includes(competition) && round !== 'final'
+      if (isTwoLegTie && (match.secondLegHomeGoals == null || match.secondLegHomeGoals === '' || match.secondLegAwayGoals == null || match.secondLegAwayGoals === '')) continue
+      const homeGoals = Number(match.homeGoals) + (isTwoLegTie ? Number(match.secondLegAwayGoals) : 0)
+      const awayGoals = Number(match.awayGoals) + (isTwoLegTie ? Number(match.secondLegHomeGoals) : 0)
       let winner = homeGoals > awayGoals ? match.home : awayGoals > homeGoals ? match.away : ''
 
       if (!winner && homeGoals === awayGoals && match.homePenalties != null && match.awayPenalties != null && match.homePenalties !== '' && match.awayPenalties !== '') {
@@ -894,11 +896,13 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
   const matchCard = (round: keyof CopaVisualBracket, index: number | null, label: string) => {
     const source = bracket[round]
     const match = (Array.isArray(source) ? source[index ?? 0] : source) ?? { home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' }
-    const homeGoals = Number(match.homeGoals)
-    const awayGoals = Number(match.awayGoals)
+    const isTwoLegMatch = ['Champions League', 'UEFA Champions League'].includes(competition) && round !== 'final'
+    const homeGoals = Number(match.homeGoals) + (isTwoLegMatch ? Number(match.secondLegAwayGoals || 0) : 0)
+    const awayGoals = Number(match.awayGoals) + (isTwoLegMatch ? Number(match.secondLegHomeGoals || 0) : 0)
     const homePenalties = Number(match.homePenalties)
     const awayPenalties = Number(match.awayPenalties)
-    const winnerId = homeGoals > awayGoals || (homeGoals === awayGoals && homePenalties > awayPenalties) ? match.home : awayGoals > homeGoals || (awayGoals === homeGoals && awayPenalties > homePenalties) ? match.away : ''
+    const hasCompleteTie = !isTwoLegMatch || (match.secondLegHomeGoals !== '' && match.secondLegHomeGoals != null && match.secondLegAwayGoals !== '' && match.secondLegAwayGoals != null)
+    const winnerId = hasCompleteTie && (homeGoals > awayGoals || (homeGoals === awayGoals && homePenalties > awayPenalties)) ? match.home : hasCompleteTie && (awayGoals > homeGoals || (awayGoals === homeGoals && awayPenalties > homePenalties)) ? match.away : ''
     const homeTeam = players.find(p => p.id === match.home)
     const awayTeam = players.find(p => p.id === match.away)
     const homeName = homeTeam?.name ?? 'A decidirse'
@@ -921,6 +925,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
             <input aria-label={`${label} goles visitante`} type="number" min="0" value={match.awayGoals} onChange={(event) => update(round, index, 'awayGoals', event.target.value)} placeholder="-" className="w-8 rounded bg-[color:var(--pt-deep-alt)] px-1 py-0.5 text-center text-xs font-black text-amber-300 outline-none" />
             <input aria-label={`${label} penales visitante`} type="number" min="0" value={match.awayPenalties} onChange={(event) => update(round, index, 'awayPenalties', event.target.value)} placeholder="P" className="w-8 rounded bg-[color:var(--pt-deep-alt)] px-1 py-0.5 text-center text-[10px] font-bold text-sky-200 outline-none" />
           </div>
+          {isTwoLegMatch && <div className="space-y-1 border-t border-[color:var(--pt-accent)]/40 pt-2"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-200">Vuelta · localía invertida</p><div className="flex items-center gap-1.5"><span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-emerald-100">{awayName}</span><input aria-label={`${label} vuelta goles ${awayName}`} type="number" min="0" value={match.secondLegHomeGoals ?? ''} onChange={(event) => update(round, index, 'secondLegHomeGoals', event.target.value)} placeholder="-" className="w-8 rounded bg-[color:var(--pt-deep-alt)] px-1 py-0.5 text-center text-xs font-black text-amber-300 outline-none" /><span className="px-1 text-[10px] text-emerald-200">-</span><input aria-label={`${label} vuelta goles ${homeName}`} type="number" min="0" value={match.secondLegAwayGoals ?? ''} onChange={(event) => update(round, index, 'secondLegAwayGoals', event.target.value)} placeholder="-" className="w-8 rounded bg-[color:var(--pt-deep-alt)] px-1 py-0.5 text-center text-xs font-black text-amber-300 outline-none" /><span className="min-w-0 flex-1 truncate text-right text-[10px] font-semibold text-emerald-100">{homeName}</span></div><p className="text-right text-[10px] text-emerald-200">Global: {hasCompleteTie ? `${homeGoals} - ${awayGoals}` : 'Pendiente'}</p></div>}
           <label className="flex items-center gap-2 px-2 pb-1 text-[10px] font-medium text-emerald-200">Fecha<input aria-label={`${label} fecha`} type="date" value={match.date ?? ''} onChange={(event) => update(round, index, 'date', event.target.value)} className="ml-auto min-w-0 rounded bg-[color:var(--pt-deep-alt)] px-1.5 py-0.5 text-[10px] text-white outline-none" /></label>
         </div>
       </div>
@@ -943,7 +948,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
     <section className="bracket-card mt-6 mb-10 overflow-hidden rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)] p-3 pb-8 sm:p-4 sm:pb-10">
       <div className="mb-4">
         <h2 className="text-lg font-black text-white">Cuadro de eliminación</h2>
-        <p className="text-xs text-emerald-200">{isSingleFinal ? 'Final' : hasRound16 || hasQuarterfinals ? hasRound16 ? 'Octavos, cuartos de final, semifinales y final' : 'Cuartos de final, semifinales y final' : 'Semifinales y final'}</p>
+        <p className="text-xs text-emerald-200">{isSingleFinal ? 'Final' : ['Champions League', 'UEFA Champions League'].includes(competition) ? 'Cuartos y semifinales a ida y vuelta · final a partido único' : hasRound16 || hasQuarterfinals ? hasRound16 ? 'Octavos, cuartos de final, semifinales y final' : 'Cuartos de final, semifinales y final' : 'Semifinales y final'}</p>
       </div>
       <div className="bracket-scroll overflow-x-auto pb-2">
         <div className={`mx-auto flex w-full items-stretch justify-center gap-4 ${isSingleFinal ? 'min-w-[280px] max-w-md' : 'min-w-[600px]'}`}>
@@ -956,7 +961,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
 
 function PlayerLeaderboards({ players, table, playerStats, bracket, competition, expanded, stacked = false, onToggle }: { players: Player[]; table: ReturnType<typeof calculateTable>; playerStats: Record<string, PlayerStat[]>; bracket: CopaVisualBracket; competition: string; expanded: { goals: boolean; assists: boolean }; stacked?: boolean; onToggle: (key: 'goals' | 'assists') => void }) {
   const teamPositions = new Map(table.map((team, index) => [team.id, index + 1]))
-  const bracketProgress = ELIMINATION_TOURNAMENTS.has(competition) ? getBracketTeamProgress(bracket) : new Map<string, number>()
+  const bracketProgress = ELIMINATION_TOURNAMENTS.has(competition) ? getBracketTeamProgress(bracket, competition) : new Map<string, number>()
   const entries = (field: 'goals' | 'assists') => {
     const allEntries = players.flatMap((team) => (playerStats[team.id] ?? []).filter((player) => player[field] > 0).map((player) => ({ ...player, team: team.name, teamId: team.id })))
     const firstPlaceValue = Math.max(...allEntries.map((entry) => entry[field]), 0)
