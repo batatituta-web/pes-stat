@@ -16,7 +16,7 @@ type CopaBracket = { semifinal1: BracketMatch; semifinal2: BracketMatch; final: 
 type CopaVisualBracket = { round16: BracketMatch[]; quarterfinals: BracketMatch[]; semifinals: BracketMatch[]; final: BracketMatch }
 const createEmptyBracketMatch = (): BracketMatch => ({ home: '', away: '', homeGoals: '', awayGoals: '', homePenalties: '', awayPenalties: '' })
 const createSingleFinalBracket = (): CopaVisualBracket => ({ round16: [], quarterfinals: [], semifinals: [], final: createEmptyBracketMatch() })
-const createQuarterfinalsFinalBracket = (): CopaVisualBracket => ({ round16: [], quarterfinals: Array.from({ length: 4 }, createEmptyBracketMatch), semifinals: [], final: createEmptyBracketMatch() })
+const createQuarterfinalsFinalBracket = (): CopaVisualBracket => ({ round16: [], quarterfinals: Array.from({ length: 4 }, createEmptyBracketMatch), semifinals: Array.from({ length: 2 }, createEmptyBracketMatch), final: createEmptyBracketMatch() })
 const createFullBracket = (): CopaVisualBracket => ({ round16: Array.from({ length: 4 }, createEmptyBracketMatch), quarterfinals: Array.from({ length: 4 }, createEmptyBracketMatch), semifinals: Array.from({ length: 2 }, createEmptyBracketMatch), final: createEmptyBracketMatch() })
 const ELIMINATION_TOURNAMENTS = new Set(['Copa América', 'Eurocopa', 'Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil', 'Champions League', 'Europa League', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'])
 const getBracketTeamProgress = (bracket: CopaVisualBracket, competition: string) => {
@@ -970,11 +970,11 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
     <section className={`bracket-card mt-6 mb-10 overflow-hidden rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)] p-3 pb-8 sm:p-4 sm:pb-10 ${isEuropaLeague ? 'mx-auto max-w-[1000px]' : ''}`}>
       <div className="mb-4">
         <h2 className="text-lg font-black text-white">Cuadro de eliminación</h2>
-        <p className="text-xs text-emerald-200">{isSingleFinal ? 'Final' : isEuropaLeague ? 'Cuartos de final a ida y vuelta · final a partido único' : ['Champions League', 'UEFA Champions League'].includes(competition) ? 'Cuartos y semifinales a ida y vuelta · final a partido único' : hasRound16 || hasQuarterfinals ? hasRound16 ? 'Octavos, cuartos de final, semifinales y final' : 'Cuartos de final, semifinales y final' : 'Semifinales y final'}</p>
+        <p className="text-xs text-emerald-200">{isSingleFinal ? 'Final' : isEuropaLeague ? 'Cuartos y semifinales a ida y vuelta · final a partido único' : ['Champions League', 'UEFA Champions League'].includes(competition) ? 'Cuartos y semifinales a ida y vuelta · final a partido único' : hasRound16 || hasQuarterfinals ? hasRound16 ? 'Octavos, cuartos de final, semifinales y final' : 'Cuartos de final, semifinales y final' : 'Semifinales y final'}</p>
       </div>
       <div className="bracket-scroll overflow-x-auto pb-2">
-        <div className={`mx-auto flex w-full items-stretch justify-center gap-4 ${isSingleFinal ? 'min-w-[280px] max-w-md' : isEuropaLeague ? 'min-w-[600px] max-w-[900px]' : 'min-w-[600px]'}`}>
-          {isSingleFinal ? <>{column('Final', 'final', ['Final'])}{championControl}</> : <>{hasRound16 && column('Octavos', 'round16', ['Octavo 1', 'Octavo 2', 'Octavo 3', 'Octavo 4'])}{hasQuarterfinals && column('Cuartos de final', 'quarterfinals', ['Cuarto 1', 'Cuarto 2', 'Cuarto 3', 'Cuarto 4'])}{!isEuropaLeague && column('Semifinales', 'semifinals', ['Semifinal 1', 'Semifinal 2'])}{column('Final', 'final', ['Final'])}{championControl}</>}
+        <div className={`mx-auto flex w-full items-stretch justify-center gap-4 ${isSingleFinal ? 'min-w-[280px] max-w-md' : isEuropaLeague ? 'min-w-[1000px] max-w-[1200px]' : 'min-w-[600px]'}`}>
+          {isSingleFinal ? <>{column('Final', 'final', ['Final'])}{championControl}</> : <>{hasRound16 && column('Octavos', 'round16', ['Octavo 1', 'Octavo 2', 'Octavo 3', 'Octavo 4'])}{hasQuarterfinals && column('Cuartos de final', 'quarterfinals', ['Cuarto 1', 'Cuarto 2', 'Cuarto 3', 'Cuarto 4'])}{column('Semifinales', 'semifinals', ['Semifinal 1', 'Semifinal 2'])}{column('Final', 'final', ['Final'])}{championControl}</>}
         </div>
       </div>
     </section>
