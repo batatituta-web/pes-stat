@@ -967,13 +967,13 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
   const championControl = <div className="flex min-w-[180px] flex-1 flex-col justify-center"><h3 className="mb-2 text-center text-base font-black uppercase text-white">Campeón</h3><div className="rounded-lg border border-amber-400/50 bg-[color:var(--pt-pitch)] p-2"><select aria-label={`Elegir campeón ${competition}`} value={champion} onChange={(event) => onChampionChange(event.target.value)} className="w-full rounded-lg border border-[color:var(--pt-accent)] bg-[color:var(--pt-surface-hover)] p-1.5 text-xs font-bold text-white outline-none"><option value="" className="bg-[color:var(--pt-surface-hover)]">Elegir equipo</option>{players.map((player) => <option key={player.id} value={player.id} className="bg-[color:var(--pt-surface-hover)]">{countryFlag(player.name)} {player.name}</option>)}</select></div></div>
 
   return (
-    <section className={`bracket-card mt-6 mb-10 overflow-hidden rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)] p-3 pb-8 sm:p-4 sm:pb-10 ${isEuropaLeague ? 'mx-auto max-w-[1000px]' : ''}`}>
+    <section className="bracket-card mt-6 mb-10 overflow-hidden rounded-2xl border border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)] p-3 pb-8 sm:p-4 sm:pb-10">
       <div className="mb-4">
         <h2 className="text-lg font-black text-white">Cuadro de eliminación</h2>
         <p className="text-xs text-emerald-200">{isSingleFinal ? 'Final' : isEuropaLeague ? 'Cuartos y semifinales a ida y vuelta · final a partido único' : ['Champions League', 'UEFA Champions League'].includes(competition) ? 'Cuartos y semifinales a ida y vuelta · final a partido único' : hasRound16 || hasQuarterfinals ? hasRound16 ? 'Octavos, cuartos de final, semifinales y final' : 'Cuartos de final, semifinales y final' : 'Semifinales y final'}</p>
       </div>
       <div className="bracket-scroll overflow-x-auto pb-2">
-        <div className={`mx-auto flex w-full items-stretch justify-center gap-4 ${isSingleFinal ? 'min-w-[280px] max-w-md' : isEuropaLeague ? 'min-w-[1000px] max-w-[1200px]' : 'min-w-[600px]'}`}>
+        <div className={`mx-auto flex w-full items-stretch justify-center gap-4 ${isSingleFinal ? 'min-w-[280px] max-w-md' : 'min-w-[600px]'}`}>
           {isSingleFinal ? <>{column('Final', 'final', ['Final'])}{championControl}</> : <>{hasRound16 && column('Octavos', 'round16', ['Octavo 1', 'Octavo 2', 'Octavo 3', 'Octavo 4'])}{hasQuarterfinals && column('Cuartos de final', 'quarterfinals', ['Cuarto 1', 'Cuarto 2', 'Cuarto 3', 'Cuarto 4'])}{column('Semifinales', 'semifinals', ['Semifinal 1', 'Semifinal 2'])}{column('Final', 'final', ['Final'])}{championControl}</>}
         </div>
       </div>
