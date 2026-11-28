@@ -250,6 +250,18 @@ function getTeamLogo(name: string): string | null {
     'Gremio': '/teams/gremio.png',
     'Internacional': '/teams/internacional.png',
     'Fluminense': '/teams/fluminense.png',
+    'Boca Juniors': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-8uCNzQDn82ZB7M4pIsXu3wLevNapAW.png',
+    'Boca': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-8uCNzQDn82ZB7M4pIsXu3wLevNapAW.png',
+    'River Plate': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-VbvFcaiMPiRkC7L3SDYFMjIU1TIhvE.png',
+    'River': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-VbvFcaiMPiRkC7L3SDYFMjIU1TIhvE.png',
+    'Platense': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-d8V6h74N0Fo9FCFisJmqbUnMIdgeHl.png',
+    'San Lorenzo': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5UGLFqqIzc9vl7FxYtKk4lKvpN1hv9.png',
+    'Racing Club': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JstGPGwpZQK2ME7xcj92bqkbbWhG6W.png',
+    'Racing': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JstGPGwpZQK2ME7xcj92bqkbbWhG6W.png',
+    'Vélez Sarsfield': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Hk8btNE9lOBwrEn7VQ8pjT6yGb3RXH.png',
+    'Velez Sarsfield': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Hk8btNE9lOBwrEn7VQ8pjT6yGb3RXH.png',
+    'Vélez': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Hk8btNE9lOBwrEn7VQ8pjT6yGb3RXH.png',
+    'Velez': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Hk8btNE9lOBwrEn7VQ8pjT6yGb3RXH.png',
   }
   const normalizedName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/fc | cf$| sc$| ec$| s\.c\.$/g, '').trim()
   if (normalizedName.includes('villarreal')) return '/teams/villarreal-replacement.png'
