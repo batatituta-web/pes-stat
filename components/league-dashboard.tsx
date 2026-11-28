@@ -980,7 +980,7 @@ function CopaAmericaBracketVisual({ players, bracket, onChange, champion, onCham
   
   const hasRound16 = ['Mundial de Clubes', 'Mundial'].includes(competition)
   const isEuropaLeague = competition === 'Europa League'
-  const hasQuarterfinals = hasRound16 || ['Champions League', 'Europa League', 'UEFA Champions League', 'FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil'].includes(competition)
+  const hasQuarterfinals = hasRound16 || ['Champions League', 'Europa League', 'UEFA Champions League', 'FA Cup', 'Copa Argentina', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil'].includes(competition)
   const isSingleFinal = SINGLE_FINAL_TOURNAMENTS.has(competition)
   const column = (title: string, round: 'round16' | 'quarterfinals' | 'semifinals' | 'final', labels: string[]) => (
     <div className={`flex min-w-[200px] flex-1 flex-col ${round === 'quarterfinals' ? 'justify-center gap-3' : round === 'semifinals' ? 'justify-center gap-4' : 'justify-center'}`}>
