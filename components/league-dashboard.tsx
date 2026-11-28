@@ -806,7 +806,7 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
   const { data: youtubeData } = useSWR<{ videos: { title: string; description?: string; url: string }[] }>('/api/youtube-videos', (url: string) => fetch(url).then((response) => response.json()), { refreshInterval: 300000 })
   const youtubeVideos = youtubeData?.videos ?? []
   const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
-  const getAutomaticVideo = (match: Match | BracketMatch, roundLabel: string) => {
+  const getAutomaticVideo = (match: Match | BracketMatch, roundLabel: string, leg?: 1 | 2) => {
     const home = normalize(getName(match.home))
     const away = normalize(getName(match.away))
     if (!home || !away || home === 'a decidirse' || away === 'a decidirse') return undefined
@@ -818,7 +818,9 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
       const competitionAliases = competition === 'Copa América' ? ['copa america', 'copaamerica'] : [normalize(competition)]
       const competitionMatch = competitionAliases.some((alias) => searchableText.includes(alias))
       const roundMatch = !roundNumber || searchableText.includes(`fecha ${roundNumber}`) || roundAliases.some((alias) => searchableText.includes(alias))
-      return teamsMatch && competitionMatch && roundMatch
+      const legAliases = leg === 1 ? ['ida', 'primer partido', 'first leg', 'l1'] : leg === 2 ? ['vuelta', 'segundo partido', 'second leg', 'l2'] : []
+      const legMatch = !leg || legAliases.some((alias) => searchableText.includes(alias))
+      return teamsMatch && competitionMatch && roundMatch && legMatch
     })?.url
   }
   const playedMatches = matches.filter((match) => match.status === 'played')
@@ -843,6 +845,14 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
   const [expandedMatchId, setExpandedMatchId] = useState<string | number | null>(null)
   const currentRound = rounds[roundIndex] ?? { label: 'Sin fechas', matches: [] }
   const roundMatches = currentRound.matches
+  const hasTwoLegCards = ['Champions League', 'Europa League', 'UEFA Champions League'].includes(competition) && ['Cuartos', 'Semifinales'].includes(currentRound.label)
+  const displayMatches: Array<Match | (BracketMatch & { leg?: 1 | 2 })> = hasTwoLegCards ? roundMatches.flatMap((match): Array<Match | (BracketMatch & { leg?: 1 | 2 })> => {
+    if ('id' in match) return [match]
+    return [
+      { ...match, homeGoals: match.homeGoals || '?', awayGoals: match.awayGoals || '?', date: match.firstLegDate ?? match.date, leg: 1 as const },
+      { ...match, home: match.away, away: match.home, homeGoals: match.secondLegHomeGoals || '?', awayGoals: match.secondLegAwayGoals || '?', date: match.secondLegDate, leg: 2 as const },
+    ]
+  }) : roundMatches
   const getName = (id: string) => players.find((player) => player.id === id)?.name ?? 'A decidirse'
   const getFlag = (id: string) => id && players.some((player) => player.id === id) ? countryFlag(getName(id)) : <span className="inline-flex size-6 items-center justify-center rounded-full border border-emerald-300/60 text-xs font-black text-emerald-100">?</span>
   const getVideoEmbed = (url?: string) => {
@@ -863,19 +873,22 @@ function MatchdayCard({ matches, players, bracket, competition }: { matches: Mat
     </div>
 <div className="space-y-2">
       {roundMatches.length === 0 && <p className="py-8 text-center text-sm text-emerald-100">Todavía no hay resultados cargados.</p>}
-      {roundMatches.map((match, matchIndex) => {
+      {displayMatches.map((match, matchIndex) => {
+        const leg = 'leg' in match ? match.leg : undefined
+        const legLabel = leg === 1 ? 'Ida' : leg === 2 ? 'Vuelta' : undefined
         const matchId = 'id' in match ? match.id : `${currentRound.label}-${matchIndex}`
         const isExpanded = expandedMatchId === matchId
         const savedVideoUrl = 'videoUrl' in match ? match.videoUrl : undefined
-        const embedUrl = 'status' in match && match.status === 'upcoming' ? null : getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label))
+        const embedUrl = 'status' in match && match.status === 'upcoming' ? null : getVideoEmbed(savedVideoUrl ?? getAutomaticVideo(match, currentRound.label, leg))
         return <article key={matchId} className="overflow-hidden rounded-lg border border-[color:var(--pt-accent)] bg-[color:var(--pt-deep)]">
+          {legLabel && <p className="border-b border-[color:var(--pt-accent)]/50 px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-sky-200">Partido de {legLabel.toLowerCase()}</p>}
           <div className="flex items-center justify-between gap-2 p-3 lg:p-2">
             <div className="min-w-0 flex-1 text-right"><div className="flex items-center justify-end gap-1.5 text-sm font-bold lg:text-xs"><span className="truncate">{getName(match.home)}</span><span className="shrink-0">{getFlag(match.home)}</span></div></div>
             <strong className="shrink-0 rounded-md border-2 border-[color:var(--pt-accent)] bg-[color:var(--pt-surface)] px-2.5 py-1.5 text-base font-black lg:px-2 lg:py-1 lg:text-sm">{'status' in match && match.status === 'upcoming' ? '?' : `${match.homeGoals} - ${match.awayGoals}`}</strong>
             <div className="min-w-0 flex-1"><div className="flex items-center gap-1.5 text-sm font-bold lg:text-xs"><span>{getFlag(match.away)}</span><span className="truncate">{getName(match.away)}</span></div></div>
           </div>
           <button type="button" onClick={() => setExpandedMatchId(isExpanded ? null : matchId)} aria-expanded={isExpanded} className="flex w-full items-center justify-center gap-2 border-t border-[color:var(--pt-accent)]/50 px-3 py-1.5 text-[11px] lg:py-1 font-bold uppercase tracking-wider text-emerald-200 transition hover:bg-[color:var(--pt-border)]/40"><span>{isExpanded ? 'Ocultar detalles' : 'Ver más'}</span><ChevronDown className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} /></button>
-          {isExpanded && <div className="space-y-2 border-t border-[color:var(--pt-accent)]/50 p-2"><p className="text-xs text-emerald-200">{'date' in match ? highlightAbandonment(match.date) : <>Ronda: {highlightAbandonment(currentRound.label)}</>}</p>{embedUrl ? <div className="aspect-video overflow-hidden rounded-lg bg-black"><iframe src={embedUrl} title={`Video de ${getName(match.home)} contra ${getName(match.away)}`} className="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div> : <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-[color:var(--pt-accent)] p-5 text-sm text-emerald-100"><Play className="size-4" />No hay video asociado a este partido.</div>}</div>}
+          {isExpanded && <div className="space-y-2 border-t border-[color:var(--pt-accent)]/50 p-2"><p className="text-xs text-emerald-200">{'date' in match && match.date ? highlightAbandonment(match.date) : <>Ronda: {highlightAbandonment(`${currentRound.label}${legLabel ? ` · ${legLabel}` : ''}`)}</>}</p>{embedUrl ? <div className="aspect-video overflow-hidden rounded-lg bg-black"><iframe src={embedUrl} title={`Video de ${getName(match.home)} contra ${getName(match.away)}`} className="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div> : <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-[color:var(--pt-accent)] p-5 text-sm text-emerald-100"><Play className="size-4" />No hay video asociado a este partido.</div>}</div>}
         </article>
       })}
     </div>
