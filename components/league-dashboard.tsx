@@ -371,7 +371,7 @@ const TOURNAMENT_ICON_URLS: Record<string, string> = {
   'UEFA Super Cup': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-qs0L9nlbAAJYxjItSjKXLZb1YweDAI.png',
   'La Liga': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-B3RNhTx030aobmUXt7g0oDlgemP6DA.png',
   'Copa del Rey': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-tHTNA2EtdEqFPnVKcvu7SypiDvMMnv.png',
-  'Copa Argentina': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-DUk6UHHljJUmbR8QkmqRQr91MmipIQ.png',
+  'Copa Argentina': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jeOT5kvnb7xuhms0W0IAI9gptfAxv9.png',
   'Supercopa de España': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-w7TX23pmPqk7aM6e6KzyBYgdCL40AM.png',
   'Serie A': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-8dIZizJaHp30zoqk5JsC3VG70FDX9R.png',
   'Coppa Italia': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-pqrVupw42dMJdoRZOVUuAsl1Oka10O.png',
