@@ -368,7 +368,7 @@ const CHAMPIONS_LEAGUE_ICON_URL = 'https://hebbkx1anhila5yf.public.blob.vercel-s
 const TOURNAMENT_ICON_URLS: Record<string, string> = {
   'Champions League': CHAMPIONS_LEAGUE_ICON_URL,
   'Europa League': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-SSLKpbAUgMbAjtkc9E8btrNNLbTcIk.png',
-  'UEFA Super Cup': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-vQ7dOBmq1xqH3Qn4awDaxF7wWdR8nM.png',
+  'UEFA Super Cup': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZrSowl3aJnoDxVFqfyyt1M5XGQ1hkS.png',
   'Premier League': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-a67gfsEmo8HkEvDlKn7bOJhatcuuCC.png',
   'Copa América': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/copaamerica-removebg-preview-0xvSe3oHQnsMbIZ1GJtzC2EEX6fQjZ.png',
   Eurocopa: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-10-25_005104606-removebg-preview-zLkPER9zycualxFx5NZRVGmtxhU3jp.png',
