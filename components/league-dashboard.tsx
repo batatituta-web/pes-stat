@@ -367,7 +367,7 @@ const SINGLE_FINAL_TOURNAMENTS = new Set(['Community Shield', 'Supercopa de Espa
 const CHAMPIONS_LEAGUE_ICON_URL = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-oasYh6jLRwzebDAznpzRaIkcUPmdgZ.png'
 const TOURNAMENT_ICON_URLS: Record<string, string> = {
   'Champions League': CHAMPIONS_LEAGUE_ICON_URL,
-  'Premier League': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gJgo2l4wnQmn2O8E76FXgCNGUm2uTp.png',
+  'Premier League': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-a67gfsEmo8HkEvDlKn7bOJhatcuuCC.png',
   'Copa América': 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/copaamerica-removebg-preview-0xvSe3oHQnsMbIZ1GJtzC2EEX6fQjZ.png',
   Eurocopa: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/imagen_2026-10-25_005104606-removebg-preview-zLkPER9zycualxFx5NZRVGmtxhU3jp.png',
 }
