@@ -364,7 +364,7 @@ const CUP_BY_LEAGUE: Record<string, string> = { 'Premier League': 'FA Cup', 'Lig
 const SUPER_CUP_BY_LEAGUE: Record<string, string> = { 'Liga Profesional Argentina': 'Supercopa Argentina', 'La Liga': 'Supercopa de España', 'Serie A': 'Supercoppa Italiana' }
 const SUPER_CUP_LEAGUE: Record<string, string> = Object.fromEntries(Object.entries(SUPER_CUP_BY_LEAGUE).map(([league, superCup]) => [superCup, league]))
 const SINGLE_FINAL_TOURNAMENTS = new Set(['Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'UEFA Super Cup', 'Supercopa Argentina'])
-const CHAMPIONS_LEAGUE_ICON_URL = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-TSK6m28kzhMTNV9vfOpwLtwvT9egob.png'
+const CHAMPIONS_LEAGUE_ICON_URL = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-q2FO7bBcwceP9Yh5qkyrEb6Y6Xgip6.png'
 const SEASONS = ['2024/2025', '2026/2027'] as const
 type Season = (typeof SEASONS)[number]
 const CANCELLED_SEASONS = new Set(['Serie A::2026/2027', 'Coppa Italia::2026/2027', 'Supercoppa Italiana::2026/2027'])
