@@ -18,7 +18,7 @@ const createEmptyBracketMatch = (): BracketMatch => ({ home: '', away: '', homeG
 const createSingleFinalBracket = (): CopaVisualBracket => ({ round16: [], quarterfinals: [], semifinals: [], final: createEmptyBracketMatch() })
 const createQuarterfinalsFinalBracket = (): CopaVisualBracket => ({ round16: [], quarterfinals: Array.from({ length: 4 }, createEmptyBracketMatch), semifinals: Array.from({ length: 2 }, createEmptyBracketMatch), final: createEmptyBracketMatch() })
 const createFullBracket = (): CopaVisualBracket => ({ round16: Array.from({ length: 4 }, createEmptyBracketMatch), quarterfinals: Array.from({ length: 4 }, createEmptyBracketMatch), semifinals: Array.from({ length: 2 }, createEmptyBracketMatch), final: createEmptyBracketMatch() })
-const ELIMINATION_TOURNAMENTS = new Set(['Copa América', 'Eurocopa', 'Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'UEFA Super Cup', 'FA Cup', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil', 'Champions League', 'Europa League', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'])
+const ELIMINATION_TOURNAMENTS = new Set(['Copa América', 'Eurocopa', 'Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'UEFA Super Cup', 'FA Cup', 'Copa Argentina', 'Supercopa Argentina', 'Copa del Rey', 'Coppa Italia', 'Copa do Brasil', 'Champions League', 'Europa League', 'UEFA Champions League', 'Mundial de Clubes', 'Mundial'])
 const getBracketTeamProgress = (bracket: CopaVisualBracket, competition: string) => {
   const progress = new Map<string, number>()
   const rounds: Array<[keyof CopaVisualBracket, number]> = [['round16', 1], ['quarterfinals', 2], ['semifinals', 3], ['final', 4]]
@@ -358,12 +358,12 @@ function PremierChampionSimulator({ players, matches, table }: { players: Player
 
 function getPlayerName(players: Player[], id: string) { return players.find((player) => player.id === id)?.name ?? id }
 
-const SEASON_TOURNAMENTS = new Set(['Premier League', 'FA Cup', 'Community Shield', 'La Liga', 'Copa del Rey', 'Supercopa de España', 'Serie A', 'Coppa Italia', 'Supercoppa Italiana', 'UEFA Super Cup', 'Brasileirao', 'Copa do Brasil', 'Liga Profesional Argentina', 'Champions League', 'Europa League'])
-const EMPTY_TOURNAMENTS = new Set(['test', 'Europa League', 'Liga Profesional Argentina', 'UEFA Super Cup'])
-const CUP_BY_LEAGUE: Record<string, string> = { 'Premier League': 'FA Cup', 'La Liga': 'Copa del Rey', 'Serie A': 'Coppa Italia', Brasileirao: 'Copa do Brasil', 'Champions League': 'Europa League' }
-const SUPER_CUP_BY_LEAGUE: Record<string, string> = { 'La Liga': 'Supercopa de España', 'Serie A': 'Supercoppa Italiana' }
+const SEASON_TOURNAMENTS = new Set(['Premier League', 'FA Cup', 'Community Shield', 'Copa Argentina', 'Supercopa Argentina', 'La Liga', 'Copa del Rey', 'Supercopa de España', 'Serie A', 'Coppa Italia', 'Supercoppa Italiana', 'UEFA Super Cup', 'Brasileirao', 'Copa do Brasil', 'Liga Profesional Argentina', 'Champions League', 'Europa League'])
+const EMPTY_TOURNAMENTS = new Set(['test', 'Europa League', 'Liga Profesional Argentina', 'Copa Argentina', 'UEFA Super Cup'])
+const CUP_BY_LEAGUE: Record<string, string> = { 'Premier League': 'FA Cup', 'Liga Profesional Argentina': 'Copa Argentina', 'La Liga': 'Copa del Rey', 'Serie A': 'Coppa Italia', Brasileirao: 'Copa do Brasil', 'Champions League': 'Europa League' }
+const SUPER_CUP_BY_LEAGUE: Record<string, string> = { 'Liga Profesional Argentina': 'Supercopa Argentina', 'La Liga': 'Supercopa de España', 'Serie A': 'Supercoppa Italiana' }
 const SUPER_CUP_LEAGUE: Record<string, string> = Object.fromEntries(Object.entries(SUPER_CUP_BY_LEAGUE).map(([league, superCup]) => [superCup, league]))
-const SINGLE_FINAL_TOURNAMENTS = new Set(['Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'UEFA Super Cup'])
+const SINGLE_FINAL_TOURNAMENTS = new Set(['Community Shield', 'Supercopa de España', 'Supercoppa Italiana', 'UEFA Super Cup', 'Supercopa Argentina'])
 const SEASONS = ['2024/2025', '2026/2027'] as const
 type Season = (typeof SEASONS)[number]
 function tournamentStateKey(tournament: string, season: Season) {
